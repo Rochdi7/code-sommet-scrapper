@@ -95,6 +95,9 @@ type Entry struct {
 	UserReviews         []Review               `json:"user_reviews"`
 	UserReviewsExtended []Review               `json:"user_reviews_extended"`
 	Emails              []string               `json:"emails"`
+	WhatsApp            string                 `json:"whatsapp"`
+	SocialMedia         map[string]string      `json:"social_media"`
+	BusinessType        string                 `json:"business_type"`
 }
 
 func (e *Entry) haversineDistance(lat, lon float64) float64 {
@@ -129,14 +132,20 @@ func (e *Entry) IsWebsiteValidForEmail() bool {
 		return false
 	}
 
+	lower := strings.ToLower(e.WebSite)
+
 	needles := []string{
-		"facebook",
-		"instragram",
-		"twitter",
+		"facebook.com", "fb.com",
+		"instagram.com",
+		"twitter.com", "x.com",
+		"tiktok.com",
+		"youtube.com",
+		"linkedin.com",
+		"pinterest.com",
 	}
 
-	for i := range needles {
-		if strings.Contains(e.WebSite, needles[i]) {
+	for _, n := range needles {
+		if strings.Contains(lower, n) {
 			return false
 		}
 	}
@@ -192,6 +201,10 @@ func (e *Entry) CsvHeaders() []string {
 		"user_reviews",
 		"user_reviews_extended",
 		"emails",
+		"whatsapp",
+		"social_media",
+		"business_type",
+		"message",
 	}
 }
 
@@ -231,6 +244,10 @@ func (e *Entry) CsvRow() []string {
 		stringify(e.UserReviews),
 		stringify(e.UserReviewsExtended),
 		stringSliceToString(e.Emails),
+		e.WhatsApp,
+		stringify(e.SocialMedia),
+		e.BusinessType,
+		"",
 	}
 }
 
@@ -449,7 +466,124 @@ func EntryFromJSON(raw []byte, reviewCountOnly ...bool) (entry Entry, err error)
 		}
 	}
 
+	// Classify business type from category and about features
+	entry.BusinessType = classifyBusinessType(entry.Category, entry.Categories, entry.About)
+
 	return entry, nil
+}
+
+// classifyBusinessType determines a broad business type from categories and features.
+func classifyBusinessType(primary string, categories []string, about []About) string {
+	if primary == "" {
+		return ""
+	}
+
+	lower := strings.ToLower(primary)
+	allCats := strings.ToLower(strings.Join(categories, " "))
+
+	// Map common Google Maps categories to business types
+	typeMap := map[string][]string{
+		"restaurant": {
+			"restaurant", "pizzeria", "sushi", "burger", "steakhouse",
+			"brasserie", "bistro", "grill", "kebab", "traiteur",
+			"creperie", "ramen", "thai", "chinese restaurant",
+			"indian restaurant", "italian restaurant", "japanese restaurant",
+			"mexican restaurant", "seafood",
+		},
+		"cafe": {
+			"cafe", "café", "coffee", "tea house", "bakery",
+			"patisserie", "pâtisserie", "ice cream", "juice bar",
+			"dessert", "donut", "boulangerie",
+		},
+		"hotel": {
+			"hotel", "hostel", "motel", "resort", "riad", "guesthouse",
+			"guest house", "bed and breakfast", "b&b", "inn", "lodge",
+			"camping", "vacation rental", "holiday rental",
+		},
+		"store": {
+			"store", "shop", "boutique", "market", "supermarket",
+			"grocery", "mall", "outlet", "retail", "electronics",
+			"clothing", "furniture", "hardware", "bookstore", "pharmacy",
+			"jewelry", "bijouterie", "magasin",
+		},
+		"medical": {
+			"doctor", "dentist", "hospital", "clinic", "pharmacy",
+			"medical", "health", "veterinarian", "optician", "laboratoire",
+			"cabinet médical", "chirurgien", "ophthalmologist", "dermatologist",
+		},
+		"beauty": {
+			"beauty salon", "hair salon", "spa", "barber", "nail salon",
+			"coiffeur", "coiffure", "esthétique", "massage", "tattoo",
+			"waxing", "tanning",
+		},
+		"automotive": {
+			"car dealer", "auto repair", "mechanic", "car wash",
+			"gas station", "parking", "tire", "garage", "auto",
+			"car rental", "location de voiture",
+		},
+		"education": {
+			"school", "university", "college", "academy", "training",
+			"tutoring", "driving school", "language school", "école",
+			"formation", "crèche", "kindergarten",
+		},
+		"fitness": {
+			"gym", "fitness", "yoga", "swimming pool", "sport",
+			"martial arts", "boxing", "crossfit", "pilates",
+		},
+		"professional_service": {
+			"lawyer", "accountant", "consultant", "insurance", "bank",
+			"notary", "real estate", "architect", "agency",
+			"financial", "avocat", "comptable", "agence", "bureau",
+		},
+		"construction": {
+			"contractor", "plumber", "electrician", "painter",
+			"carpenter", "construction", "renovation", "building",
+			"bâtiment", "maçon", "menuisier",
+		},
+		"travel": {
+			"travel agency", "tour operator", "tourist", "tourism",
+			"agence de voyage", "guide",
+		},
+		"entertainment": {
+			"cinema", "theater", "theatre", "nightclub", "bar",
+			"pub", "lounge", "museum", "park", "amusement",
+			"bowling", "karaoke", "casino",
+		},
+		"religious": {
+			"mosque", "church", "temple", "synagogue", "chapel",
+			"mosquée", "église",
+		},
+		"government": {
+			"government", "municipality", "city hall", "post office",
+			"embassy", "consulate", "police", "fire station",
+			"commune", "mairie", "préfecture",
+		},
+	}
+
+	for businessType, keywords := range typeMap {
+		for _, kw := range keywords {
+			if strings.Contains(lower, kw) || strings.Contains(allCats, kw) {
+				return businessType
+			}
+		}
+	}
+
+	// Check About features for service-based classification
+	for _, a := range about {
+		nameLower := strings.ToLower(a.Name)
+		if strings.Contains(nameLower, "service") {
+			// Has service options → likely a service business
+			return "service"
+		}
+		if strings.Contains(nameLower, "dining") || strings.Contains(nameLower, "meals") {
+			return "restaurant"
+		}
+		if strings.Contains(nameLower, "amenities") || strings.Contains(nameLower, "rooms") {
+			return "hotel"
+		}
+	}
+
+	return "other"
 }
 
 func parseReviews(reviewsI []any) []Review {

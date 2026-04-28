@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Fiche - CodeSommet Lead Scraper</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.6/htmx.min.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Count Fiche</h2>
+                    <span class="topbar-breadcrumb">Count total Google Maps listings for a keyword</span>
+                </div>
+                <div class="topbar-right"></div>
+            </header>
+
+            <div class="content-area">
+                <div id="error-container" class="error-message"></div>
+
+                <!-- Count Form -->
+                <div class="table-wrapper" style="max-width: 700px;">
+                    <div style="padding: 24px;">
+                        <h3 style="margin: 0 0 6px 0; font-size: 16px; font-weight: 600;">Search Query</h3>
+                        <p style="margin: 0 0 20px 0; color: var(--text-secondary); font-size: 13px;">
+                            Enter a keyword or paste a Google Maps URL to count total listings.
+                        </p>
+
+                        <div class="form-group">
+                            <label>Search Method</label>
+                            <div class="input-mode-tabs">
+                                <button type="button" class="mode-tab active" onclick="switchCountMode('keywords', this)">Keywords</button>
+                                <button type="button" class="mode-tab" onclick="switchCountMode('gmaps-link', this)">Google Maps Link</button>
+                            </div>
+                        </div>
+
+                        <div id="count-input-keywords" class="input-mode-panel">
+                            <div class="form-group">
+                                <label>Keyword</label>
+                                <input type="text" id="count-keyword" placeholder="e.g. travel agency marrakech" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div id="count-input-gmaps-link" class="input-mode-panel" style="display: none;">
+                            <div class="form-group">
+                                <label>Google Maps URL</label>
+                                <input type="url" id="count-gmaps-url" placeholder="https://www.google.com/maps/search/travel+agency+marrakech/@31.66,-8.01,15z" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 8px;">
+                            <div class="form-group">
+                                <label>Language</label>
+                                <input type="text" id="count-lang" value="fr" style="width: 100%;">
+                            </div>
+                            <div class="form-group">
+                                <label>Latitude</label>
+                                <input type="number" step="0.000000000000001" id="count-lat" value="" placeholder="optional" style="width: 100%;">
+                            </div>
+                            <div class="form-group">
+                                <label>Longitude</label>
+                                <input type="number" step="0.000000000000001" id="count-lon" value="" placeholder="optional" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 4px;">
+                            <label>Zoom</label>
+                            <input type="number" id="count-zoom" value="15" style="width: 100px;">
+                        </div>
+
+                        <div class="form-group checkbox" style="margin-top: 12px;">
+                            <input type="checkbox" id="count-live">
+                            <label for="count-live">Live Mode (open browser window to watch scrolling)</label>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-lg" id="count-btn" onclick="startCount()" style="margin-top: 16px; width: 100%;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                            Count Fiches
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Area -->
+                <div id="count-results" style="max-width: 700px; margin-top: 20px; display: none;">
+                    <!-- Active counting jobs will appear here -->
+                </div>
+
+                <!-- History -->
+                <div class="table-wrapper" style="max-width: 700px; margin-top: 20px; overflow-x: auto;">
+                    <div class="table-toolbar">
+                        <div class="table-search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            <input type="text" placeholder="Search history..." id="count-search" oninput="filterCountHistory(this.value)">
+                        </div>
+                    </div>
+                    <table id="count-table" style="width: 100%; table-layout: fixed;">
+                        <thead>
+                            <tr>
+                                <th style="width: 35%; overflow: hidden; text-overflow: ellipsis;">Keyword</th>
+                                <th style="width: 22%;">Date</th>
+                                <th style="width: 13%;">Status</th>
+                                <th style="width: 15%;">Total Fiches</th>
+                                <th style="width: 15%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="count-tbody">
+                        </tbody>
+                    </table>
+                    <div id="count-empty" class="empty-state">
+                        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+                        <div class="empty-state-title">No counts yet</div>
+                        <div class="empty-state-text">Enter a keyword above to count Google Maps listings.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// === COUNT FICHE LOGIC ===
+
+function switchCountMode(mode, btn) {
+    document.querySelectorAll('.input-mode-tabs .mode-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('count-input-keywords').style.display = mode === 'keywords' ? '' : 'none';
+    document.getElementById('count-input-gmaps-link').style.display = mode === 'gmaps-link' ? '' : 'none';
+}
+
+function parseGmapsUrl(url) {
+    var result = { query: '', lat: '', lon: '', zoom: '' };
+    var searchMatch = url.match(/\/maps\/search\/([^/@?]+)/);
+    if (searchMatch) result.query = decodeURIComponent(searchMatch[1].replace(/\+/g, ' '));
+    if (!result.query) {
+        var placeMatch = url.match(/\/maps\/place\/([^/@?]+)/);
+        if (placeMatch) result.query = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+    }
+    if (!result.query) {
+        var qMatch = url.match(/[?&]q=([^&]+)/);
+        if (qMatch) result.query = decodeURIComponent(qMatch[1].replace(/\+/g, ' '));
+    }
+    var coordMatch = url.match(/@(-?[\d.]+),(-?[\d.]+),(\d+)z/);
+    if (coordMatch) {
+        result.lat = coordMatch[1];
+        result.lon = coordMatch[2];
+        result.zoom = coordMatch[3];
+    }
+    return result;
+}
+
+function startCount() {
+    var keyword = '';
+    var lat = document.getElementById('count-lat').value.trim();
+    var lon = document.getElementById('count-lon').value.trim();
+    var zoom = document.getElementById('count-zoom').value.trim() || '15';
+    var lang = document.getElementById('count-lang').value.trim() || 'fr';
+
+    // Check which mode is active
+    var isLinkMode = document.getElementById('count-input-gmaps-link').style.display !== 'none';
+
+    if (isLinkMode) {
+        var gmapsUrl = document.getElementById('count-gmaps-url').value.trim();
+        if (!gmapsUrl) {
+            alert('Please enter a Google Maps URL');
+            return;
+        }
+        var parsed = parseGmapsUrl(gmapsUrl);
+        keyword = parsed.query;
+        if (parsed.lat) lat = parsed.lat;
+        if (parsed.lon) lon = parsed.lon;
+        if (parsed.zoom) zoom = parsed.zoom;
+        if (!keyword) {
+            alert('Could not extract a search query from this URL');
+            return;
+        }
+    } else {
+        keyword = document.getElementById('count-keyword').value.trim();
+        if (!keyword) {
+            alert('Please enter a keyword');
+            return;
+        }
+    }
+
+    var btn = document.getElementById('count-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:8px;"></span> Starting...';
+
+    var live = document.getElementById('count-live').checked;
+
+    var body = new URLSearchParams();
+    body.append('keyword', keyword);
+    body.append('lang', lang);
+    body.append('lat', lat);
+    body.append('lon', lon);
+    body.append('zoom', zoom);
+    if (live) body.append('live', 'on');
+
+    fetch('/countfiche', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+    })
+    .then(function(r) {
+        if (!r.ok) return r.text().then(function(t) { throw new Error(t); });
+        return r.json();
+    })
+    .then(function(data) {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg> Count Fiches';
+
+        // Add to results area and start polling
+        addCountJob(data.id, keyword);
+        pollCountStatus(data.id, keyword);
+        loadCountHistory();
+    })
+    .catch(function(err) {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg> Count Fiches';
+        document.getElementById('error-container').textContent = err.message || 'An error occurred';
+    });
+}
+
+function addCountJob(id, keyword) {
+    var container = document.getElementById('count-results');
+    container.style.display = '';
+
+    var card = document.createElement('div');
+    card.id = 'count-card-' + id;
+    card.className = 'table-wrapper';
+    card.style.marginBottom = '12px';
+    card.innerHTML = '<div style="padding: 20px; display: flex; align-items: center; gap: 16px;">' +
+        '<div class="spinner" style="width: 24px; height: 24px; border-width: 3px; flex-shrink: 0;"></div>' +
+        '<div style="flex: 1;">' +
+            '<div style="font-weight: 600; font-size: 14px;">' + escapeHtml(keyword) + '</div>' +
+            '<div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;" id="count-status-' + id + '">Scrolling through results...</div>' +
+        '</div>' +
+        '<div id="count-result-' + id + '" style="display: none; text-align: center;">' +
+            '<div style="font-size: 32px; font-weight: 700; color: var(--primary);"></div>' +
+            '<div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Fiches</div>' +
+        '</div>' +
+    '</div>';
+
+    container.insertBefore(card, container.firstChild);
+}
+
+function pollCountStatus(id, keyword) {
+    var interval = setInterval(function() {
+        fetch('/countfiche/status?id=' + id)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var statusEl = document.getElementById('count-status-' + id);
+            var resultEl = document.getElementById('count-result-' + id);
+            var card = document.getElementById('count-card-' + id);
+
+            if (data.status === 'ok') {
+                clearInterval(interval);
+                if (statusEl) statusEl.textContent = 'Completed';
+                if (resultEl) {
+                    resultEl.style.display = '';
+                    resultEl.querySelector('div').textContent = data.count;
+                }
+                // Remove spinner
+                var spinner = card.querySelector('.spinner');
+                if (spinner) {
+                    spinner.style.borderColor = 'var(--success)';
+                    spinner.style.borderTopColor = 'var(--success)';
+                    spinner.style.animation = 'none';
+                    spinner.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+                    spinner.style.border = 'none';
+                }
+                loadCountHistory();
+            } else if (data.status === 'failed') {
+                clearInterval(interval);
+                if (statusEl) {
+                    statusEl.textContent = 'Failed';
+                    statusEl.style.color = 'var(--danger)';
+                }
+                var spinner = card.querySelector('.spinner');
+                if (spinner) {
+                    spinner.style.animation = 'none';
+                    spinner.style.border = 'none';
+                    spinner.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+                }
+                loadCountHistory();
+            } else if (data.status === 'working') {
+                if (statusEl) statusEl.textContent = 'Scrolling through results...';
+            }
+        })
+        .catch(function() {});
+    }, 3000);
+}
+
+function loadCountHistory() {
+    fetch('/countfiche/history')
+    .then(function(r) { return r.json(); })
+    .then(function(jobs) {
+        var tbody = document.getElementById('count-tbody');
+        var empty = document.getElementById('count-empty');
+
+        if (!jobs || jobs.length === 0) {
+            tbody.innerHTML = '';
+            empty.style.display = '';
+            return;
+        }
+
+        empty.style.display = 'none';
+        tbody.innerHTML = '';
+
+        jobs.forEach(function(job) {
+            var tr = document.createElement('tr');
+            tr.setAttribute('data-count-job', job.id);
+
+            var statusClass = job.status === 'ok' ? 'status-ok' : job.status === 'failed' ? 'status-failed' : job.status === 'working' ? 'status-working' : 'status-pending';
+            var statusLabel = job.status === 'ok' ? 'Done' : job.status === 'failed' ? 'Failed' : job.status === 'working' ? 'Counting...' : 'Pending';
+
+            var countDisplay = job.status === 'ok' ? '<span style="font-weight:700; font-size:16px; color:var(--primary);">' + (job.count || 0) + '</span>' : '-';
+
+            tr.innerHTML = '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(job.keyword) + '">' + escapeHtml(job.keyword) + '</td>' +
+                '<td>' + job.date + '</td>' +
+                '<td><span class="status-indicator ' + statusClass + '" data-status="' + job.status + '">' + statusLabel + '</span></td>' +
+                '<td>' + countDisplay + '</td>' +
+                '<td><button class="btn btn-sm btn-danger" onclick="deleteCountJob(\'' + job.id + '\')">Delete</button></td>';
+
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(function() {});
+}
+
+function deleteCountJob(id) {
+    if (!confirm('Delete this count?')) return;
+    fetch('/countfiche/delete?id=' + id, { method: 'DELETE' })
+    .then(function() {
+        var card = document.getElementById('count-card-' + id);
+        if (card) card.remove();
+        loadCountHistory();
+    })
+    .catch(function() {});
+}
+
+function filterCountHistory(query) {
+    query = query.toLowerCase();
+    document.querySelectorAll('#count-table tbody tr').forEach(function(row) {
+        var text = row.textContent.toLowerCase();
+        row.style.display = text.indexOf(query) !== -1 ? '' : 'none';
+    });
+}
+
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// Load history on page load
+loadCountHistory();
+</script>
+</body>
+</html>

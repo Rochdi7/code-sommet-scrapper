@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSommet WhatsApp Sender</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.6/htmx.min.js"></script>
+    <style>
+        /* === WhatsApp Page Layout === */
+        .wa-page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* === QR Section === */
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px;
+            background: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .qr-section h2 {
+            margin: 0 0 8px 0;
+            color: var(--color-whatsapp);
+            font-size: 20px;
+        }
+
+        .qr-section p {
+            color: var(--color-text-light);
+            margin: 0 0 20px 0;
+            font-size: 14px;
+        }
+
+        .qr-display {
+            width: 280px;
+            height: 280px;
+            border: 2px dashed var(--color-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            overflow: hidden;
+        }
+
+        .qr-display img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .qr-display .qr-placeholder {
+            color: var(--color-text-light);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .connected-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #dcfce7;
+            color: var(--color-success);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* === Connection Status Bar === */
+        .connection-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .connection-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.connected { background: var(--color-success); }
+        .status-dot.disconnected { background: var(--color-error); }
+
+        .btn-disconnect {
+            background: var(--color-error);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-disconnect:hover { opacity: 0.9; }
+
+        /* === Warning Banner === */
+        .warning-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: #fff8e1;
+            border: 1px solid #ffcc02;
+            border-radius: 8px;
+            color: #7a6400;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .warning-banner .warning-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* === Two Column Layout === */
+        .wa-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .wa-columns { grid-template-columns: 1fr; }
+        }
+
+        /* === Card === */
+        .wa-card {
+            background: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+
+        .wa-card h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            color: var(--color-primary);
+        }
+
+        /* === Message Composer === */
+        .template-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .message-textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.5;
+        }
+
+        .placeholder-hint {
+            font-size: 12px;
+            color: var(--color-text-light);
+            margin-top: 6px;
+        }
+
+        .btn-test-send {
+            margin-top: 12px;
+            background: var(--color-whatsapp);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-test-send:hover { opacity: 0.9; }
+
+        .test-send-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .test-send-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .test-send-row button {
+            white-space: nowrap;
+        }
+
+        /* === Recipients === */
+        .recipients-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: monospace;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .import-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+        }
+
+        .import-row select {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .btn-import {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-import:hover { opacity: 0.9; }
+
+        .recipient-count {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .recipient-count strong {
+            color: var(--color-primary);
+        }
+
+        /* === Send Controls === */
+        .send-controls {
+            background: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+
+        .send-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .btn-start-send {
+            flex: 1;
+            background: var(--color-whatsapp);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-start-send:hover { opacity: 0.9; }
+        .btn-start-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-pause {
+            background: var(--color-warning);
+            color: var(--color-text);
+            border: none;
+            padding: 14px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-pause:hover { opacity: 0.9; }
+
+        .btn-resume {
+            background: var(--color-success);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-resume:hover { opacity: 0.9; }
+
+        .send-progress {
+            margin-top: 12px;
+        }
+
+        .send-progress-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .send-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .send-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-whatsapp), #20c05c);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .rate-limit-info {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--color-text-light);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* === Status Table === */
+        .status-table-wrap {
+            background: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .status-table {
+            width: 100%;
+            font-size: 13px;
+            box-shadow: none;
+        }
+
+        .status-table th {
+            font-size: 12px;
+            padding: 12px 16px;
+            background: var(--color-background);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-table td {
+            padding: 10px 16px;
+        }
+
+        .delivery-sent {
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        .delivery-delivered {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .delivery-read {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .delivery-pending {
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .delivery-failed {
+            color: var(--color-error);
+            font-weight: 600;
+        }
+
+        /* === Nav for WA page === */
+        .wa-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .wa-nav a {
+            font-size: 14px;
+            padding: 6px 14px;
+        }
+
+        .wa-nav .nav-wa-active {
+            background: var(--color-whatsapp);
+            border-color: var(--color-whatsapp);
+        }
+
+        .wa-nav .nav-wa-active:hover {
+            background: #20c05c;
+        }
+
+        /* === Hidden utility === */
+        .hidden { display: none !important; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .duplicate-row { background: #fff7ed !important; }
+        .duplicate-badge {
+            display: inline-block;
+            background: #fbbf24;
+            color: #78350f;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/webscraper" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Website Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">WhatsApp</h2>
+                    <span class="topbar-breadcrumb">Send messages to leads</span>
+                </div>
+                <div class="topbar-right"></div>
+            </header>
+            <div class="content-area">
+
+        <div class="wa-page-container">
+
+            <!-- Warning Banner -->
+            <div class="warning-banner">
+                <span class="warning-icon">&#9888;</span>
+                <span>Use a secondary phone number. Bulk sending may get your WhatsApp account temporarily or permanently banned. CodeSommet is not responsible for any account restrictions.</span>
+            </div>
+
+            <!-- Send Mode Selector -->
+            <div id="mode-selector" style="display: flex; gap: 0; margin-bottom: 16px; background: var(--color-background); border: 1px solid var(--color-border); border-radius: 8px; padding: 4px;">
+                <button id="mode-desktop" onclick="switchMode('desktop')" style="flex: 1; padding: 10px 14px; border: none; background: var(--color-whatsapp); color: white; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                    <span>Desktop App  &nbsp;<span style="font-size: 10px; background: rgba(255,255,255,0.25); padding: 1px 6px; border-radius: 8px;">Recommended</span></span>
+                    <span style="font-size: 11px; font-weight: 400; opacity: 0.9;">Uses WhatsApp Desktop — no QR, auto-sends via Enter keypress</span>
+                </button>
+                <button id="mode-bridge" onclick="switchMode('bridge')" style="flex: 1; padding: 10px 14px; border: none; background: transparent; color: var(--color-text); border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                    <span>Web Bridge</span>
+                    <span style="font-size: 11px; font-weight: 400; opacity: 0.7;">whatsapp-web.js via QR scan (higher ban risk)</span>
+                </button>
+            </div>
+
+            <!-- Desktop Mode Info Banner -->
+            <div id="desktop-info" style="padding: 12px 14px; background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 6px; margin-bottom: 16px; font-size: 12px; color: #1b5e20; line-height: 1.5;">
+                <strong>How it works:</strong> For each recipient, the app launches <code>whatsapp://send?phone=...&amp;text=...</code> — this opens WhatsApp Desktop with the chat and message pre-filled — then simulates an <kbd>Enter</kbd> keypress to send. Runs fully unattended between messages.<br>
+                <strong>Requirements:</strong> WhatsApp Desktop installed and logged in on this machine. Do NOT use the mouse/keyboard while a campaign is running. The scraper binary must run natively on the host (not inside Docker) for keypress access.
+            </div>
+
+            <!-- Connection Status Bar -->
+            <div class="connection-bar" id="connection-bar">
+                <div class="connection-info">
+                    <span class="status-dot disconnected" id="status-dot"></span>
+                    <span id="connection-text">Not connected</span>
+                </div>
+                <button class="btn-disconnect hidden" id="btn-disconnect" onclick="disconnect()">Disconnect</button>
+            </div>
+
+            <!-- QR Code Section (shown when not connected) -->
+            <div class="qr-section" id="qr-section">
+                <h2>Connect WhatsApp</h2>
+                <p>Scan this QR code with WhatsApp on your phone to get started</p>
+                <div class="qr-display" id="qr-display">
+                    <div class="qr-placeholder" id="qr-placeholder">Loading QR code...</div>
+                </div>
+                <p style="margin-top: 16px; font-size: 12px; color: var(--color-text-light);">QR code refreshes automatically every 60 seconds</p>
+            </div>
+
+            <!-- Connected Badge (shown when connected) -->
+            <div class="qr-section hidden" id="connected-section" style="padding: 24px;">
+                <div class="connected-badge">
+                    <span style="font-size: 20px;">&#10003;</span>
+                    <span>Connected</span>
+                    <span id="connected-phone" style="font-weight: 400; color: var(--color-success);"></span>
+                </div>
+            </div>
+
+            <!-- Main Content (only when connected) -->
+            <div id="main-content" class="hidden">
+
+                <!-- Page-level tabs -->
+                <div style="display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid var(--color-border);">
+                    <button id="page-tab-send" onclick="switchPageTab('send')" style="padding: 10px 24px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 600; border-bottom: 3px solid var(--color-whatsapp); margin-bottom: -2px; color: var(--color-whatsapp);">Send Campaign</button>
+                    <button id="page-tab-campaigns" onclick="switchPageTab('campaigns')" style="padding: 10px 24px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 600; border-bottom: 3px solid transparent; margin-bottom: -2px; color: var(--color-text-light);">Campaigns <span id="campaigns-badge" style="background: var(--color-primary); color: white; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 4px;">0</span></button>
+                    <button id="page-tab-history" onclick="switchPageTab('history')" style="padding: 10px 24px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 600; border-bottom: 3px solid transparent; margin-bottom: -2px; color: var(--color-text-light);">Message History <span id="history-badge" style="background: var(--color-primary); color: white; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 4px;">0</span></button>
+                </div>
+
+                <!-- Panel: Send Campaign -->
+                <div id="page-panel-send">
+
+                <!-- Two Column: Composer + Recipients -->
+                <div class="wa-columns">
+
+                    <!-- Message Composer -->
+                    <div class="wa-card">
+                        <h3>Message Composer</h3>
+
+                        <label for="template-select" style="margin-bottom: 6px;">Default Template</label>
+                        <select class="template-select" id="template-select" onchange="applyTemplate()">
+                            <optgroup label="-- No Website (Build) --">
+                                <option value="nosite-fr">Pas de site web - FR</option>
+                                <option value="nosite-darija">Pas de site web - Darija</option>
+                                <option value="nosite-en">No Website - EN</option>
+                            </optgroup>
+                            <optgroup label="-- Has Website (Redesign + SEO) --">
+                                <option value="redesign-fr">Redesign + SEO - FR</option>
+                                <option value="redesign-darija">Redesign + SEO - Darija</option>
+                                <option value="redesign-en">Redesign + SEO - EN</option>
+                            </optgroup>
+                            <optgroup label="-- E-commerce --">
+                                <option value="ecommerce-fr">E-commerce - FR</option>
+                                <option value="ecommerce-darija">E-commerce - Darija</option>
+                                <option value="ecommerce-en">E-commerce - EN</option>
+                            </optgroup>
+                            <optgroup label="-- Social Media --">
+                                <option value="social-fr">Reseaux Sociaux - FR</option>
+                                <option value="social-darija">Reseaux Sociaux - Darija</option>
+                                <option value="social-en">Social Media - EN</option>
+                            </optgroup>
+                            <optgroup label="-- Follow-up (Already Contacted) --">
+                                <option value="followup-fr">Relance - FR</option>
+                                <option value="followup-darija">Relance - Darija</option>
+                                <option value="followup-en">Follow-up - EN</option>
+                            </optgroup>
+                            <option value="custom">Custom Message</option>
+                        </select>
+
+                        <label for="message-textarea" style="margin-bottom: 6px;">Message</label>
+                        <textarea class="message-textarea" id="message-textarea" placeholder="Write your message here..."></textarea>
+                        <div class="placeholder-hint">Variables: <strong>{business}</strong> = business name, <strong>{phone}</strong> = phone number, <strong>{email}</strong> = email, <strong>{address}</strong> = address, <strong>{category}</strong> = category</div>
+
+                        <div class="test-send-row">
+                            <input type="text" id="test-phone" placeholder="+212 6XX XXX XXX">
+                            <button class="btn-test-send" onclick="sendTestMessage()" style="width: auto;">Send Test</button>
+                        </div>
+                    </div>
+
+                    <!-- Recipients -->
+                    <div class="wa-card">
+                        <h3>Recipients</h3>
+
+                        <!-- Source tabs -->
+                        <div style="display: flex; gap: 0; margin-bottom: 16px; border-bottom: 2px solid var(--color-border);">
+                            <button class="tab-btn tab-active" id="tab-manual" onclick="switchTab('manual')" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px;">Manual List</button>
+                            <button class="tab-btn" id="tab-scraper" onclick="switchTab('scraper')" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px;">Import from Scraper</button>
+                            <button class="tab-btn" id="tab-csv" onclick="switchTab('csv')" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px;">Import CSV</button>
+                        </div>
+
+                        <!-- Tab: Manual -->
+                        <div id="panel-manual">
+                            <label style="margin-bottom: 6px;">Phone numbers (one per line)</label>
+                            <textarea class="recipients-textarea" id="recipients-textarea" placeholder="+212612345678&#10;+212698765432&#10;+33612345678" oninput="updateRecipientCount()"></textarea>
+                        </div>
+
+                        <!-- Tab: Import from Scraper -->
+                        <div id="panel-scraper" class="hidden">
+                            <div class="import-row" style="margin-top: 0;">
+                                <select id="job-select">
+                                    <option value="">-- Select a scrape job --</option>
+                                </select>
+                                <button class="btn-import" onclick="importFromJob()">Import</button>
+                            </div>
+                            <div id="import-preview" class="hidden" style="margin-top: 12px; max-height: 200px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 4px;">
+                                <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                                    <thead><tr style="background: var(--color-background);"><th style="padding: 6px 8px; text-align: left;">Business</th><th style="padding: 6px 8px; text-align: left;">Phone</th><th style="padding: 6px 8px; text-align: left;">Email</th></tr></thead>
+                                    <tbody id="import-preview-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tab: Import CSV -->
+                        <div id="panel-csv" class="hidden">
+                            <label style="margin-bottom: 6px;">Upload a CSV file with phone numbers</label>
+                            <input type="file" id="csv-file" accept=".csv" onchange="importCSV()" style="margin-bottom: 8px; font-size: 13px;">
+                            <div class="placeholder-hint">CSV must have a <strong>phone</strong> column. Optional: <strong>title</strong> (business name), <strong>emails</strong>, <strong>category</strong>, <strong>address</strong>, <strong>message</strong> columns.</div>
+                            <div id="csv-preview" class="hidden" style="margin-top: 12px; max-height: 200px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 4px;">
+                                <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                                    <thead><tr style="background: var(--color-background);"><th style="padding: 6px 8px; text-align: left;">Business</th><th style="padding: 6px 8px; text-align: left;">Phone</th><th style="padding: 6px 8px; text-align: left;">Email</th></tr></thead>
+                                    <tbody id="csv-preview-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px;">
+                            <div class="recipient-count" id="recipient-count">
+                                <strong>0</strong> recipients loaded
+                            </div>
+                            <button id="btn-expand-table" class="hidden" onclick="openTableModal()" style="background: none; border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 12px; color: var(--color-primary); display: flex; align-items: center; gap: 4px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                                Expand
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full-screen Table Modal -->
+                <div id="table-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;" onclick="if(event.target===this)closeTableModal()">
+                    <div style="background: white; border-radius: 12px; width: 95vw; max-width: 1200px; height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--color-border);">
+                            <h3 style="margin: 0; font-size: 16px; color: var(--color-primary);">Recipients (<span id="modal-count">0</span>)</h3>
+                            <button onclick="closeTableModal()" style="background: none; border: none; cursor: pointer; font-size: 22px; color: var(--color-text-light); line-height: 1;">&times;</button>
+                        </div>
+                        <div style="flex: 1; overflow-y: auto; padding: 0;">
+                            <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                                <thead style="position: sticky; top: 0; background: var(--color-background); z-index: 1;">
+                                    <tr>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">#</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Business</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Phone</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Email</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Website</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Category</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Address</th>
+                                        <th style="padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Template</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modal-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Send Controls -->
+                <div class="send-controls" style="margin-top: 24px;">
+                    <h3 style="margin: 0 0 16px 0; font-size: 16px; color: var(--color-primary);">Send Controls</h3>
+
+                    <!-- Campaign Name -->
+                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px; padding: 12px 16px; background: var(--color-background); border-radius: 6px; border: 1px solid var(--color-border);">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--color-text); white-space: nowrap;">Campaign name:</div>
+                        <input type="text" id="campaign-name" placeholder="e.g. Dentistes Casablanca - Avril 2026" style="flex: 1; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 13px;">
+                    </div>
+
+                    <!-- Timer Settings -->
+                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px; padding: 12px 16px; background: var(--color-background); border-radius: 6px; border: 1px solid var(--color-border);">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--color-text); white-space: nowrap;">Delay between messages:</div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <label style="font-size: 12px; color: var(--color-text-light);">Min</label>
+                            <input type="number" id="delay-min" value="60" min="30" max="300" style="width: 60px; padding: 4px 8px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 13px;">
+                            <span style="font-size: 12px; color: var(--color-text-light);">sec</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <label style="font-size: 12px; color: var(--color-text-light);">Max</label>
+                            <input type="number" id="delay-max" value="120" min="60" max="600" style="width: 60px; padding: 4px 8px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 13px;">
+                            <span style="font-size: 12px; color: var(--color-text-light);">sec</span>
+                        </div>
+                        <div style="font-size: 11px; color: var(--color-text-light); flex: 1;">Random delay in this range to avoid spam detection</div>
+                    </div>
+
+                    <!-- Daily Limit -->
+                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px; padding: 12px 16px; background: var(--color-background); border-radius: 6px; border: 1px solid var(--color-border);">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--color-text); white-space: nowrap;">Daily limit:</div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <input type="number" id="daily-limit" value="40" min="10" max="200" style="width: 70px; padding: 4px 8px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 13px;">
+                            <span style="font-size: 12px; color: var(--color-text-light);">msgs/day</span>
+                        </div>
+                        <div style="font-size: 11px; color: var(--color-text-light); flex: 1;">
+                            Sent today: <strong id="sent-today-count">0</strong> — Recommended: 30-50 for new numbers, up to 80 for established ones
+                        </div>
+                    </div>
+
+                    <!-- PDF Attachment (Desktop mode only) -->
+                    <div id="attach-row" style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; padding: 12px 16px; background: var(--color-background); border-radius: 6px; border: 1px solid var(--color-border); flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="attach-enable" onchange="onAttachToggle()" style="width: 16px; height: 16px; cursor: pointer;">
+                            Attach PDF to each message
+                        </label>
+                        <input type="text" id="attach-path" value="C:\Users\ASUS\Desktop\Projects\google-maps-scraper\CodeSommet_Presentation_Client.pdf" placeholder="Absolute path to PDF file..." style="flex: 1; min-width: 300px; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 12px; font-family: monospace;" disabled>
+                        <div id="attach-hint" style="font-size: 11px; color: var(--color-text-light); flex-basis: 100%;">
+                            When enabled, the PDF is sent <strong>with the message as caption</strong> to every recipient. Uses Windows clipboard (PowerShell Set-Clipboard). Desktop mode only.
+                        </div>
+                    </div>
+
+                    <!-- Safety Warning -->
+                    <div style="margin-bottom: 16px; padding: 10px 14px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; font-size: 12px; color: #6d5600;">
+                        ⚠ <strong>Anti-ban tips:</strong> Keep delays above 60s, stay under 50 msgs/day for new numbers, personalize messages with {business} and {city} tags. WhatsApp restricts accounts that send repeated identical messages.
+                    </div>
+
+                    <div class="send-buttons">
+                        <button class="btn-start-send" id="btn-start" onclick="startSending()">Start Sending</button>
+                        <button class="btn-pause hidden" id="btn-pause" onclick="pauseSending()">Pause</button>
+                        <button class="btn-resume hidden" id="btn-resume" onclick="resumeSending()">Resume</button>
+                        <button class="btn-disconnect hidden" id="btn-stop" onclick="stopSending()">Stop Sending</button>
+                    </div>
+
+                    <div class="send-progress hidden" id="send-progress">
+                        <div class="send-progress-text" id="progress-text">Sending 0/0...</div>
+                        <div class="send-progress-bar">
+                            <div class="send-progress-fill" id="progress-fill"></div>
+                        </div>
+                        <div class="rate-limit-info">
+                            <span id="next-message-info">Next message in --s</span>
+                            <span id="delay-display">Delay: 60-120 seconds between messages</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Table (current campaign) -->
+                <div style="margin-top: 24px;">
+                    <h3 style="margin: 0 0 16px 0; font-size: 16px; color: var(--color-primary);">Delivery Status</h3>
+                    <!-- Sending animation -->
+                    <div id="sending-animation" class="hidden" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: linear-gradient(90deg, #dcfce7, #d1fae5); border-radius: 8px; margin-bottom: 12px;">
+                        <div style="width: 20px; height: 20px; border: 3px solid var(--color-whatsapp); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                        <span id="sending-anim-text" style="font-size: 14px; font-weight: 600; color: var(--color-whatsapp);">Sending messages...</span>
+                    </div>
+                    <!-- Completion banner -->
+                    <div id="send-complete-banner" class="hidden" style="padding: 14px 20px; border-radius: 8px; margin-bottom: 12px; font-weight: 600; font-size: 14px;"></div>
+                    <div style="overflow-x: auto; max-height: 300px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 6px;">
+                        <table class="status-table" id="status-table" style="min-width: 600px;">
+                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                <tr>
+                                    <th>Phone</th>
+                                    <th>Business</th>
+                                    <th>Template</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="status-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="empty-status" style="text-align: center; padding: 32px; color: var(--color-text-light); font-size: 14px;">
+                        No messages sent yet. Configure your message and recipients above, then hit "Start Sending".
+                    </div>
+                </div>
+
+                </div><!-- /page-panel-send -->
+
+                <!-- Panel: Campaigns -->
+                <div id="page-panel-campaigns" class="hidden">
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="margin: 0; font-size: 16px; color: var(--color-primary);">Your Campaigns</h3>
+                        <button onclick="loadCampaigns()" style="background: none; border: 1px solid var(--color-border); padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text-light);">Refresh</button>
+                    </div>
+
+                    <div id="campaigns-list">
+                        <div style="text-align: center; padding: 32px; color: var(--color-text-light); font-size: 14px;">Loading campaigns...</div>
+                    </div>
+
+                </div><!-- /page-panel-campaigns -->
+
+                <!-- Panel: Message History (full page) -->
+                <div id="page-panel-history" class="hidden">
+
+                    <!-- History filters -->
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; padding: 12px 16px; background: var(--color-background); border-radius: 6px; border: 1px solid var(--color-border);">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <label style="font-size: 12px; font-weight: 600; color: var(--color-text-light);">Status:</label>
+                            <select id="history-filter-status" onchange="renderHistory()" style="font-size: 13px; padding: 4px 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+                                <option value="all">All</option>
+                                <option value="sent">Sent</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
+                            <label style="font-size: 12px; font-weight: 600; color: var(--color-text-light);">Search:</label>
+                            <input type="text" id="history-filter-search" oninput="renderHistory()" placeholder="Phone or business name..." style="font-size: 13px; padding: 4px 10px; border: 1px solid var(--color-border); border-radius: 4px; flex: 1; max-width: 300px;">
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <span id="history-stats" style="font-size: 12px; color: var(--color-text-light);"></span>
+                            <button onclick="clearHistory()" style="background: none; border: 1px solid var(--color-error); color: var(--color-error); padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Clear All</button>
+                        </div>
+                    </div>
+
+                    <!-- History table -->
+                    <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: 6px;">
+                        <div style="max-height: calc(100vh - 300px); overflow-y: auto;">
+                            <table class="status-table" style="min-width: 700px;">
+                                <thead style="position: sticky; top: 0; z-index: 1;">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Phone</th>
+                                        <th>Business</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Campaign</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="empty-history" style="text-align: center; padding: 32px; color: var(--color-text-light); font-size: 13px;">
+                        No message history yet.
+                    </div>
+
+                </div><!-- /page-panel-history -->
+
+            </div><!-- /main-content -->
+
+        </div><!-- /wa-page-container -->
+
+            </div><!-- /content-area -->
+        </div><!-- /main-area -->
+    </div><!-- /app-layout -->
+
+    <script>
+    // === WhatsApp Bridge URL (Node.js sidecar) ===
+    var WA_BRIDGE = 'http://localhost:3001';
+
+    // === Message Templates ===
+    const TEMPLATES = {
+        // --- No Website ---
+        'nosite-fr': `Bonjour {business},
+
+Je suis tombé sur votre entreprise sur Google et j'ai remarqué que vous n'avez pas encore de site web.
+
+Aujourd'hui, 80% des clients recherchent en ligne avant d'acheter. Sans site web, vous passez à côté de dizaines de clients chaque jour.
+
+Chez CodeSommet, on ne crée pas juste des sites web - on construit des machines à clients. Un site optimisé qui vous rend visible sur Google, renforce votre marque et convertit les visiteurs en clients.
+
+Seriez-vous intéressé par une consultation gratuite de 15 min ?
+
+Cordialement,
+L'équipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'nosite-darija': `Salam {business},
+
+Cheft l'entreprise dyalkom f Google w l9it belli mazal ma3ndkomch site web.
+
+Lyoum, 80% dyal les clients kayb7tou f internet 9bel ma ychriw. Bla site web, kat khasser 3likom bzaf dyal les clients kol youm.
+
+Hna CodeSommet, makandiroch ghir des sites - kanbniwlkom outil li kayjiblkom les clients. Site optimisé li kaybanlkom f Google, kaykber l brand dyalkom w kayhouvel les visiteurs l clients.
+
+Wach tkon 3ndkom 15 min bach nhedrou 3la projet dyalkom ?
+
+Merhba bikom,
+L'equipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'nosite-en': `Hello {business},
+
+I came across your business on Google and noticed you don't have a website yet.
+
+Today, 80% of customers search online before buying. Without a website, you're missing out on dozens of potential clients every day.
+
+At CodeSommet, we don't just build websites - we build client-generating machines. An optimized site that makes you visible on Google, strengthens your brand, and converts visitors into paying customers.
+
+Would you be interested in a free 15-minute consultation?
+
+Best regards,
+CodeSommet Team
+codesommet.com | +212 632 582 096`,
+
+        // --- Has Website (Redesign + SEO) ---
+        'redesign-fr': `Bonjour {business},
+
+J'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.
+
+Saviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.
+
+Chez CodeSommet, nous proposons :
+- Redesign moderne de votre site
+- Optimisation SEO pour apparaître en 1ère page Google
+- Site rapide qui convertit les visiteurs en clients
+
+Souhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?
+
+Cordialement,
+L'équipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'redesign-darija': `Salam {business},
+
+Dert check l site web dyalkom w l9it belli machi optimisé. Kat khasser 3likom des clients li kayb7tou 3likom f Google w makat ban lhom.
+
+Le site dyalkom khasso :
+- Design moderne li kay3ti ti9a l les clients
+- Optimisation SEO bach t ban f les résultats lewla dyal Google
+- Vitesse 7sn bach les visiteurs ma ymchiwch
+
+Hna CodeSommet, khandiroulek audit gratuit dyal le site dyalkom w nwerriw lek chno khass ytbdel bach tjib plus de clients.
+
+Wach 3ndek 5 d9ay9 bach nhedrou ?
+
+Merhba bikom,
+L'equipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'redesign-en': `Hello {business},
+
+I visited your website and identified several opportunities to attract more clients online.
+
+Did you know that 75% of users judge a business's credibility by its website? A modern, SEO-optimized site can multiply your calls and inquiries by 3x.
+
+At CodeSommet, we offer:
+- Modern website redesign
+- SEO optimization to rank on Google page 1
+- Fast site that converts visitors into customers
+
+Would you like a free site audit with actionable recommendations?
+
+Best regards,
+CodeSommet Team
+codesommet.com | +212 632 582 096`,
+
+        // --- E-commerce ---
+        'ecommerce-fr': `Bonjour {business},
+
+Vous vendez des produits et souhaitez développer vos ventes en ligne ?
+
+CodeSommet crée des boutiques e-commerce complètes avec paiement en ligne, gestion des commandes et livraison intégrée.
+
+Nos clients voient en moyenne +40% de ventes dans les 3 premiers mois. Seriez-vous intéressé par un devis gratuit ?
+
+Cordialement,
+L'équipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'ecommerce-darija': `Salam {business},
+
+Katbi3ou des produits w bgheeti tzdadou f les ventes online ?
+
+CodeSommet kayndirlkom boutique e-commerce complète m3a paiement en ligne, gestion dyal les commandes w livraison intégrée.
+
+Les clients dyalna kayshofou en moyenne +40% dyal les ventes f 3 shhor lewla. Wach bgheeti devis gratuit ?
+
+Merhba bikom,
+L'equipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'ecommerce-en': `Hello {business},
+
+Do you sell products and want to grow your sales online?
+
+CodeSommet builds complete e-commerce stores with online payments, order management, and integrated delivery.
+
+Our clients see an average +40% increase in sales within the first 3 months. Would you like a free quote?
+
+Best regards,
+CodeSommet Team
+codesommet.com | +212 632 582 096`,
+
+        // --- Social Media ---
+        'social-fr': `Bonjour {business},
+
+Votre entreprise est-elle visible sur Instagram et Facebook ? Aujourd'hui, les réseaux sociaux sont le premier canal pour toucher de nouveaux clients.
+
+CodeSommet propose : création de contenu professionnel, publicités ciblées et gestion de communauté adaptées aux entreprises marocaines.
+
+Seriez-vous intéressé par un diagnostic gratuit de votre présence sociale ?
+
+Cordialement,
+L'équipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'social-darija': `Salam {business},
+
+L'entreprise dyalkom bana f Instagram w Facebook ? Lyoum, les réseaux sociaux houma le canal #1 bach tjib clients jdad.
+
+CodeSommet kayndirlkom : contenu professionnel, publicités ciblées w gestion dyal la communauté li tmchi m3a le marché lmaghribi.
+
+Wach bgheeti diagnostic gratuit dyal la présence sociale dyalkom ?
+
+Merhba bikom,
+L'equipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'social-en': `Hello {business},
+
+Is your business visible on Instagram and Facebook? Today, social media is the #1 channel to reach new customers.
+
+CodeSommet offers: professional content creation, targeted ads, and community management tailored to your market.
+
+Would you like a free social media audit?
+
+Best regards,
+CodeSommet Team
+codesommet.com | +212 632 582 096`,
+
+        // --- Follow-up (Already Contacted) ---
+        'followup-fr': `Bonjour {business},
+
+Je vous ai contacté récemment concernant votre présence en ligne. Je voulais juste faire un suivi rapide.
+
+Nous avons actuellement une offre spéciale pour les entreprises de votre secteur. Seriez-vous disponible pour un appel de 10 minutes cette semaine ?
+
+Pas de pression, juste un échange pour voir si on peut vous aider.
+
+Cordialement,
+L'équipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'followup-darija': `Salam {business},
+
+Kontaktit m3akom 9bel 3la le sujet dyal la présence en ligne dyalkom. Ghir bgheet ndir suivi rapide.
+
+3ndna offre spéciale daba l les entreprises bhal dyalkom. Wach yemken nhedrou 10 d9ay9 had simana ?
+
+Bla pression, ghir échange bach nchoufou wach nkdrou n3awnoukom.
+
+Merhba bikom,
+L'equipe CodeSommet
+codesommet.com | +212 632 582 096`,
+
+        'followup-en': `Hello {business},
+
+I reached out recently about your online presence. Just wanted to follow up quickly.
+
+We currently have a special offer for businesses in your sector. Would you be available for a quick 10-minute call this week?
+
+No pressure at all — just a friendly chat to see if we can help.
+
+Best regards,
+CodeSommet Team
+codesommet.com | +212 632 582 096`,
+
+        'custom': ''
+    };
+
+    // Template options HTML for per-row dropdowns
+    const TEMPLATE_OPTIONS_HTML = '<option value="nosite-fr">Pas de site - FR</option><option value="nosite-darija">Pas de site - Darija</option><option value="nosite-en">No Website - EN</option>' +
+        '<option value="redesign-fr">Redesign+SEO - FR</option><option value="redesign-darija">Redesign+SEO - Darija</option><option value="redesign-en">Redesign+SEO - EN</option>' +
+        '<option value="ecommerce-fr">E-commerce - FR</option><option value="ecommerce-darija">E-commerce - Darija</option><option value="ecommerce-en">E-commerce - EN</option>' +
+        '<option value="social-fr">Social - FR</option><option value="social-darija">Social - Darija</option><option value="social-en">Social - EN</option>' +
+        '<option value="followup-fr">Relance - FR</option><option value="followup-darija">Relance - Darija</option><option value="followup-en">Follow-up - EN</option>' +
+        '<option value="custom">Custom</option>';
+
+    // Auto-detect template based on whether business has a website
+    function detectTemplate(r) {
+        if (r.website && r.website.trim() && r.website.trim() !== '--') {
+            return 'redesign-fr'; // Has website -> redesign
+        }
+        return 'nosite-fr'; // No website -> build
+    }
+
+    // === State ===
+    // Path-based override: /whatsapp-desktop forces desktop mode, /whatsapp uses last-saved or bridge default.
+    let currentMode;
+    if (window.location.pathname === '/whatsapp-desktop') {
+        currentMode = 'desktop';
+        localStorage.setItem('waSendMode', 'desktop');
+    } else {
+        currentMode = localStorage.getItem('waSendMode') || 'desktop';
+    }
+    let isConnected = false;
+    let isSending = false;
+    let isPaused = false;
+    let recipients = [];       // [{phone, business, email, category, address, website, template, message, status, time}]
+    let statusPollTimer = null;
+    let qrPollTimer = null;
+    let connectionPollTimer = null;
+    let countdownTimer = null;
+    let nextMessageCountdown = 0;
+    let currentTab = 'manual';
+    let sendDelayMin = 60;
+    let sendDelayMax = 120;
+    let dailyLimit = 40;
+    let sentToday = 0;
+
+    // === Init ===
+    document.addEventListener('DOMContentLoaded', () => {
+        applyTemplate();
+        applyModeUI();
+        if (currentMode === 'bridge') {
+            checkConnection();
+            startConnectionPolling();
+            fetchDailyCount();
+        } else {
+            refreshContactedPhones();
+        }
+        loadJobs();
+        loadCampaigns();
+    });
+
+    // === Mode Switching ===
+    function switchMode(mode) {
+        if (mode !== 'desktop' && mode !== 'bridge') return;
+        if (isSending) {
+            alert('Stop the current campaign before switching modes.');
+            return;
+        }
+        currentMode = mode;
+        localStorage.setItem('waSendMode', mode);
+        applyModeUI();
+
+        if (mode === 'bridge') {
+            // Bridge needs QR flow
+            if (!connectionPollTimer) startConnectionPolling();
+            checkConnection();
+            fetchDailyCount();
+        } else {
+            // Desktop mode: no connection needed — stop bridge polling
+            if (connectionPollTimer) { clearInterval(connectionPollTimer); connectionPollTimer = null; }
+            if (qrPollTimer) { clearInterval(qrPollTimer); qrPollTimer = null; }
+        }
+    }
+
+    function applyModeUI() {
+        const btnDesktop = document.getElementById('mode-desktop');
+        const btnBridge = document.getElementById('mode-bridge');
+        const desktopInfo = document.getElementById('desktop-info');
+        const connBar = document.getElementById('connection-bar');
+        const qrSection = document.getElementById('qr-section');
+        const connectedSection = document.getElementById('connected-section');
+        const mainContent = document.getElementById('main-content');
+        const attachRow = document.getElementById('attach-row');
+        if (attachRow) attachRow.style.display = (currentMode === 'desktop') ? '' : 'none';
+
+        if (currentMode === 'desktop') {
+            // Active tab styling
+            btnDesktop.style.background = 'var(--color-whatsapp)';
+            btnDesktop.style.color = 'white';
+            btnBridge.style.background = 'transparent';
+            btnBridge.style.color = 'var(--color-text)';
+            desktopInfo.style.display = '';
+
+            // Hide bridge-only UI
+            connBar.style.display = 'none';
+            qrSection.classList.add('hidden');
+            connectedSection.classList.add('hidden');
+            // Desktop mode: main content always visible (no connection required)
+            mainContent.classList.remove('hidden');
+        } else {
+            btnBridge.style.background = 'var(--color-whatsapp)';
+            btnBridge.style.color = 'white';
+            btnDesktop.style.background = 'transparent';
+            btnDesktop.style.color = 'var(--color-text)';
+            desktopInfo.style.display = 'none';
+
+            connBar.style.display = '';
+            // main-content visibility is driven by setConnected()
+        }
+    }
+
+    // === Daily Send Counter ===
+    async function fetchDailyCount() {
+        try {
+            const resp = await fetch(WA_BRIDGE + '/daily-count');
+            if (resp.ok) {
+                const data = await resp.json();
+                sentToday = data.sent_today || 0;
+                updateDailyCountDisplay();
+            }
+        } catch (e) { /* ignore if endpoint not available */ }
+    }
+    function updateDailyCountDisplay() {
+        const el = document.getElementById('sent-today-count');
+        if (el) el.textContent = sentToday;
+    }
+
+    // === Tab Switching ===
+    function switchTab(tab) {
+        currentTab = tab;
+        ['manual', 'scraper', 'csv'].forEach(t => {
+            document.getElementById('panel-' + t).classList.toggle('hidden', t !== tab);
+            const btn = document.getElementById('tab-' + t);
+            btn.classList.toggle('tab-active', t === tab);
+            btn.style.borderBottomColor = (t === tab) ? 'var(--color-whatsapp)' : 'transparent';
+            btn.style.color = (t === tab) ? 'var(--color-whatsapp)' : 'var(--color-text-light)';
+        });
+    }
+    // Style active tab on load
+    setTimeout(() => switchTab('manual'), 0);
+
+    // === Connection Polling ===
+    function startConnectionPolling() {
+        connectionPollTimer = setInterval(checkConnection, 2000);
+    }
+
+    async function checkConnection() {
+        try {
+            const resp = await fetch(WA_BRIDGE + '/status');
+            const data = await resp.json();
+
+            if (data.connected) {
+                setConnected(true, data.phone || '');
+            } else {
+                setConnected(false);
+                refreshQR();
+            }
+        } catch (e) {
+            setConnected(false);
+        }
+    }
+
+    function setConnected(connected, phone) {
+        isConnected = connected;
+        const dot = document.getElementById('status-dot');
+        const text = document.getElementById('connection-text');
+        const btnDisconnect = document.getElementById('btn-disconnect');
+        const qrSection = document.getElementById('qr-section');
+        const connectedSection = document.getElementById('connected-section');
+        const mainContent = document.getElementById('main-content');
+        const connectedPhone = document.getElementById('connected-phone');
+
+        if (connected) {
+            dot.className = 'status-dot connected';
+            text.textContent = phone ? ('Connected to ' + phone) : 'Connected';
+            btnDisconnect.classList.remove('hidden');
+            qrSection.classList.add('hidden');
+            connectedSection.classList.remove('hidden');
+            mainContent.classList.remove('hidden');
+            if (phone) connectedPhone.textContent = phone;
+            // Stop QR polling
+            if (qrPollTimer) { clearInterval(qrPollTimer); qrPollTimer = null; }
+        } else {
+            dot.className = 'status-dot disconnected';
+            text.textContent = 'Not connected';
+            btnDisconnect.classList.add('hidden');
+            qrSection.classList.remove('hidden');
+            connectedSection.classList.add('hidden');
+            mainContent.classList.add('hidden');
+            // Start QR polling if not already (refresh every 60s)
+            if (!qrPollTimer) {
+                refreshQR();
+                qrPollTimer = setInterval(refreshQR, 60000);
+            }
+        }
+    }
+
+    // === QR Code ===
+    async function refreshQR() {
+        if (isConnected) return;
+        try {
+            const resp = await fetch(WA_BRIDGE + '/qr');
+            if (!resp.ok) {
+                document.getElementById('qr-placeholder').textContent = 'Could not load QR code. Is the server running?';
+                return;
+            }
+            const data = await resp.json();
+            if (data.qr) {
+                document.getElementById('qr-display').innerHTML =
+                    '<img src="' + data.qr + '" alt="WhatsApp QR Code">';
+            } else if (data.connected) {
+                checkConnection();
+            } else {
+                document.getElementById('qr-display').innerHTML =
+                    '<div class="qr-placeholder">Waiting for QR code...</div>';
+            }
+        } catch (e) {
+            document.getElementById('qr-display').innerHTML =
+                '<div class="qr-placeholder">Could not load QR code. Is the server running?</div>';
+        }
+    }
+
+    // === Disconnect ===
+    async function disconnect() {
+        try {
+            await fetch(WA_BRIDGE + '/disconnect', { method: 'POST' });
+            setConnected(false);
+        } catch (e) {
+            console.error('Disconnect failed:', e);
+        }
+    }
+
+    // === Templates ===
+    function applyTemplate() {
+        const sel = document.getElementById('template-select');
+        const textarea = document.getElementById('message-textarea');
+        const tmpl = TEMPLATES[sel.value];
+        if (tmpl !== undefined) {
+            textarea.value = tmpl;
+        }
+    }
+
+    // === Recipients ===
+    function updateRecipientCount() {
+        let phones = [];
+        if (currentTab === 'manual') {
+            const text = document.getElementById('recipients-textarea').value.trim();
+            phones = text ? text.split('\n').map(l => l.trim()).filter(l => l.length > 0) : [];
+        } else {
+            phones = recipients.map(r => r.phone);
+        }
+        const fax = phones.filter(p => isFaxNumber(p)).length;
+        const mobile = phones.length - fax;
+        let html = '<strong>' + phones.length + '</strong> recipients loaded';
+        if (phones.length > 0) {
+            html += ' <span style="font-size: 11px; color: var(--color-text-light);">(';
+            html += '<span style="color: var(--color-success); font-weight: 600;">' + mobile + ' mobile</span>';
+            if (fax > 0) {
+                html += ' · <span style="color: #ef6c00; font-weight: 600;">' + fax + ' fax/landline — will be skipped</span>';
+            }
+            html += ')</span>';
+        }
+        document.getElementById('recipient-count').innerHTML = html;
+    }
+
+    // === Load Jobs ===
+    async function loadJobs() {
+        try {
+            const resp = await fetch('/api/v1/jobs');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            const sel = document.getElementById('job-select');
+            if (Array.isArray(data)) {
+                data.forEach(job => {
+                    const id = job.ID || job.id || '';
+                    const name = job.Name || job.name || 'Job';
+                    const status = job.Status || job.status || '';
+                    const opt = document.createElement('option');
+                    opt.value = id;
+                    opt.textContent = name + (status === 'ok' ? ' (Completed)' : ' (' + status + ')');
+                    sel.appendChild(opt);
+                });
+            }
+        } catch (e) {
+            console.error('Could not load jobs:', e);
+        }
+    }
+
+    // === Import from Job ===
+    async function importFromJob() {
+        const jobId = document.getElementById('job-select').value;
+        if (!jobId) {
+            alert('Please select a scrape job first.');
+            return;
+        }
+        try {
+            const resp = await fetch('/results-preview?id=' + encodeURIComponent(jobId));
+            if (!resp.ok) {
+                alert('Could not load results for this job.');
+                return;
+            }
+            const data = await resp.json();
+            recipients = [];
+
+            const items = data.results || data.data || data || [];
+            if (Array.isArray(items)) {
+                items.forEach(item => {
+                    const phone = item.phone || item.Phone || item.phone_number || '';
+                    const business = item.title || item.name || item.business || item.Name || item.Title || '';
+                    const email = item.emails || item.email || item.Email || '';
+                    const category = item.category || item.Category || '';
+                    const address = item.address || item.Address || item.complete_address || '';
+                    const website = item.website || item.Website || '';
+                    const message = item.message || item.Message || '';
+                    if (phone) {
+                        const r = { phone, business, email, category, address, website, message, status: 'pending', time: '' };
+                        r.template = detectTemplate(r);
+                        recipients.push(r);
+                    }
+                });
+            }
+
+            renderImportTable('import-preview', 'import-preview-body');
+            updateRecipientCount();
+        } catch (e) {
+            alert('Error importing results: ' + e.message);
+        }
+    }
+
+    // === Import CSV ===
+    function importCSV() {
+        const fileInput = document.getElementById('csv-file');
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length < 2) {
+                alert('CSV file is empty or has no data rows.');
+                return;
+            }
+
+            const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
+            const phoneIdx = headers.findIndex(h => h === 'phone' || h === 'phone_number');
+            if (phoneIdx === -1) {
+                alert('CSV must have a "phone" column.');
+                return;
+            }
+
+            const titleIdx = headers.findIndex(h => h === 'title' || h === 'name' || h === 'business');
+            const emailIdx = headers.findIndex(h => h === 'emails' || h === 'email');
+            const catIdx = headers.findIndex(h => h === 'category');
+            const addrIdx = headers.findIndex(h => h === 'address' || h === 'complete_address');
+            const siteIdx = headers.findIndex(h => h === 'website');
+            const msgIdx = headers.findIndex(h => h === 'message');
+
+            recipients = [];
+            for (let i = 1; i < lines.length; i++) {
+                const cols = parseCSVLine(lines[i]);
+                const phone = (cols[phoneIdx] || '').trim();
+                if (!phone) continue;
+
+                const r = {
+                    phone,
+                    business: titleIdx >= 0 ? (cols[titleIdx] || '').trim() : '',
+                    email: emailIdx >= 0 ? (cols[emailIdx] || '').trim() : '',
+                    category: catIdx >= 0 ? (cols[catIdx] || '').trim() : '',
+                    address: addrIdx >= 0 ? (cols[addrIdx] || '').trim() : '',
+                    website: siteIdx >= 0 ? (cols[siteIdx] || '').trim() : '',
+                    message: msgIdx >= 0 ? (cols[msgIdx] || '').trim() : '',
+                    status: 'pending',
+                    time: ''
+                };
+                r.template = detectTemplate(r);
+                recipients.push(r);
+            }
+
+            renderImportTable('csv-preview', 'csv-preview-body');
+            updateRecipientCount();
+        };
+        reader.readAsText(file);
+    }
+
+    // Render import preview table with all data + per-row template dropdown
+    function renderImportTable(wrapperId, tbodyId) {
+        const tbody = document.getElementById(tbodyId);
+        // Run duplicate detection on render
+        markDuplicates();
+
+        tbody.innerHTML = recipients.map((r, i) => {
+            const fax = isFaxNumber(r.phone);
+            const contacted = !fax && isAlreadyContacted(r.phone);
+            let rowBg = '';
+            if (fax) rowBg = ' background: #fff3e0;';
+            else if (contacted) rowBg = ' background: #fef9c3;';
+            else if (r.isDuplicate) rowBg = ' background: #fff7ed;';
+            const faxBadge = fax ? '<span style="background:#ef6c00;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px;letter-spacing:0.3px;">FAX</span>' : '';
+            const contactedBadge = contacted ? '<span style="background:#ca8a04;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px;letter-spacing:0.3px;" title="Already messaged in a previous campaign">ALREADY CONTACTED</span>' : '';
+            return '<tr style="border-top: 1px solid var(--color-border);' + rowBg + '">' +
+                '<td style="padding: 4px 8px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + escapeHtml(r.business || '--') + '</td>' +
+                '<td style="padding: 4px 8px; font-family: monospace; font-size: 11px;">' + escapeHtml(r.phone) + (r.isDuplicate ? '<span class="duplicate-badge">SENT</span>' : '') + faxBadge + contactedBadge + '</td>' +
+                '<td style="padding: 4px 8px; font-size: 11px;">' + escapeHtml(r.email || '--') + '</td>' +
+                '<td style="padding: 4px 8px; font-size: 11px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + (r.website ? escapeHtml(r.website) : '<span style="color:var(--color-error);">No site</span>') + '</td>' +
+                '<td style="padding: 4px 6px;"><select style="font-size: 11px; padding: 2px 4px; border: 1px solid var(--color-border); border-radius: 3px;"' + (fax ? ' disabled' : '') + ' onchange="setRowTemplate(' + i + ', this.value)">' + templateOptionsWithSelected(r.template) + '</select></td>' +
+                '</tr>';
+        }).join('');
+
+        // Update table headers
+        const wrapper = document.getElementById(wrapperId);
+        const thead = wrapper.querySelector('thead tr');
+        thead.innerHTML = '<th style="padding: 6px 8px; text-align: left;">Business</th>' +
+            '<th style="padding: 6px 8px; text-align: left;">Phone</th>' +
+            '<th style="padding: 6px 8px; text-align: left;">Email</th>' +
+            '<th style="padding: 6px 8px; text-align: left;">Website</th>' +
+            '<th style="padding: 6px 8px; text-align: left;">Template</th>';
+        wrapper.classList.remove('hidden');
+        // Show expand button
+        document.getElementById('btn-expand-table').classList.remove('hidden');
+    }
+
+    function templateOptionsWithSelected(selected) {
+        return TEMPLATE_OPTIONS_HTML.replace('value="' + selected + '"', 'value="' + selected + '" selected');
+    }
+
+    function setRowTemplate(idx, tpl) {
+        if (recipients[idx]) {
+            recipients[idx].template = tpl;
+            recipients[idx].message = ''; // Clear custom message so template is used
+        }
+    }
+
+    // Modal template change (syncs back to recipients)
+    function setModalRowTemplate(idx, tpl) {
+        setRowTemplate(idx, tpl);
+    }
+
+    // Open full-screen table modal
+    function openTableModal() {
+        const modal = document.getElementById('table-modal');
+        const tbody = document.getElementById('modal-tbody');
+        document.getElementById('modal-count').textContent = recipients.length;
+
+        tbody.innerHTML = recipients.map((r, i) =>
+            '<tr style="border-bottom: 1px solid var(--color-border);">' +
+            '<td style="padding: 8px 14px; color: var(--color-text-light); font-size: 12px;">' + (i + 1) + '</td>' +
+            '<td style="padding: 8px 14px; font-weight: 500;">' + escapeHtml(r.business || '--') + '</td>' +
+            '<td style="padding: 8px 14px; font-family: monospace; font-size: 12px;">' + escapeHtml(r.phone) + '</td>' +
+            '<td style="padding: 8px 14px; font-size: 12px;">' + escapeHtml(r.email || '--') + '</td>' +
+            '<td style="padding: 8px 14px; font-size: 12px;">' + (r.website ? '<a href="' + escapeHtml(r.website) + '" target="_blank" style="color: var(--color-primary);">' + escapeHtml(r.website) + '</a>' : '<span style="color:var(--color-error);">No site</span>') + '</td>' +
+            '<td style="padding: 8px 14px; font-size: 12px;">' + escapeHtml(r.category || '--') + '</td>' +
+            '<td style="padding: 8px 14px; font-size: 12px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + escapeHtml(r.address || '--') + '</td>' +
+            '<td style="padding: 8px 10px;"><select style="font-size: 12px; padding: 3px 6px; border: 1px solid var(--color-border); border-radius: 4px;" onchange="setModalRowTemplate(' + i + ', this.value)">' + templateOptionsWithSelected(r.template) + '</select></td>' +
+            '</tr>'
+        ).join('');
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close modal
+    function closeTableModal() {
+        const modal = document.getElementById('table-modal');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        // Re-render inline previews to reflect any template changes made in modal
+        if (currentTab === 'scraper') renderImportTable('import-preview', 'import-preview-body');
+        if (currentTab === 'csv') renderImportTable('csv-preview', 'csv-preview-body');
+    }
+
+    // Simple CSV line parser (handles quoted fields)
+    function parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (inQuotes) {
+                if (ch === '"' && line[i+1] === '"') { current += '"'; i++; }
+                else if (ch === '"') { inQuotes = false; }
+                else { current += ch; }
+            } else {
+                if (ch === '"') { inQuotes = true; }
+                else if (ch === ',') { result.push(current); current = ''; }
+                else { current += ch; }
+            }
+        }
+        result.push(current);
+        return result;
+    }
+
+    // === Parse Recipients from Textarea (manual mode only) ===
+    function parseRecipients() {
+        if (currentTab === 'manual') {
+            const text = document.getElementById('recipients-textarea').value.trim();
+            const lines = text ? text.split('\n').filter(l => l.trim().length > 0) : [];
+            const newRecipients = lines.map(line => {
+                const phone = line.trim();
+                const existing = recipients.find(r => r.phone === phone);
+                if (existing) return existing;
+                return { phone, business: '', email: '', category: '', address: '', website: '', template: '', message: '', status: 'pending', time: '' };
+            });
+            recipients = newRecipients;
+        }
+        // For scraper/csv tabs, recipients are already populated
+        return recipients;
+    }
+
+    // Moroccan fax/landline detection: numbers starting with 05 (local) or 2125
+    // (international) are not on WhatsApp. Mobile numbers start with 06/07 / 2126/2127.
+    function isFaxNumber(phone) {
+        if (!phone) return false;
+        const s = String(phone).replace(/[\s\-\+\(\)]/g, '');
+        if (s.startsWith('2125')) return true;
+        if (s.length === 10 && s.startsWith('05')) return true;
+        return false;
+    }
+
+    // Normalize a phone number the same way the Go backend does — lets us
+    // check membership in the "already contacted" set consistently.
+    function normalizePhone(phone) {
+        if (!phone) return '';
+        let s = String(phone).replace(/[\s\-\+\(\)]/g, '');
+        if (s.length === 10 && (s.startsWith('05') || s.startsWith('06') || s.startsWith('07'))) {
+            s = '212' + s.slice(1);
+        }
+        return s;
+    }
+
+    // Set of phones we've successfully messaged in previous campaigns.
+    // Refreshed on load + after each campaign completion.
+    let contactedPhones = new Set();
+
+    async function refreshContactedPhones() {
+        if (currentMode !== 'desktop') return;
+        try {
+            const resp = await fetch('/whatsapp-auto/contacted-phones');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            contactedPhones = new Set(data.phones || []);
+        } catch (e) { /* non-fatal */ }
+    }
+
+    function isAlreadyContacted(phone) {
+        return contactedPhones.has(normalizePhone(phone));
+    }
+
+    // === PDF Attachment toggle ===
+    function onAttachToggle() {
+        const enabled = document.getElementById('attach-enable').checked;
+        document.getElementById('attach-path').disabled = !enabled;
+    }
+
+    // Replace all template variables in a message for a given recipient
+    function fillMessage(template, r) {
+        return template
+            .replace(/\{business\}/g, r.business || r.phone)
+            .replace(/\{phone\}/g, r.phone || '')
+            .replace(/\{email\}/g, r.email || '')
+            .replace(/\{category\}/g, r.category || '')
+            .replace(/\{address\}/g, r.address || '');
+    }
+
+    // === Test Send ===
+    async function sendTestMessage() {
+        const phone = document.getElementById('test-phone').value.trim();
+        if (!phone) {
+            alert('Enter a phone number for the test message.');
+            return;
+        }
+        const message = fillMessage(document.getElementById('message-textarea').value, {
+            business: 'Test Business', phone: phone, email: 'test@example.com',
+            category: 'Test Category', address: 'Test Address'
+        });
+
+        try {
+            const resp = await fetch(WA_BRIDGE + '/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, message })
+            });
+            if (resp.ok) {
+                alert('Test message sent to ' + phone);
+            } else {
+                const err = await resp.text();
+                alert('Failed to send test message: ' + err);
+            }
+        } catch (e) {
+            alert('Error sending test message: ' + e.message);
+        }
+    }
+
+    // === Start Sending ===
+    async function startSending() {
+        parseRecipients();
+        if (recipients.length === 0) {
+            alert('No recipients loaded. Add phone numbers first.');
+            return;
+        }
+
+        const messageTemplate = document.getElementById('message-textarea').value;
+        if (!messageTemplate.trim()) {
+            alert('Please write a message first.');
+            return;
+        }
+
+        // Read delay settings
+        sendDelayMin = parseInt(document.getElementById('delay-min').value) || 60;
+        sendDelayMax = parseInt(document.getElementById('delay-max').value) || 120;
+        // Enforce safe minimums: 30s min delay, max >= min+10
+        sendDelayMin = Math.max(30, sendDelayMin);
+        sendDelayMax = Math.max(sendDelayMin + 10, sendDelayMax);
+        document.getElementById('delay-display').textContent = 'Delay: ' + sendDelayMin + '-' + sendDelayMax + ' seconds between messages';
+
+        // Daily limit check
+        dailyLimit = parseInt(document.getElementById('daily-limit').value) || 40;
+        const remaining = Math.max(0, dailyLimit - sentToday);
+        if (remaining === 0) {
+            alert('Daily limit reached (' + dailyLimit + ' messages). Wait until tomorrow to send more.');
+            return;
+        }
+        if (recipients.length > remaining) {
+            if (!confirm('You have ' + remaining + ' messages left today (limit: ' + dailyLimit + '). Only the first ' + remaining + ' will be sent. Continue?')) {
+                return;
+            }
+            recipients = recipients.slice(0, remaining);
+        }
+
+        // Classify fax / landline numbers (Morocco: 05… / 2125…) — these
+        // aren't on WhatsApp so we mark them as skipped up-front and keep them
+        // out of the send queue.
+        const faxRecipients = recipients.filter(r => isFaxNumber(r.phone));
+        const sendable = recipients.filter(r => !isFaxNumber(r.phone));
+        faxRecipients.forEach(r => { r.status = 'fax'; r.time = ''; });
+
+        if (faxRecipients.length > 0) {
+            const ok = confirm(
+                faxRecipients.length + ' number(s) look like fax/landline (start with 05) — ' +
+                'they will be skipped and classified as "fax". ' +
+                sendable.length + ' mobile number(s) will receive the message.\n\nContinue?'
+            );
+            if (!ok) return;
+        }
+
+        if (sendable.length === 0) {
+            alert('No sendable mobile numbers after excluding fax/landlines.');
+            return;
+        }
+
+        const messages = sendable.map(r => {
+            // Use per-row template if available, otherwise use global template
+            const tmpl = (r.template && TEMPLATES[r.template]) ? TEMPLATES[r.template] : messageTemplate;
+            return {
+                phone: r.phone,
+                business: r.business || '',
+                message: r.message || fillMessage(tmpl, r)
+            };
+        });
+
+        isSending = true;
+        isPaused = false;
+        updateSendUI();
+        updateStatusTable();
+
+        // Attachment (Desktop mode only).
+        let attachmentPath = '';
+        if (currentMode === 'desktop' && document.getElementById('attach-enable').checked) {
+            attachmentPath = document.getElementById('attach-path').value.trim();
+            if (!attachmentPath) {
+                alert('Attach PDF is enabled but no file path is set.');
+                isSending = false; updateSendUI();
+                return;
+            }
+            if (!confirm('Attach this PDF to every message?\n\n' + attachmentPath + '\n\n' +
+                'The message text will be used as the caption.\n\nContinue?')) {
+                isSending = false; updateSendUI();
+                return;
+            }
+        }
+
+        try {
+            const endpoint = (currentMode === 'desktop')
+                ? '/whatsapp-auto/start'
+                : (WA_BRIDGE + '/bulk-send');
+            const body = (currentMode === 'desktop')
+                ? { messages, delayMin: sendDelayMin, delayMax: sendDelayMax, launchWait: 7, name: document.getElementById('campaign-name').value || undefined, attachmentPath: attachmentPath || undefined }
+                : { messages, delayMin: sendDelayMin, delayMax: sendDelayMax, campaignName: document.getElementById('campaign-name').value || undefined };
+
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!resp.ok) {
+                const err = await resp.text();
+                alert('Failed to start campaign: ' + err);
+                isSending = false;
+                updateSendUI();
+                return;
+            }
+            // Start polling for status
+            startStatusPolling();
+        } catch (e) {
+            alert('Error starting campaign: ' + e.message);
+            isSending = false;
+            updateSendUI();
+        }
+    }
+
+    // === Pause / Resume ===
+    function pauseSending() {
+        isPaused = true;
+        updateSendUI();
+        if (currentMode === 'desktop') {
+            fetch('/whatsapp-auto/pause', { method: 'POST' }).catch(() => {});
+            return;
+        }
+        fetch(WA_BRIDGE + '/bulk-send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'pause' })
+        }).catch(() => {});
+    }
+
+    function resumeSending() {
+        isPaused = false;
+        updateSendUI();
+        if (currentMode === 'desktop') {
+            fetch('/whatsapp-auto/resume', { method: 'POST' }).catch(() => {});
+            return;
+        }
+        fetch(WA_BRIDGE + '/bulk-send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'resume' })
+        }).catch(() => {});
+    }
+
+    async function stopSending() {
+        if (!confirm('Stop sending? Remaining messages will be saved and can be resumed later from the Campaigns tab.')) return;
+        try {
+            const stopURL = (currentMode === 'desktop') ? '/whatsapp-auto/stop' : (WA_BRIDGE + '/bulk-stop');
+            await fetch(stopURL, { method: 'POST' });
+        } catch (e) {
+            console.error('Stop failed:', e);
+        }
+        isSending = false;
+        isPaused = false;
+        updateSendUI();
+        if (statusPollTimer) { clearInterval(statusPollTimer); statusPollTimer = null; }
+        const sent = recipients.filter(r => r.status !== 'pending').length;
+        document.getElementById('progress-text').textContent =
+            'Stopped: ' + sent + '/' + recipients.length + ' messages sent. Go to Campaigns tab to resume later.';
+        // Refresh campaigns list
+        setTimeout(loadCampaigns, 1000);
+    }
+
+    // === UI State ===
+    function updateSendUI() {
+        const btnStart = document.getElementById('btn-start');
+        const btnPause = document.getElementById('btn-pause');
+        const btnResume = document.getElementById('btn-resume');
+        const btnStop = document.getElementById('btn-stop');
+        const progress = document.getElementById('send-progress');
+
+        if (isSending) {
+            btnStart.disabled = true;
+            btnStart.textContent = 'Sending...';
+            btnStop.classList.remove('hidden');
+            progress.classList.remove('hidden');
+
+            if (isPaused) {
+                btnPause.classList.add('hidden');
+                btnResume.classList.remove('hidden');
+            } else {
+                btnPause.classList.remove('hidden');
+                btnResume.classList.add('hidden');
+            }
+        } else {
+            btnStart.disabled = false;
+            btnStart.textContent = 'Start Sending';
+            btnPause.classList.add('hidden');
+            btnResume.classList.add('hidden');
+            btnStop.classList.add('hidden');
+            // Keep progress visible if there were results
+        }
+    }
+
+    // === Status Polling ===
+    function startStatusPolling() {
+        if (statusPollTimer) clearInterval(statusPollTimer);
+        statusPollTimer = setInterval(pollBulkStatus, 3000);
+        pollBulkStatus();
+    }
+
+    async function pollBulkStatus() {
+        try {
+            const statusURL = (currentMode === 'desktop') ? '/whatsapp-auto/status' : (WA_BRIDGE + '/bulk-status');
+            const resp = await fetch(statusURL);
+            if (!resp.ok) return;
+            const data = await resp.json();
+
+            // Update recipients — normalize phones to match backend (which strips spaces/dashes)
+            const results = data.results || data.messages || [];
+            if (Array.isArray(results)) {
+                results.forEach(r => {
+                    const cleanBackend = (r.phone || '').replace(/[\s\-\+\(\)]/g, '');
+                    const match = recipients.find(rec => {
+                        let cleanFront = (rec.phone || '').replace(/[\s\-\+\(\)]/g, '');
+                        // Also match Morocco format: 06xxx -> 2126xxx
+                        if (/^0[567]\d{8}$/.test(cleanFront)) cleanFront = '212' + cleanFront.slice(1);
+                        return cleanFront === cleanBackend || rec.phone === r.phone;
+                    });
+                    if (match) {
+                        match.status = r.status || 'pending';
+                        match.time = r.sentAt || r.sent_at || r.time || '';
+                        if (r.business) match.business = r.business;
+                    }
+                });
+            }
+
+            // Update progress — use backend counters which are authoritative
+            const sent = (data.sent || 0) + (data.failed || 0);
+            const total = data.total || recipients.length;
+            const pct = total > 0 ? Math.round((sent / total) * 100) : 0;
+
+            document.getElementById('progress-text').textContent =
+                'Sending ' + sent + '/' + total + '...' + (isPaused ? ' (Paused)' : '');
+            document.getElementById('progress-fill').style.width = pct + '%';
+
+            // Update countdown
+            if (data.next_send_in !== undefined) {
+                nextMessageCountdown = data.next_send_in;
+                document.getElementById('next-message-info').textContent =
+                    'Next message in ' + Math.round(nextMessageCountdown) + 's';
+            }
+
+            updateStatusTable();
+
+            // Check if done
+            if (data.completed || !data.running || sent >= total) {
+                isSending = false;
+                isPaused = false;
+                updateSendUI();
+                clearInterval(statusPollTimer);
+                statusPollTimer = null;
+                document.getElementById('progress-text').textContent =
+                    'Completed: ' + sent + '/' + total + ' messages sent';
+                // Refresh daily counter, campaigns, and the contacted-phones set.
+                fetchDailyCount();
+                loadCampaigns();
+                refreshContactedPhones();
+            }
+        } catch (e) {
+            console.error('Status poll error:', e);
+        }
+    }
+
+    // === Status Table ===
+    function updateStatusTable() {
+        const tbody = document.getElementById('status-tbody');
+        const emptyMsg = document.getElementById('empty-status');
+
+        if (recipients.length === 0) {
+            tbody.innerHTML = '';
+            emptyMsg.classList.remove('hidden');
+            return;
+        }
+
+        emptyMsg.classList.add('hidden');
+
+        tbody.innerHTML = recipients.map(r => {
+            const isFax = r.status === 'fax' || isFaxNumber(r.phone);
+            const status = isFax ? 'fax' : (r.status || 'pending');
+            const statusClass = 'delivery-' + (status === 'fax' ? 'failed' : status);
+            const statusText = status === 'fax'
+                ? 'Fax / Landline (skipped)'
+                : status.charAt(0).toUpperCase() + status.slice(1);
+            const tplLabel = r.template ? r.template.replace(/-/g, ' ') : 'default';
+            const rowStyle = isFax ? ' style="background: #fff3e0;"' : '';
+            const badgeStyle = isFax ? 'color:#ef6c00;font-weight:600;' : '';
+            return '<tr' + rowStyle + '>' +
+                '<td style="font-family: monospace;">' + escapeHtml(r.phone) + '</td>' +
+                '<td>' + escapeHtml(r.business || '--') + '</td>' +
+                '<td style="font-size: 11px; color: var(--color-text-light);">' + escapeHtml(tplLabel) + '</td>' +
+                '<td><span class="' + statusClass + '" style="' + badgeStyle + '">' + statusText + '</span></td>' +
+                '<td style="color: var(--color-text-light); font-size: 12px;">' + escapeHtml(r.time || '--') + '</td>' +
+                '</tr>';
+        }).join('');
+    }
+
+    // === Page Tab Switching (Send / Campaigns / History) ===
+    function switchPageTab(tab) {
+        const tabs = ['send', 'campaigns', 'history'];
+        tabs.forEach(t => {
+            const panel = document.getElementById('page-panel-' + t);
+            const btn = document.getElementById('page-tab-' + t);
+            if (t === tab) {
+                panel.classList.remove('hidden');
+                btn.style.borderBottomColor = 'var(--color-whatsapp)';
+                btn.style.color = 'var(--color-whatsapp)';
+            } else {
+                panel.classList.add('hidden');
+                btn.style.borderBottomColor = 'transparent';
+                btn.style.color = 'var(--color-text-light)';
+            }
+        });
+        if (tab === 'history') renderHistory();
+        if (tab === 'campaigns') loadCampaigns();
+    }
+
+    // === Utilities ===
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;');
+    }
+
+    // =========================================================================
+    // CAMPAIGNS
+    // =========================================================================
+    let campaignsData = [];
+
+    async function loadCampaigns() {
+        // Fetch campaigns from BOTH backends:
+        //   • Desktop auto-sender (local Go endpoint) — campaigns with source='desktop'
+        //   • wa-bridge (whatsapp-web.js sidecar)     — campaigns with source='bridge'
+        // Merge, tag each with source so the UI can route Resume/Delete
+        // correctly, then sort by updatedAt desc.
+        const results = await Promise.all([
+            fetch('/whatsapp-auto/campaigns')
+                .then(r => r.ok ? r.json() : [])
+                .then(list => (list || []).map(c => ({ ...c, source: c.source || 'desktop' })))
+                .catch(() => []),
+            fetch(WA_BRIDGE + '/campaigns')
+                .then(r => r.ok ? r.json() : [])
+                .then(list => (list || []).map(c => ({ ...c, source: 'bridge' })))
+                .catch(() => []),
+        ]);
+        campaignsData = results[0].concat(results[1]);
+        campaignsData.sort((a, b) => {
+            const ta = a.updatedAt || a.createdAt || '';
+            const tb = b.updatedAt || b.createdAt || '';
+            return tb.localeCompare(ta);
+        });
+        renderCampaigns();
+    }
+
+    function renderCampaigns() {
+        const container = document.getElementById('campaigns-list');
+        const badge = document.getElementById('campaigns-badge');
+        if (badge) badge.textContent = campaignsData.length;
+
+        if (campaignsData.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 32px; color: var(--color-text-light); font-size: 14px;">No campaigns yet. Start one from the "Send Campaign" tab.</div>';
+            return;
+        }
+
+        container.innerHTML = campaignsData.map(c => {
+            const pct = c.total > 0 ? Math.round(((c.sent + c.failed) / c.total) * 100) : 0;
+            const statusColor = c.status === 'completed' ? '#166534' : c.status === 'running' ? '#0369a1' : c.status === 'paused' ? '#92400e' : '#6b7280';
+            const statusBg = c.status === 'completed' ? '#dcfce7' : c.status === 'running' ? '#dbeafe' : c.status === 'paused' ? '#fef3c7' : '#f3f4f6';
+            const canResume = c.pending > 0 && c.status !== 'running';
+            const isRunning = c.status === 'running';
+            const createdDate = c.createdAt ? new Date(c.createdAt).toLocaleString() : '--';
+            const updatedDate = c.updatedAt ? new Date(c.updatedAt).toLocaleString() : '--';
+
+            const sourceBg = c.source === 'desktop' ? '#e0f2fe' : '#f3e8ff';
+            const sourceColor = c.source === 'desktop' ? '#075985' : '#6b21a8';
+            const sourceLabel = c.source === 'desktop' ? 'DESKTOP' : 'BRIDGE';
+            const attachLabel = c.attachmentPath
+                ? '<span style="padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; background: #fef3c7; color: #92400e; margin-left: 6px;" title="' + escapeHtml(c.attachmentPath) + '">+ PDF</span>'
+                : '';
+            return '<div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 16px; margin-bottom: 12px; background: white;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">' +
+                    '<div>' +
+                        '<div style="font-size: 15px; font-weight: 600; color: var(--color-text);">' + escapeHtml(c.name) + attachLabel + '</div>' +
+                        '<div style="font-size: 11px; color: var(--color-text-light); margin-top: 2px;">Created: ' + createdDate + ' | Updated: ' + updatedDate + '</div>' +
+                    '</div>' +
+                    '<div style="display: flex; gap: 6px; align-items: center;">' +
+                        '<span style="padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; background: ' + sourceBg + '; color: ' + sourceColor + ';">' + sourceLabel + '</span>' +
+                        '<span style="padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; background: ' + statusBg + '; color: ' + statusColor + ';">' + c.status.toUpperCase() + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="display: flex; gap: 24px; margin-bottom: 12px; font-size: 13px;">' +
+                    '<div>Total: <strong>' + c.total + '</strong></div>' +
+                    '<div style="color: #166534;">Sent: <strong>' + c.sent + '</strong></div>' +
+                    '<div style="color: #dc2626;">Failed: <strong>' + c.failed + '</strong></div>' +
+                    '<div style="color: #92400e;">Remaining: <strong>' + c.pending + '</strong></div>' +
+                '</div>' +
+                '<div style="background: var(--color-background); border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 12px;">' +
+                    '<div style="height: 100%; width: ' + pct + '%; background: var(--color-whatsapp); border-radius: 4px; transition: width 0.3s;"></div>' +
+                '</div>' +
+                '<div style="display: flex; gap: 8px;">' +
+                    (canResume ? '<button onclick="resumeCampaign(\'' + c.id + '\')" style="padding: 6px 16px; background: var(--color-whatsapp); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Resume (' + c.pending + ' left)</button>' : '') +
+                    (isRunning ? '<button onclick="pauseActiveCampaign()" style="padding: 6px 16px; background: #f59e0b; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Pause</button>' : '') +
+                    (isRunning ? '<button onclick="stopActiveCampaign()" style="padding: 6px 16px; background: var(--color-error); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Stop</button>' : '') +
+                    '<button onclick="viewCampaignDetail(\'' + c.id + '\')" style="padding: 6px 16px; background: none; border: 1px solid var(--color-border); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text-light);">View Details</button>' +
+                    (!isRunning ? '<button onclick="deleteCampaign(\'' + c.id + '\')" style="padding: 6px 16px; background: none; border: 1px solid var(--color-error); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-error);">Delete</button>' : '') +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    async function resumeCampaign(campaignId) {
+        if (isSending) {
+            alert('A campaign is already running. Pause or stop it first.');
+            return;
+        }
+
+        // Find the campaign to know which backend to hit.
+        const camp = campaignsData.find(c => c.id === campaignId);
+        const source = camp ? camp.source : 'bridge';
+
+        // Bridge mode needs an active QR connection; desktop mode doesn't.
+        if (source === 'bridge' && !isConnected) {
+            alert('WhatsApp is not connected. Switch to Bridge mode and scan QR first, or resume a Desktop campaign instead.');
+            return;
+        }
+
+        const delayMin = parseInt(document.getElementById('delay-min').value) || 60;
+        const delayMax = parseInt(document.getElementById('delay-max').value) || 120;
+
+        const endpoint = (source === 'desktop')
+            ? '/whatsapp-auto/resume-campaign'
+            : (WA_BRIDGE + '/campaign-resume');
+
+        try {
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ campaignId, delayMin, delayMax })
+            });
+            if (!resp.ok) {
+                let errMsg = 'Unknown error';
+                try { const err = await resp.json(); errMsg = err.error || err.message || errMsg; } catch (_) {}
+                alert('Cannot resume: ' + errMsg);
+                return;
+            }
+            const data = await resp.json();
+            // Switch UI mode to the campaign's source so polling hits the right endpoint.
+            if (source !== currentMode) {
+                switchMode(source);
+            }
+            isSending = true;
+            isPaused = false;
+            updateSendUI();
+            startStatusPolling();
+            switchPageTab('send');
+            alert('Resumed! Sending ' + data.remaining + ' remaining messages.');
+        } catch (e) {
+            alert('Error resuming campaign: ' + e.message);
+        }
+    }
+
+    async function pauseActiveCampaign() {
+        try {
+            await fetch(WA_BRIDGE + '/bulk-send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'pause' })
+            });
+            isPaused = true;
+            updateSendUI();
+            setTimeout(loadCampaigns, 1000);
+        } catch (e) {
+            alert('Error pausing: ' + e.message);
+        }
+    }
+
+    async function stopActiveCampaign() {
+        if (!confirm('Stop campaign? Remaining messages will be saved and can be resumed later.')) return;
+        try {
+            await fetch(WA_BRIDGE + '/bulk-stop', { method: 'POST' });
+            isSending = false;
+            isPaused = false;
+            updateSendUI();
+            if (statusPollTimer) { clearInterval(statusPollTimer); statusPollTimer = null; }
+            setTimeout(loadCampaigns, 1000);
+        } catch (e) {
+            alert('Error stopping: ' + e.message);
+        }
+    }
+
+    async function deleteCampaign(campaignId) {
+        if (!confirm('Delete this campaign permanently?')) return;
+        const camp = campaignsData.find(c => c.id === campaignId);
+        const source = camp ? camp.source : 'bridge';
+        try {
+            let resp;
+            if (source === 'desktop') {
+                resp = await fetch('/whatsapp-auto/delete-campaign?id=' + encodeURIComponent(campaignId), { method: 'DELETE' });
+            } else {
+                resp = await fetch(WA_BRIDGE + '/campaigns/' + campaignId, { method: 'DELETE' });
+            }
+            if (!resp.ok) {
+                let errMsg = 'Unknown error';
+                try { const err = await resp.json(); errMsg = err.error || err.message || errMsg; } catch (_) {}
+                alert('Cannot delete: ' + errMsg);
+                return;
+            }
+            loadCampaigns();
+        } catch (e) {
+            alert('Error deleting: ' + e.message);
+        }
+    }
+
+    async function viewCampaignDetail(campaignId) {
+        try {
+            const resp = await fetch(WA_BRIDGE + '/campaigns/' + campaignId);
+            if (!resp.ok) return;
+            const campaign = await resp.json();
+
+            const msgs = campaign.messages || [];
+            const sentMsgs = msgs.filter(m => m.status === 'sent');
+            const pendingMsgs = msgs.filter(m => m.status === 'pending' || m.status === 'sending');
+            const failedMsgs = msgs.filter(m => m.status === 'failed');
+
+            let html = '<h3 style="margin: 0 0 12px 0;">' + escapeHtml(campaign.name) + '</h3>';
+            html += '<div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 6px;">';
+            html += '<table class="status-table" style="min-width: 500px;"><thead style="position: sticky; top: 0; z-index: 1;"><tr>';
+            html += '<th>#</th><th>Phone</th><th>Business</th><th>Status</th><th>Time</th>';
+            html += '</tr></thead><tbody>';
+            msgs.forEach((m, i) => {
+                const cls = m.status === 'sent' ? 'delivery-sent' : m.status === 'failed' ? 'delivery-failed' : 'delivery-pending';
+                const time = m.sentAt ? new Date(m.sentAt).toLocaleString() : '--';
+                html += '<tr><td>' + (i+1) + '</td><td style="font-family:monospace;font-size:12px;">' + escapeHtml(m.phone) + '</td>';
+                html += '<td>' + escapeHtml(m.business || '--') + '</td>';
+                html += '<td><span class="' + cls + '">' + (m.status || 'pending') + '</span></td>';
+                html += '<td style="font-size:12px;color:var(--color-text-light);">' + time + '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+            html += '<div style="margin-top: 12px; font-size: 13px;">Sent: <strong style="color:#166534;">' + sentMsgs.length + '</strong> | Failed: <strong style="color:#dc2626;">' + failedMsgs.length + '</strong> | Remaining: <strong style="color:#92400e;">' + pendingMsgs.length + '</strong></div>';
+
+            // Show in a simple modal
+            let modal = document.getElementById('campaign-detail-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'campaign-detail-modal';
+                modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;';
+                document.body.appendChild(modal);
+            }
+            modal.innerHTML = '<div style="background:white;border-radius:12px;padding:24px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto;position:relative;">' +
+                '<button onclick="document.getElementById(\'campaign-detail-modal\').remove()" style="position:absolute;top:12px;right:12px;border:none;background:none;font-size:20px;cursor:pointer;color:var(--color-text-light);">✕</button>' +
+                html + '</div>';
+        } catch (e) {
+            alert('Error loading details: ' + e.message);
+        }
+    }
+
+    // =========================================================================
+    // MESSAGE HISTORY (localStorage)
+    // =========================================================================
+    const HISTORY_KEY = 'wa_message_history';
+
+    function getHistory() {
+        try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+        catch (_) { return []; }
+    }
+
+    function saveToHistory(entries) {
+        const history = getHistory();
+        entries.forEach(e => {
+            history.unshift({
+                phone: e.phone,
+                business: e.business || '',
+                status: e.status,
+                date: e.sentAt || new Date().toISOString(),
+                campaign: new Date().toLocaleDateString()
+            });
+        });
+        // Keep max 500 entries
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 500)));
+    }
+
+    function getContactedPhones() {
+        const history = getHistory();
+        const phones = new Set();
+        history.forEach(h => { if (h.status === 'sent') phones.add(h.phone); });
+        return phones;
+    }
+
+    function renderHistory() {
+        const history = getHistory();
+        const tbody = document.getElementById('history-tbody');
+        const emptyMsg = document.getElementById('empty-history');
+
+        // Update badge
+        const badge = document.getElementById('history-badge');
+        if (badge) badge.textContent = history.length;
+
+        if (history.length === 0) {
+            tbody.innerHTML = '';
+            emptyMsg.classList.remove('hidden');
+            const stats = document.getElementById('history-stats');
+            if (stats) stats.textContent = '';
+            return;
+        }
+        emptyMsg.classList.add('hidden');
+
+        // Apply filters
+        const statusFilter = (document.getElementById('history-filter-status') || {}).value || 'all';
+        const searchFilter = ((document.getElementById('history-filter-search') || {}).value || '').toLowerCase().trim();
+
+        let filtered = history;
+        if (statusFilter !== 'all') {
+            filtered = filtered.filter(h => h.status === statusFilter);
+        }
+        if (searchFilter) {
+            filtered = filtered.filter(h =>
+                (h.phone || '').toLowerCase().includes(searchFilter) ||
+                (h.business || '').toLowerCase().includes(searchFilter)
+            );
+        }
+
+        // Stats
+        const sentTotal = history.filter(h => h.status === 'sent').length;
+        const failedTotal = history.filter(h => h.status === 'failed').length;
+        const stats = document.getElementById('history-stats');
+        if (stats) stats.textContent = 'Total: ' + history.length + ' | Sent: ' + sentTotal + ' | Failed: ' + failedTotal + (filtered.length !== history.length ? ' | Showing: ' + filtered.length : '');
+
+        tbody.innerHTML = filtered.slice(0, 500).map((h, i) => {
+            const cls = h.status === 'sent' ? 'delivery-sent' : (h.status === 'failed' ? 'delivery-failed' : 'delivery-pending');
+            const d = h.date ? new Date(h.date).toLocaleString() : '--';
+            return '<tr>' +
+                '<td style="font-size: 12px; color: var(--color-text-light);">' + (i + 1) + '</td>' +
+                '<td style="font-family: monospace; font-size: 12px;">' + escapeHtml(h.phone) + '</td>' +
+                '<td>' + escapeHtml(h.business || '--') + '</td>' +
+                '<td><span class="' + cls + '">' + escapeHtml(h.status || 'unknown') + '</span></td>' +
+                '<td style="font-size: 12px; color: var(--color-text-light);">' + d + '</td>' +
+                '<td style="font-size: 12px; color: var(--color-text-light);">' + escapeHtml(h.campaign || '--') + '</td>' +
+                '</tr>';
+        }).join('');
+    }
+
+    function clearHistory() {
+        if (!confirm('Clear all message history?')) return;
+        localStorage.removeItem(HISTORY_KEY);
+        renderHistory();
+    }
+
+    // Render history on page load
+    document.addEventListener('DOMContentLoaded', renderHistory);
+
+    // =========================================================================
+    // DUPLICATE DETECTION
+    // =========================================================================
+    function markDuplicates() {
+        const contacted = getContactedPhones();
+        let dupeCount = 0;
+        recipients.forEach(r => {
+            const clean = (r.phone || '').replace(/[\s\-\+\(\)]/g, '');
+            r.isDuplicate = contacted.has(clean);
+            if (r.isDuplicate) {
+                dupeCount++;
+                // Auto-switch to follow-up template if not custom
+                if (!r.template || !r.template.startsWith('followup')) {
+                    r.template = 'followup-fr';
+                }
+            }
+        });
+        return dupeCount;
+    }
+
+    // =========================================================================
+    // SENDING ANIMATION + COMPLETION
+    // =========================================================================
+    function showSendingAnimation(show) {
+        const el = document.getElementById('sending-animation');
+        if (show) {
+            el.classList.remove('hidden');
+            el.style.display = 'flex';
+        } else {
+            el.classList.add('hidden');
+            el.style.display = 'none';
+        }
+    }
+
+    function showCompletionBanner(sent, failed, total) {
+        const banner = document.getElementById('send-complete-banner');
+        if (failed === 0) {
+            banner.style.background = 'linear-gradient(90deg, #dcfce7, #d1fae5)';
+            banner.style.color = '#166534';
+            banner.innerHTML = '&#10003; All ' + sent + '/' + total + ' messages sent successfully!';
+        } else {
+            banner.style.background = 'linear-gradient(90deg, #fef3c7, #fde68a)';
+            banner.style.color = '#92400e';
+            banner.innerHTML = '&#9888; Campaign complete: ' + sent + ' sent, ' + failed + ' failed out of ' + total;
+        }
+        banner.classList.remove('hidden');
+        banner.style.display = 'block';
+    }
+
+    // =========================================================================
+    // PATCHED: startSending with duplicates + animation + history
+    // =========================================================================
+    // Override the original startSending to add new features
+    const _originalStartSending = startSending;
+
+    // We need to patch pollBulkStatus to save history on completion
+    const _originalPollBulkStatus = pollBulkStatus;
+    </script>
+
+    <script>
+    // Patch startSending to add duplicate warnings + animation
+    (function() {
+        const origStart = startSending;
+        startSending = async function() {
+            parseRecipients();
+            if (recipients.length === 0) {
+                alert('No recipients loaded. Add phone numbers first.');
+                return;
+            }
+
+            // Duplicate detection
+            const dupeCount = markDuplicates();
+            if (dupeCount > 0) {
+                const proceed = confirm(dupeCount + ' recipient(s) were already contacted before.\n\nThey have been auto-switched to "Follow-up" template.\n\nContinue sending?');
+                if (!proceed) return;
+            }
+
+            // Re-render tables to show duplicates
+            if (currentTab === 'scraper') renderImportTable('import-preview', 'import-preview-body');
+            if (currentTab === 'csv') renderImportTable('csv-preview', 'csv-preview-body');
+
+            // Hide old banners
+            document.getElementById('send-complete-banner').classList.add('hidden');
+
+            // Show animation
+            showSendingAnimation(true);
+
+            // Call the actual send logic
+            await origStart();
+        };
+
+        // Patch pollBulkStatus to detect completion and save history
+        const origPoll = pollBulkStatus;
+        pollBulkStatus = async function() {
+            await origPoll();
+
+            // Check completion
+            const sentCount = recipients.filter(r => r.status === 'sent').length;
+            const failedCount = recipients.filter(r => r.status === 'failed').length;
+            const doneCount = sentCount + failedCount;
+
+            document.getElementById('sending-anim-text').textContent =
+                'Sending... ' + doneCount + '/' + recipients.length;
+
+            if (!isSending && doneCount > 0) {
+                showSendingAnimation(false);
+                showCompletionBanner(sentCount, failedCount, recipients.length);
+
+                // Save to history
+                const finished = recipients.filter(r => r.status === 'sent' || r.status === 'failed');
+                if (finished.length > 0) {
+                    saveToHistory(finished);
+                    renderHistory();
+                }
+            }
+        };
+    })();
+    </script>
+</body>
+</html>

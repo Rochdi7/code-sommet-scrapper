@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — CodeSommet</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- ===== SIDEBAR NAVIGATION ===== -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/webscraper" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Website Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN AREA ===== -->
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Dashboard</h2>
+                    <span class="topbar-breadcrumb">Analytics & Overview</span>
+                </div>
+                <div class="topbar-right">
+                    <a href="/" class="btn btn-primary btn-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        New Job
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Primary Stat Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                        </div>
+                        <div class="stat-card-label">Total Leads</div>
+                        <div class="stat-card-value">{{.TotalLeads}}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon info">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                        </div>
+                        <div class="stat-card-label">Total Jobs</div>
+                        <div class="stat-card-value">{{.TotalJobs}}</div>
+                    </div>
+                    <div class="stat-card stat-card-success">
+                        <div class="stat-card-icon success">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        </div>
+                        <div class="stat-card-label">Has Email</div>
+                        <div class="stat-card-value">{{.HasEmailPct}}%</div>
+                    </div>
+                    <div class="stat-card stat-card-primary">
+                        <div class="stat-card-icon primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/></svg>
+                        </div>
+                        <div class="stat-card-label">Has Phone</div>
+                        <div class="stat-card-value">{{.HasPhonePct}}%</div>
+                    </div>
+                    <div class="stat-card stat-card-warning">
+                        <div class="stat-card-icon warning">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
+                        <div class="stat-card-label">No Website</div>
+                        <div class="stat-card-value">{{.NoWebsitePct}}%</div>
+                    </div>
+                </div>
+
+                <!-- Secondary Stats -->
+                <div class="stat-cards-small">
+                    <div class="stat-card-mini">
+                        <div class="stat-card-value">{{.CompletedJobs}}</div>
+                        <div class="stat-card-label">Completed</div>
+                    </div>
+                    <div class="stat-card-mini stat-card-error">
+                        <div class="stat-card-value">{{.FailedJobs}}</div>
+                        <div class="stat-card-label">Failed</div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-card-value">{{.HasEmail}}</div>
+                        <div class="stat-card-label">Leads w/ Email</div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-card-value">{{.HasPhone}}</div>
+                        <div class="stat-card-label">Leads w/ Phone</div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-card-value">{{.NoWebsite}}</div>
+                        <div class="stat-card-label">No Website</div>
+                    </div>
+                </div>
+
+                <!-- WhatsApp Campaign Stats -->
+                <div style="margin-top: 8px; margin-bottom: 24px;">
+                    <h3 style="font-size: 15px; font-weight: 600; color: #1a1a2e; margin: 0 0 14px 0; display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp Campaigns
+                    </h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-icon" style="background: #dcfce7; color: #166534;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                            </div>
+                            <div class="stat-card-label">Messages Sent</div>
+                            <div class="stat-card-value">{{.WATotalSent}}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-icon" style="background: #dbeafe; color: #1e40af;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                            </div>
+                            <div class="stat-card-label">Total Campaigns</div>
+                            <div class="stat-card-value">{{.WATotalCampaigns}}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-icon success">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <div class="stat-card-label">Delivery Rate</div>
+                            <div class="stat-card-value">{{.WADeliveryPct}}%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-icon warning">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="stat-card-label">Sent Today</div>
+                            <div class="stat-card-value">{{.WASentToday}}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-icon" style="background: #fef3c7; color: #92400e;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                            </div>
+                            <div class="stat-card-label">Pending</div>
+                            <div class="stat-card-value">{{.WATotalPending}}</div>
+                        </div>
+                    </div>
+                    <div class="stat-cards-small" style="margin-top: 8px;">
+                        <div class="stat-card-mini" style="border-left: 3px solid #22c55e;">
+                            <div class="stat-card-value">{{.WACompletedCampaigns}}</div>
+                            <div class="stat-card-label">Completed</div>
+                        </div>
+                        <div class="stat-card-mini" style="border-left: 3px solid #f59e0b;">
+                            <div class="stat-card-value">{{.WAPausedCampaigns}}</div>
+                            <div class="stat-card-label">Paused</div>
+                        </div>
+                        <div class="stat-card-mini" style="border-left: 3px solid #3b82f6;">
+                            <div class="stat-card-value">{{.WARunningCampaigns}}</div>
+                            <div class="stat-card-label">Running</div>
+                        </div>
+                        <div class="stat-card-mini stat-card-error">
+                            <div class="stat-card-value">{{.WATotalFailed}}</div>
+                            <div class="stat-card-label">Failed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <!-- Lead Quality Funnel -->
+                    <div class="chart-section">
+                        <h3 class="chart-title">Lead Quality Funnel</h3>
+                        <div class="funnel-chart">
+                            <div class="funnel-row">
+                                <span class="funnel-label">Total Leads</span>
+                                <div class="funnel-bar-wrap">
+                                    <div class="funnel-bar funnel-bar-total" style="width:100%"></div>
+                                </div>
+                                <span class="funnel-value">{{.TotalLeads}}</span>
+                            </div>
+                            <div class="funnel-row">
+                                <span class="funnel-label">Has Phone</span>
+                                <div class="funnel-bar-wrap">
+                                    <div class="funnel-bar funnel-bar-phone" style="width:{{.HasPhonePct}}%"></div>
+                                </div>
+                                <span class="funnel-value">{{.HasPhone}}</span>
+                            </div>
+                            <div class="funnel-row">
+                                <span class="funnel-label">Has Email</span>
+                                <div class="funnel-bar-wrap">
+                                    <div class="funnel-bar funnel-bar-email" style="width:{{.HasEmailPct}}%"></div>
+                                </div>
+                                <span class="funnel-value">{{.HasEmail}}</span>
+                            </div>
+                            <div class="funnel-row">
+                                <span class="funnel-label">No Website</span>
+                                <div class="funnel-bar-wrap">
+                                    <div class="funnel-bar funnel-bar-nosite" style="width:{{.NoWebsitePct}}%"></div>
+                                </div>
+                                <span class="funnel-value">{{.NoWebsite}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leads by Country -->
+                    <div class="chart-section">
+                        <h3 class="chart-title">Leads by Country</h3>
+                        <div class="hbar-chart">
+                            {{range .LeadsByCountry}}
+                            <div class="hbar-row">
+                                <span class="hbar-label">{{.Label}}</span>
+                                <div class="hbar-bar-wrap">
+                                    <div class="hbar-bar hbar-bar-primary" style="width:{{.Pct}}%"></div>
+                                </div>
+                                <span class="hbar-value">{{.Count}}</span>
+                            </div>
+                            {{end}}
+                            {{if not .LeadsByCountry}}
+                            <p class="chart-empty">No data yet</p>
+                            {{end}}
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Queries -->
+                    <div class="chart-section">
+                        <h3 class="chart-title">Top 10 Queries by Results</h3>
+                        <div class="hbar-chart">
+                            {{range .TopQueries}}
+                            <div class="hbar-row">
+                                <span class="hbar-label">{{.Label}}</span>
+                                <div class="hbar-bar-wrap">
+                                    <div class="hbar-bar hbar-bar-success" style="width:{{.Pct}}%"></div>
+                                </div>
+                                <span class="hbar-value">{{.Count}}</span>
+                            </div>
+                            {{end}}
+                            {{if not .TopQueries}}
+                            <p class="chart-empty">No data yet</p>
+                            {{end}}
+                        </div>
+                    </div>
+
+                    <!-- Jobs Over Time -->
+                    <div class="chart-section chart-section-wide">
+                        <h3 class="chart-title">Jobs Over Time (Last 30 Days)</h3>
+                        <div class="vbar-chart">
+                            {{range .JobsOverTime}}
+                            <div class="vbar-col">
+                                <div class="vbar-bar-wrap">
+                                    <div class="vbar-bar" style="height:{{.Pct}}%"></div>
+                                </div>
+                                <span class="vbar-label">{{.Label}}</span>
+                                <span class="vbar-value">{{.Count}}</span>
+                            </div>
+                            {{end}}
+                            {{if not .JobsOverTime}}
+                            <p class="chart-empty">No data yet</p>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

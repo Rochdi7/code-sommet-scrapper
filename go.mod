@@ -4,6 +4,7 @@ go 1.26.2
 
 require (
 	github.com/PuerkitoBio/goquery v1.12.0
+	github.com/atotto/clipboard v0.1.4
 	github.com/aws/aws-lambda-go v1.48.0
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
@@ -22,6 +23,7 @@ require (
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/mattn/go-runewidth v0.0.16
 	github.com/mcnijman/go-emailaddress v1.1.1
+	github.com/micmonay/keybd_event v1.1.2
 	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/posthog/posthog-go v1.5.2
 	github.com/pquerna/otp v1.5.0
@@ -326,4 +328,4 @@ tool (
 	golang.org/x/vuln/cmd/govulncheck
 )
 
-//replace github.com/gosom/scrapemate v1.0.0 => ../scrapemate
+replace github.com/gosom/scrapemate v1.0.0 => ./scrapemate-local

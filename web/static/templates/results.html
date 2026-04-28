@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results — {{.Job.Name}} | CodeSommet</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <style>
+        .results-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .results-topbar h2 { margin: 0; font-size: 20px; }
+        .results-topbar .topbar-breadcrumb { color: var(--text-secondary); font-size: 13px; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 20px; min-width: 120px; }
+        .stat-card .stat-value { font-size: 24px; font-weight: 700; }
+        .stat-card .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .stat-hot .stat-value { color: var(--error-600); }
+        .stat-score .stat-value { color: var(--primary); }
+        .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+        .filter-bar .filter-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-right: 4px; }
+        .filter-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .filter-hot { border-color: var(--error-200); color: var(--error-600); }
+        .filter-hot.active { background: var(--error-600); border-color: var(--error-600); color: white; }
+        .export-bar { display: flex; gap: 8px; }
+        .export-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .export-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .results-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+        .results-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .results-table th { text-align: left; padding: 10px 12px; background: var(--gray-50); font-weight: 600; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .results-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+        .results-table tbody tr:hover { background: var(--gray-50); }
+        .results-table tbody tr:last-child td { border-bottom: none; }
+        .score-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; }
+        .score-A { background: #dcfce7; color: #166534; }
+        .score-B { background: #fef3c7; color: #92400e; }
+        .score-C { background: #fee2e2; color: #991b1b; }
+        .score-D { background: #f3f4f6; color: #6b7280; }
+        .no-website { display: inline-block; padding: 2px 8px; background: #fee2e2; color: #dc2626; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .rating-low { color: #dc2626; font-weight: 600; }
+        .rating-ok { color: #16a34a; font-weight: 600; }
+        .wa-icon { display: inline-block; margin-left: 6px; padding: 1px 6px; background: #22c55e; color: white; border-radius: 4px; font-size: 10px; font-weight: 700; text-decoration: none; }
+        .wa-icon:hover { background: #16a34a; }
+        .empty-results { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+        .empty-results svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4; }
+        .search-box { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; width: 220px; }
+        .search-box:focus { outline: none; border-color: var(--primary); }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .result-count { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+                    <a href="/" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Scraper</a>
+                    <a href="/webscraper" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Website Scraper</a>
+                    <a href="/countfiche" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>Count Fiche</a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Leads CRM</a>
+                    <a href="/email" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</a>
+                    <a href="/whatsapp" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>WhatsApp</a><a href="/whatsapp-desktop" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>WA Desktop</a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Schedules</a>
+                    <a href="/webhooks" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>Webhooks</a>
+                    <a href="/queue" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>Queue</a>
+                    <a href="/proxies" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>Proxy Monitor</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN ===== -->
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <a href="/" class="back-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Back to Scraper
+                    </a>
+                    <h2 class="topbar-title" style="margin-top:4px;">{{.Job.Name}}</h2>
+                    <span class="topbar-breadcrumb">Job {{.Job.ID}} &mdash; {{.Job.Date}}</span>
+                </div>
+                <div class="topbar-right export-bar">
+                    <a href="/download?id={{.Job.ID}}" download class="export-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download CSV
+                    </a>
+                    <button class="export-btn" onclick="exportJSON()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export JSON
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Stats Cards -->
+                <div class="stats-row" id="stats-row"></div>
+
+                <!-- Toolbar: filters + search -->
+                <div class="toolbar">
+                    <div class="filter-bar" id="filter-bar">
+                        <span class="filter-label">Filter:</span>
+                        <button class="filter-btn active" onclick="applyFilter('all', this)">All</button>
+                        <button class="filter-btn filter-hot" onclick="applyFilter('no-website', this)">No Website</button>
+                        <button class="filter-btn" onclick="applyFilter('low-rating', this)">Rating &lt; 4.0</button>
+                        <button class="filter-btn" onclick="applyFilter('has-email', this)">Has Email</button>
+                        <button class="filter-btn" onclick="applyFilter('has-phone', this)">Has Phone</button>
+                        <button class="filter-btn" onclick="applyFilter('top-leads', this)">Top 10</button>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <span class="result-count" id="result-count"></span>
+                        <input type="text" class="search-box" id="search-box" placeholder="Search results..." oninput="applySearch(this.value)">
+                    </div>
+                </div>
+
+                <!-- Results Table -->
+                <div class="results-table-wrap">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Score</th>
+                                <th>Business</th>
+                                <th>Category</th>
+                                <th>Phone</th>
+                                <th>Website</th>
+                                <th>Emails</th>
+                                <th>Rating</th>
+                                <th>Reviews</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-tbody">
+                            <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-secondary);">Loading results...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+var JOB_ID = '{{.Job.ID}}';
+var allResults = [];
+var filteredResults = [];
+var searchTerm = '';
+
+var HIGH_VALUE_NICHES = ['dentist','doctor','clinic','lawyer','notary','hotel','riad','real estate','immobilier','avocat','dentiste','medecin','clinique','pharmacie','cabinet','gym','spa','salon','school','auto','car dealer','assurance','insurance','architect','architecte','comptable','accountant'];
+
+function scoreLeads(data) {
+    return data.map(function(r) {
+        var score = 0, reasons = [];
+        var hasWebsite = r.website && r.website.trim() !== '';
+        var hasPhone = r.phone && r.phone.trim() !== '';
+        var hasEmail = r.emails && r.emails.trim() !== '';
+        var rating = parseFloat(r.review_rating || '0');
+        var reviews = parseInt(r.review_count || '0', 10);
+        var cat = (r.category || '').toLowerCase();
+        var site = (r.website || '').toLowerCase();
+
+        if (!hasWebsite) { score += 40; reasons.push('No website'); }
+        else if (site.indexOf('facebook.com') !== -1 || site.indexOf('fb.com') !== -1) { score += 30; reasons.push('Facebook only'); }
+        else if (rating > 0 && rating < 4.0) { score += 15; reasons.push('Low rating'); }
+        else if (reviews < 20 && reviews > 0) { score += 10; reasons.push('Low visibility'); }
+
+        if (hasPhone) { score += 5; reasons.push('Has phone'); }
+        if (hasEmail) { score += 5; reasons.push('Has email'); }
+        if (reviews < 30 && reviews > 0) { score += 10; reasons.push('Few reviews'); }
+        var isHighValue = HIGH_VALUE_NICHES.some(function(n) { return cat.indexOf(n) !== -1; });
+        if (isHighValue) { score += 15; reasons.push('High-value niche'); }
+        if (reviews > 5) { score += 5; }
+
+        score = Math.min(score, 100);
+        r._score = score;
+        r._reasons = reasons;
+        r._grade = score >= 70 ? 'A' : score >= 50 ? 'B' : score >= 30 ? 'C' : 'D';
+        return r;
+    }).sort(function(a, b) { return b._score - a._score; });
+}
+
+function renderStats() {
+    var total = allResults.length;
+    var noWeb = allResults.filter(function(r) { return !r.website || r.website.trim() === ''; }).length;
+    var hasEmail = allResults.filter(function(r) { return r.emails && r.emails.trim() !== ''; }).length;
+    var hasPhone = allResults.filter(function(r) { return r.phone && r.phone.trim() !== ''; }).length;
+    var avgScore = total ? Math.round(allResults.reduce(function(s, r) { return s + r._score; }, 0) / total) : 0;
+
+    document.getElementById('stats-row').innerHTML =
+        '<div class="stat-card"><div class="stat-value">' + total + '</div><div class="stat-label">Total Results</div></div>' +
+        '<div class="stat-card stat-hot"><div class="stat-value">' + noWeb + '</div><div class="stat-label">No Website</div></div>' +
+        '<div class="stat-card"><div class="stat-value">' + hasEmail + '</div><div class="stat-label">Has Email</div></div>' +
+        '<div class="stat-card"><div class="stat-value">' + hasPhone + '</div><div class="stat-label">Has Phone</div></div>' +
+        '<div class="stat-card stat-score"><div class="stat-value">' + avgScore + '/100</div><div class="stat-label">Avg Score</div></div>';
+}
+
+function renderTable(data) {
+    var tbody = document.getElementById('results-tbody');
+    document.getElementById('result-count').textContent = data.length + ' of ' + allResults.length + ' results';
+
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><div>No results match your filters.</div></td></tr>';
+        return;
+    }
+
+    var html = '';
+    data.forEach(function(r) {
+        var phone = (r.phone || '').trim();
+        var cleanPhone = phone.replace(/[\s\-\.]/g, '').replace('+', '');
+        var website = (r.website || '').trim();
+        var emails = (r.emails || '').trim();
+        var rating = r.review_rating ? parseFloat(r.review_rating).toFixed(1) : '-';
+        var ratingClass = parseFloat(r.review_rating || '5') < 4.0 ? 'rating-low' : 'rating-ok';
+
+        html += '<tr>';
+        html += '<td><span class="score-badge score-' + r._grade + '" title="' + (r._reasons || []).join(', ') + '">' + r._score + ' <small>' + r._grade + '</small></span></td>';
+        html += '<td style="font-weight:500;">' + escapeHtml(r.title || '') + '</td>';
+        html += '<td>' + escapeHtml(r.category || '') + '</td>';
+        html += '<td>' + (phone ? escapeHtml(phone) + (cleanPhone ? ' <a class="wa-icon" href="https://wa.me/' + cleanPhone + '" target="_blank">WA</a>' : '') : '') + '</td>';
+        html += '<td>' + (website ? '<a href="' + escapeHtml(website) + '" target="_blank" rel="noopener" style="color:var(--primary);">' + escapeHtml(website.substring(0, 35)) + '</a>' : '<span class="no-website">No Website</span>') + '</td>';
+        html += '<td>' + escapeHtml(emails.substring(0, 40)) + '</td>';
+        html += '<td><span class="' + ratingClass + '">' + rating + '</span></td>';
+        html += '<td>' + escapeHtml(r.review_count || '0') + '</td>';
+        html += '<td>' + escapeHtml((r.address || '').substring(0, 45)) + '</td>';
+        html += '</tr>';
+    });
+    tbody.innerHTML = html;
+}
+
+function applyFilter(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+
+    var f = allResults;
+    if (type === 'no-website') f = allResults.filter(function(r) { return !r.website || r.website.trim() === ''; });
+    else if (type === 'low-rating') f = allResults.filter(function(r) { return parseFloat(r.review_rating || '5') < 4.0; });
+    else if (type === 'has-email') f = allResults.filter(function(r) { return r.emails && r.emails.trim() !== ''; });
+    else if (type === 'has-phone') f = allResults.filter(function(r) { return r.phone && r.phone.trim() !== ''; });
+    else if (type === 'top-leads') f = allResults.slice(0, 10);
+
+    filteredResults = f;
+    applySearch(document.getElementById('search-box').value);
+}
+
+function applySearch(term) {
+    searchTerm = (term || '').toLowerCase();
+    var data = filteredResults.length ? filteredResults : allResults;
+    if (searchTerm) {
+        data = data.filter(function(r) {
+            return (r.title || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                   (r.category || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                   (r.phone || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                   (r.emails || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                   (r.address || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                   (r.website || '').toLowerCase().indexOf(searchTerm) !== -1;
+        });
+    }
+    renderTable(data);
+}
+
+function exportJSON() {
+    var blob = new Blob([JSON.stringify(allResults, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'results-' + JOB_ID.substring(0, 8) + '.json';
+    a.click();
+}
+
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// Load results
+fetch('/results-preview?id=' + JOB_ID)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (!data || data.length === 0) {
+            document.getElementById('results-tbody').innerHTML = '<tr><td colspan="9" class="empty-results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><div>No results found for this job.</div></td></tr>';
+            document.getElementById('result-count').textContent = '0 results';
+            return;
+        }
+        allResults = scoreLeads(data);
+        filteredResults = allResults;
+        renderStats();
+        renderTable(allResults);
+    })
+    .catch(function() {
+        document.getElementById('results-tbody').innerHTML = '<tr><td colspan="9" class="empty-results" style="color:var(--error-600);">Failed to load results.</td></tr>';
+    });
+</script>
+</body>
+</html>

@@ -1,7 +1,6 @@
 # Build stage for Playwright dependencies
 FROM ubuntu:20.04 AS playwright-deps
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
-#ENV PLAYWRIGHT_DRIVER_PATH=/opt/
 RUN export PATH=$PATH:/usr/local/go/bin:/root/go/bin \
     && apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl wget \
@@ -20,6 +19,7 @@ RUN export PATH=$PATH:/usr/local/go/bin:/root/go/bin \
 FROM golang:1.26.2-trixie AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
+COPY scrapemate-local/ ./scrapemate-local/
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o /usr/bin/google-maps-scraper
@@ -29,7 +29,7 @@ FROM debian:trixie-slim
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
 ENV PLAYWRIGHT_DRIVER_PATH=/opt
 
-# Install only the necessary dependencies in a single layer
+# Install runtime dependencies for Chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libnss3 \
@@ -51,6 +51,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango-1.0-0 \
     libcairo2 \
     libasound2 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcursor1 \
+    libgtk-3-0 \
+    libgdk-pixbuf-2.0-0 \
+    libegl1 \
+    libvulkan1 \
+    fonts-liberation \
+    xdg-utils \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

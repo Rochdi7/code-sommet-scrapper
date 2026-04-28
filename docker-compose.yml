@@ -1,0 +1,42 @@
+services:
+  scraper:
+    build: .
+    image: gmaps-scraper-custom
+    container_name: codesommet-scraper
+    ports:
+      - "8080:8080"
+    shm_size: "2gb"
+    volumes:
+      - ./gmapsdata:/gmapsdata
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=${DISPLAY:-host.docker.internal:0}
+      - PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+    command: ["-data-folder", "/gmapsdata"]
+    restart: unless-stopped
+
+  wa-bridge:
+    build: ./wa-bridge
+    container_name: codesommet-wa-bridge
+    ports:
+      - "3001:3001"
+    volumes:
+      - wa-auth:/app/data
+    environment:
+      - PORT=3001
+    restart: unless-stopped
+
+  email-bridge:
+    build: ./email-bridge
+    container_name: codesommet-email-bridge
+    ports:
+      - "3002:3002"
+    volumes:
+      - email-config:/app/data
+    environment:
+      - PORT=3002
+    restart: unless-stopped
+
+volumes:
+  wa-auth:
+  email-config:

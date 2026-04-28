@@ -13,6 +13,10 @@ const (
 	StatusWorking = "working"
 	StatusOK      = "ok"
 	StatusFailed  = "failed"
+
+	JobTypeMaps       = "maps"
+	JobTypeWebScraper = "webscraper"
+	JobTypeCountFiche = "countfiche"
 )
 
 type SelectParams struct {
@@ -61,22 +65,35 @@ func (j *Job) Validate() error {
 }
 
 type JobData struct {
-	Keywords []string      `json:"keywords"`
-	Lang     string        `json:"lang"`
-	Zoom     int           `json:"zoom"`
-	Lat      string        `json:"lat"`
-	Lon      string        `json:"lon"`
-	FastMode bool          `json:"fast_mode"`
-	Radius   int           `json:"radius"`
-	Depth    int           `json:"depth"`
-	Email    bool          `json:"email"`
-	MaxTime  time.Duration `json:"max_time"`
-	Proxies  []string      `json:"proxies"`
+	JobType    string        `json:"job_type"`
+	Keywords   []string      `json:"keywords"`
+	Lang       string        `json:"lang"`
+	Zoom       int           `json:"zoom"`
+	Lat        string        `json:"lat"`
+	Lon        string        `json:"lon"`
+	FastMode   bool          `json:"fast_mode"`
+	Radius     int           `json:"radius"`
+	Depth      int           `json:"depth"`
+	Email      bool          `json:"email"`
+	MaxTime    time.Duration `json:"max_time"`
+	Proxies    []string      `json:"proxies"`
+	Country    string        `json:"country"`
+	MaxResults int           `json:"max_results"`
+	Live       bool          `json:"live"`
 }
 
 func (d *JobData) Validate() error {
 	if len(d.Keywords) == 0 {
 		return errors.New("missing keywords")
+	}
+
+	if d.MaxTime == 0 {
+		return errors.New("missing max time")
+	}
+
+	// Webscraper and countfiche jobs have relaxed validation
+	if d.JobType == JobTypeWebScraper || d.JobType == JobTypeCountFiche {
+		return nil
 	}
 
 	if d.Lang == "" {
@@ -89,10 +106,6 @@ func (d *JobData) Validate() error {
 
 	if d.Depth == 0 {
 		return errors.New("missing depth")
-	}
-
-	if d.MaxTime == 0 {
-		return errors.New("missing max time")
 	}
 
 	if d.FastMode && (d.Lat == "" || d.Lon == "") {

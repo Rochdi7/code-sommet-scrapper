@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Scraper - CodeSommet</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.6/htmx.min.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/webscraper" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Website Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <div class="main-area">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Website Scraper</h2>
+                    <span class="topbar-breadcrumb">Search Google &amp; extract contact details from websites</span>
+                </div>
+                <div class="topbar-right">
+                    <button type="button" class="topbar-btn" onclick="openWsModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        New Scrape
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-area">
+                <div id="ws-error" class="error-message"></div>
+
+                <!-- Stats Cards -->
+                <div class="ws-stats-row">
+                    <div class="ws-stat-card">
+                        <div class="ws-stat-number" id="stat-total">{{.Stats.Total}}</div>
+                        <div class="ws-stat-label">Total Results</div>
+                    </div>
+                    <div class="ws-stat-card ws-stat-email">
+                        <div class="ws-stat-number" id="stat-email">{{.Stats.WithEmail}}</div>
+                        <div class="ws-stat-label">With Email</div>
+                    </div>
+                    <div class="ws-stat-card ws-stat-phone">
+                        <div class="ws-stat-number" id="stat-phone">{{.Stats.WithPhone}}</div>
+                        <div class="ws-stat-label">With Phone</div>
+                    </div>
+                    <div class="ws-stat-card ws-stat-jobs">
+                        <div class="ws-stat-number">{{len .Jobs}}</div>
+                        <div class="ws-stat-label">Total Jobs</div>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="ws-filter-bar">
+                    <div class="ws-filter-left">
+                        <button class="filter-btn {{if eq .Filter ""}}active{{end}}" onclick="wsFilter('')">All</button>
+                        <button class="filter-btn {{if eq .Filter "has-email"}}active{{end}}" onclick="wsFilter('has-email')">Has Email</button>
+                        <button class="filter-btn {{if eq .Filter "has-phone"}}active{{end}}" onclick="wsFilter('has-phone')">Has Phone</button>
+                    </div>
+                    <div class="ws-filter-right">
+                        <select id="ws-job-filter" onchange="wsFilterByJob(this.value)">
+                            <option value="">All Jobs</option>
+                            {{range .Jobs}}
+                            <option value="{{.ID}}" {{if eq $.JobID .ID}}selected{{end}}>{{.Name}} ({{.Status}})</option>
+                            {{end}}
+                        </select>
+                        <div class="table-search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            <input type="text" placeholder="Search results..." id="ws-search" value="{{.Search}}" onkeydown="if(event.key==='Enter') wsSearch(this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jobs Table (collapsible) -->
+                <details class="ws-jobs-section">
+                    <summary class="ws-jobs-toggle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        Scraping Jobs ({{len .Jobs}})
+                    </summary>
+                    <div class="ws-jobs-table-wrap">
+                        <table class="ws-jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Queries</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ws-jobs-body">
+                                {{range .Jobs}}
+                                <tr>
+                                    <td>{{.Name}}</td>
+                                    <td>{{len .Data.Keywords}} queries</td>
+                                    <td>
+                                        <span class="status-badge status-{{.Status}}">{{.Status}}</span>
+                                    </td>
+                                    <td>{{formatDate .Date}}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary" onclick="wsFilterByJob('{{.ID}}')">View Results</button>
+                                        {{if eq .Status "ok"}}
+                                        <a href="/webscraper/download?job_id={{.ID}}" class="btn btn-sm btn-secondary">CSV</a>
+                                        {{end}}
+                                    </td>
+                                </tr>
+                                {{end}}
+                                {{if not .Jobs}}
+                                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">No website scraper jobs yet. Create one to get started.</td></tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+
+                <!-- Results Table -->
+                <div class="table-wrapper">
+                    <div class="table-toolbar">
+                        <h3 style="margin:0;font-size:15px;font-weight:600;">
+                            Results
+                            <span class="count-badge" id="results-count">{{len .Results}}</span>
+                        </h3>
+                        <button class="btn btn-sm btn-secondary" onclick="wsExportCSV()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export CSV
+                        </button>
+                    </div>
+                    <table id="ws-results-table">
+                        <thead>
+                            <tr>
+                                <th style="width:200px;">Title</th>
+                                <th style="width:200px;">URL</th>
+                                <th>Emails</th>
+                                <th>Phones</th>
+                                <th>Socials</th>
+                                <th>Query</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ws-results-body">
+                            {{range .Results}}
+                            <tr>
+                                <td class="ws-cell-title" title="{{.Title}}">{{truncate .Title 40}}</td>
+                                <td class="ws-cell-url"><a href="{{.URL}}" target="_blank" rel="noopener">{{truncate .URL 35}}</a></td>
+                                <td class="ws-cell-email">
+                                    {{if .Emails}}
+                                    <span class="ws-tag ws-tag-email">{{.Emails}}</span>
+                                    {{else}}
+                                    <span class="ws-tag ws-tag-none">-</span>
+                                    {{end}}
+                                </td>
+                                <td class="ws-cell-phone">
+                                    {{if .Phones}}
+                                    <span class="ws-tag ws-tag-phone">{{.Phones}}</span>
+                                    {{else}}
+                                    <span class="ws-tag ws-tag-none">-</span>
+                                    {{end}}
+                                </td>
+                                <td class="ws-cell-social">
+                                    {{if .Socials}}
+                                    <span class="ws-tag ws-tag-social" title="{{.Socials}}">{{truncate .Socials 30}}</span>
+                                    {{else}}
+                                    <span class="ws-tag ws-tag-none">-</span>
+                                    {{end}}
+                                </td>
+                                <td class="ws-cell-query">{{.SearchQuery}}</td>
+                            </tr>
+                            {{end}}
+                            {{if not .Results}}
+                            <tr id="ws-empty-row"><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3;display:block;margin:0 auto 12px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                No results yet. Create a scraping job to start extracting website contacts.
+                            </td></tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW SCRAPE MODAL -->
+    <div id="ws-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:560px;">
+            <div class="modal-header">
+                <h3>New Website Scrape</h3>
+                <button class="modal-close" onclick="closeWsModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <form id="ws-form"
+                hx-post="/webscraper/scrape"
+                hx-swap="none"
+                hx-indicator="#ws-modal-spinner"
+                hx-on::before-request="document.getElementById('ws-modal-error').textContent = ''"
+                hx-on::after-request="if(event.detail.successful){closeWsModal();window.location.reload();}else{document.getElementById('ws-modal-error').textContent=event.detail.xhr.responseText||'An error occurred';}"
+            >
+                <div class="modal-body">
+                    <div id="ws-modal-error" class="error-message" style="margin-bottom:12px;"></div>
+
+                    <div class="form-group">
+                        <label>Job Name</label>
+                        <input type="text" name="name" placeholder="e.g. Plumbers in London" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Search Queries or URLs <span style="color:var(--text-muted);font-weight:400;">(one per line)</span></label>
+                        <textarea name="keywords" rows="5" placeholder="plumbers in London&#10;https://codesommet.com&#10;web design agency Paris&#10;https://example.com" required></textarea>
+                        <small style="color:var(--text-muted);font-size:11px;">Enter Google search queries or direct website URLs (starting with http:// or https://)</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label>Max Results per Query</label>
+                            <input type="number" name="maxresults" value="10" min="1" max="100">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Language</label>
+                            <select name="lang">
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="es">Spanish</option>
+                                <option value="ar">Arabic</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="it">Italian</option>
+                                <option value="nl">Dutch</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Max Time</label>
+                            <select name="maxtime">
+                                <option value="3m">3 minutes</option>
+                                <option value="5m" selected>5 minutes</option>
+                                <option value="10m">10 minutes</option>
+                                <option value="15m">15 minutes</option>
+                                <option value="30m">30 minutes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <details style="margin-top:8px;">
+                        <summary style="cursor:pointer;font-size:13px;color:var(--text-muted);">Advanced: Proxies</summary>
+                        <div class="form-group" style="margin-top:8px;">
+                            <textarea name="proxies" rows="3" placeholder="http://user:pass@host:port&#10;socks5://host:port"></textarea>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeWsModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span id="ws-modal-spinner" class="htmx-indicator" style="display:none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" class="spin"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="40 20"/></svg>
+                        </span>
+                        Start Scraping
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function openWsModal() {
+        document.getElementById('ws-modal').style.display = 'flex';
+    }
+    function closeWsModal() {
+        document.getElementById('ws-modal').style.display = 'none';
+        document.getElementById('ws-form').reset();
+        document.getElementById('ws-modal-error').textContent = '';
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('ws-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeWsModal();
+    });
+
+    function wsFilter(filter) {
+        const params = new URLSearchParams(window.location.search);
+        if (filter) {
+            params.set('filter', filter);
+        } else {
+            params.delete('filter');
+        }
+        window.location.href = '/webscraper?' + params.toString();
+    }
+
+    function wsFilterByJob(jobID) {
+        const params = new URLSearchParams(window.location.search);
+        if (jobID) {
+            params.set('job_id', jobID);
+        } else {
+            params.delete('job_id');
+        }
+        window.location.href = '/webscraper?' + params.toString();
+    }
+
+    function wsSearch(value) {
+        const params = new URLSearchParams(window.location.search);
+        if (value) {
+            params.set('search', value);
+        } else {
+            params.delete('search');
+        }
+        window.location.href = '/webscraper?' + params.toString();
+    }
+
+    function wsExportCSV() {
+        const params = new URLSearchParams(window.location.search);
+        window.location.href = '/webscraper/download?' + params.toString();
+    }
+
+    // Auto-refresh if any jobs are pending or working
+    (function autoRefresh() {
+        const statuses = document.querySelectorAll('.status-badge');
+        let hasActive = false;
+        statuses.forEach(function(el) {
+            const text = el.textContent.trim();
+            if (text === 'pending' || text === 'working') {
+                hasActive = true;
+            }
+        });
+        if (hasActive) {
+            setTimeout(function() { window.location.reload(); }, 5000);
+        }
+    })();
+    </script>
+</body>
+</html>
