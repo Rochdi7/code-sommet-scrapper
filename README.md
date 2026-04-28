@@ -1,68 +1,117 @@
-# CodeSommet Lead Scraper
+<div align="center">
 
-**A full lead-generation platform** - scrape business data from Google Maps, then reach out via WhatsApp and Email, all from one interface.
+# 🚀 CodeSommet Lead Scraper
+
+### **The all-in-one lead generation suite**
+Scrape Google Maps. Reach out via WhatsApp & Email. Close more deals.
+
+<br />
+
+![Go](https://img.shields.io/badge/Go-1.25.6+-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
+
+<br />
 
 ![Example GIF](img/example.gif)
 
+</div>
+
 ---
 
-## Platform Features
+## ✨ Why CodeSommet?
+
+> **One platform. Three weapons.** Find leads on Google Maps, message them on WhatsApp, follow up by Email — all from a single dashboard.
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 🗺️
+**Google Maps Scraper**
+<br />
+Extract **35+ data points** including phone, email, website, reviews, and GPS coordinates.
+
+</td>
+<td width="33%" align="center">
+
+### 💬
+**WhatsApp Sender**
+<br />
+Bulk outreach with **15 templates** in FR / Darija / EN, smart delays, and duplicate detection.
+
+</td>
+<td width="33%" align="center">
+
+### 📧
+**Email Campaigns**
+<br />
+SMTP-powered email sender with templates and full leads CRM integration.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🎯 Platform Features
 
 | | |
 |---|---|
-| **Google Maps Scraper** | Extract 35+ data points: phone, email, website, reviews, coordinates |
-| **WhatsApp Sender** | Bulk WhatsApp outreach with 15 templates (FR/Darija/EN), per-contact customization, delay settings, duplicate detection, message history |
-| **Email Sender** | Email campaigns with SMTP integration |
-| **Leads CRM** | View, filter, search, and manage scraped leads |
-| **Dashboard** | Analytics and overview stats |
-| **Import/Export** | Import from scraper results or CSV, export with pre-filled message column |
-| **Anti-Spam** | Configurable delay (30-90s default), duplicate detection, follow-up templates for already-contacted clients |
-| **Proxy Support** | Built-in SOCKS5/HTTP/HTTPS proxy rotation |
+| 🗺️ **Google Maps Scraper** | Extract 35+ data points: phone, email, website, reviews, coordinates |
+| 💬 **WhatsApp Sender** | Bulk outreach · 15 templates (FR/Darija/EN) · per-contact customization · delays · duplicate detection |
+| 📧 **Email Sender** | Email campaigns with SMTP integration |
+| 👥 **Leads CRM** | View, filter, search, and manage scraped leads |
+| 📊 **Dashboard** | Real-time analytics and overview stats |
+| 🔁 **Import / Export** | Pull from scraper results or CSV · export with pre-filled message column |
+| 🛡️ **Anti-Spam** | Configurable delays (30–90s) · duplicate detection · smart follow-up templates |
+| 🌐 **Proxy Support** | Built-in SOCKS5 / HTTP / HTTPS rotation |
 
 ---
 
-## Table of Contents
+## 📑 Table of Contents
 
-- [Quick Start](#quick-start)
-- [Pages & URLs](#pages--urls)
-- [WhatsApp Sender](#whatsapp-sender)
-- [Installation](#installation)
-- [Features](#features)
-- [Extracted Data Points](#extracted-data-points)
-- [Configuration](#configuration)
-- [REST API](#rest-api)
-- [Developer Guide](#developer-guide)
-- [Performance](#performance)
-- [License](#license)
+- [⚡ Quick Start](#-quick-start)
+- [🧭 Pages & URLs](#-pages--urls)
+- [💬 WhatsApp Sender](#-whatsapp-sender)
+- [📦 Installation](#-installation)
+- [🧰 Features](#-features)
+- [📊 Extracted Data Points](#-extracted-data-points)
+- [⚙️ Configuration](#-configuration)
+- [🌐 REST API](#-rest-api)
+- [🛠️ Developer Guide](#-developer-guide)
+- [📈 Performance](#-performance)
+- [📜 License](#-license)
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
-### docker-compose (Recommended)
+### 🐳 docker-compose (Recommended)
 
-Starts all 3 services (scraper + WhatsApp + Email):
+Spin up **all 3 services** (scraper + WhatsApp + Email) with one command:
 
 ```bash
 cd C:\Users\ASUS\Desktop\Projects\google-maps-scraper
 docker compose up -d
 ```
 
-Then open http://localhost:8080
+➡️ Open **http://localhost:8080**
 
-### Rebuild after code changes
+### 🔄 Rebuild after code changes
 
 ```bash
 docker compose up -d --build
 ```
 
-### Single container (scraper only)
+### 📦 Single container (scraper only)
 
 ```bash
 mkdir -p gmapsdata && docker run -v $PWD/gmapsdata:/gmapsdata -p 8080:8080 gosom/google-maps-scraper -data-folder /gmapsdata
 ```
 
-### Command Line (no UI)
+### 🖥️ Command Line (no UI)
 
 ```bash
 touch results.csv && docker run \
@@ -77,94 +126,100 @@ touch results.csv && docker run \
 
 ---
 
-## Pages & URLs
+## 🧭 Pages & URLs
 
-| URL | Page | Description |
+| 🌐 URL | 📄 Page | 📝 Description |
 |-----|------|-------------|
-| http://localhost:8080 | Scraper | Create scrape jobs, view results |
-| http://localhost:8080/dashboard | Dashboard | Analytics overview |
-| http://localhost:8080/leads | Leads CRM | Filter, search, manage leads |
-| http://localhost:8080/whatsapp | WhatsApp Sender | Bulk messaging with templates |
-| http://localhost:8080/email | Email Sender | Email campaigns |
-| http://localhost:8080/schedules | Schedules | Recurring scrape jobs |
-| http://localhost:8080/proxies | Proxy Monitor | Manage proxy rotation |
-| http://localhost:8080/webhooks | Webhooks | External integrations |
-| http://localhost:8080/api/docs | API Docs | OpenAPI documentation |
+| `localhost:8080` | **Scraper** | Create scrape jobs, view results |
+| `localhost:8080/dashboard` | **Dashboard** | Analytics overview |
+| `localhost:8080/leads` | **Leads CRM** | Filter, search, manage leads |
+| `localhost:8080/whatsapp` | **WhatsApp Sender** | Bulk messaging with templates |
+| `localhost:8080/email` | **Email Sender** | Email campaigns |
+| `localhost:8080/schedules` | **Schedules** | Recurring scrape jobs |
+| `localhost:8080/proxies` | **Proxy Monitor** | Manage proxy rotation |
+| `localhost:8080/webhooks` | **Webhooks** | External integrations |
+| `localhost:8080/api/docs` | **API Docs** | OpenAPI documentation |
 
 ---
 
-## WhatsApp Sender
+## 💬 WhatsApp Sender
 
-### Templates (15 templates, 3 languages each)
-- **No Website** (FR/Darija/EN) - "We build websites that get you clients"
-- **Has Website - Redesign+SEO** (FR/Darija/EN) - "Your site is not optimized"
-- **E-commerce** (FR/Darija/EN) - "+40% sales in 3 months"
-- **Social Media** (FR/Darija/EN) - "Instagram/Facebook presence"
-- **Follow-up** (FR/Darija/EN) - Polite relance for already-contacted clients
+### 📚 15 Templates × 3 Languages
 
-### Smart Features
-- **Auto-detect template** based on whether business has a website
-- **Per-row template override** in the import table
-- **Duplicate detection** - flags already-contacted numbers, auto-switches to follow-up template
-- **Configurable delay** between messages (default 30-90 seconds)
-- **Message history** with filters (status, search) - persists in browser
+| Template | FR | Darija | EN |
+|----------|:--:|:------:|:--:|
+| 🌐 **No Website** | ✅ | ✅ | ✅ |
+| 🎨 **Has Website — Redesign + SEO** | ✅ | ✅ | ✅ |
+| 🛒 **E-commerce** | ✅ | ✅ | ✅ |
+| 📱 **Social Media** | ✅ | ✅ | ✅ |
+| 🔁 **Follow-up** | ✅ | ✅ | ✅ |
 
-### Import Recipients
-- From completed scrape jobs (dropdown)
-- From CSV file (must have `phone` column)
-- Manual phone list
+### 🧠 Smart Features
+
+- 🤖 **Auto-detect template** based on whether the business has a website
+- ✏️ **Per-row template override** in the import table
+- 🚫 **Duplicate detection** — flags already-contacted numbers, auto-switches to follow-up
+- ⏱️ **Configurable delay** between messages (default: 30–90s)
+- 📜 **Message history** with filters (status, search) — persisted in browser
+
+### 📥 Import Recipients
+
+- ✅ From completed scrape jobs (dropdown)
+- ✅ From CSV file (must contain a `phone` column)
+- ✅ Manual phone list
 
 ---
 
-## REST API
+## 🌐 REST API
 
-### Scraper API (port 8080)
+### 🗺️ Scraper API — `:8080`
 
 | Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v1/jobs` | POST | Create a new scraping job |
-| `/api/v1/jobs` | GET | List all jobs |
-| `/api/v1/jobs/{id}` | GET | Get job details |
-| `/api/v1/jobs/{id}` | DELETE | Delete a job |
-| `/api/v1/jobs/{id}/download` | GET | Download results as CSV |
-| `/results-preview?id={id}` | GET | CSV data as JSON array |
+|----------|:------:|-------------|
+| `/api/v1/jobs` | `POST` | Create a new scraping job |
+| `/api/v1/jobs` | `GET` | List all jobs |
+| `/api/v1/jobs/{id}` | `GET` | Get job details |
+| `/api/v1/jobs/{id}` | `DELETE` | Delete a job |
+| `/api/v1/jobs/{id}/download` | `GET` | Download results as CSV |
+| `/results-preview?id={id}` | `GET` | CSV data as JSON array |
 
-### WhatsApp Bridge API (port 3001)
+### 💬 WhatsApp Bridge API — `:3001`
 
 | Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/qr` | GET | QR code for authentication |
-| `/status` | GET | Connection status |
-| `/send` | POST | Send single message |
-| `/bulk-send` | POST | Bulk send with configurable delay |
-| `/bulk-status` | GET | Bulk send progress |
-| `/bulk-stop` | POST | Abort bulk send |
+|----------|:------:|-------------|
+| `/qr` | `GET` | QR code for authentication |
+| `/status` | `GET` | Connection status |
+| `/send` | `POST` | Send single message |
+| `/bulk-send` | `POST` | Bulk send with configurable delay |
+| `/bulk-status` | `GET` | Bulk send progress |
+| `/bulk-stop` | `POST` | Abort bulk send |
 
-Full OpenAPI 3.0.3 documentation available at http://localhost:8080/api/docs
-
----
-
-## Developer Guide
-
-See [DEV-GUIDE.md](DEV-GUIDE.md) for:
-- Full project file structure with descriptions
-- How to make UI changes (which file to edit for what)
-- How to add new form fields
-- All CLI flags
-- Troubleshooting guide
+📖 **Full OpenAPI 3.0.3 docs** → http://localhost:8080/api/docs
 
 ---
 
-## Installation
+## 🛠️ Developer Guide
 
-### Using Docker (Recommended)
+See **[DEV-GUIDE.md](DEV-GUIDE.md)** for:
 
-Two Docker image variants are available:
+- 🗂️ Full project file structure with descriptions
+- 🎨 How to make UI changes (which file to edit for what)
+- ➕ How to add new form fields
+- 🏷️ All CLI flags
+- 🐛 Troubleshooting guide
+
+---
+
+## 📦 Installation
+
+### 🐳 Using Docker (Recommended)
+
+Two image variants are available:
 
 | Image | Tag | Browser Engine | Best For |
 |-------|-----|----------------|----------|
-| Playwright (default) | `latest`, `vX.X.X` | Playwright | Most users, better stability |
-| Rod | `latest-rod`, `vX.X.X-rod` | Rod/Chromium | Lightweight, faster startup |
+| 🎭 **Playwright** *(default)* | `latest`, `vX.X.X` | Playwright | Most users, better stability |
+| ⚡ **Rod** | `latest-rod`, `vX.X.X-rod` | Rod / Chromium | Lightweight, faster startup |
 
 ```bash
 # Playwright version (default)
@@ -174,9 +229,9 @@ docker pull gosom/google-maps-scraper
 docker pull gosom/google-maps-scraper:latest-rod
 ```
 
-### Build from Source
+### 🔨 Build from Source
 
-Requirements: Go 1.25.6+
+> **Requirements:** Go `1.25.6+`
 
 ```bash
 git clone https://github.com/gosom/google-maps-scraper.git
@@ -192,30 +247,32 @@ go build -tags rod
 ./google-maps-scraper -input example-queries.txt -results results.csv -exit-on-inactivity 3m
 ```
 
-> First run downloads required browser libraries (Playwright or Chromium depending on version).
+> 💡 First run downloads required browser libraries (Playwright or Chromium).
 
 ---
 
-## Features
+## 🧰 Features
 
 | Feature | Description |
 |---------|-------------|
-| **33+ Data Points** | Business name, address, phone, website, reviews, coordinates, and more |
-| **Email Extraction** | Optional crawling of business websites for email addresses |
-| **Multiple Output Formats** | CSV, JSON, PostgreSQL, S3, or custom plugins |
-| **Proxy Support** | SOCKS5, HTTP, HTTPS with authentication |
-| **Scalable Architecture** | Single machine to Kubernetes cluster |
-| **REST API** | Programmatic control for automation |
-| **Web UI** | User-friendly browser interface |
-| **Fast Mode (Beta)** | Quick extraction of up to 21 results per query |
-| **AWS Lambda** | Serverless execution support (experimental) |
+| 📊 **33+ Data Points** | Business name, address, phone, website, reviews, coordinates, and more |
+| 📧 **Email Extraction** | Optional crawling of business websites for email addresses |
+| 📁 **Multiple Output Formats** | CSV, JSON, PostgreSQL, S3, or custom plugins |
+| 🌐 **Proxy Support** | SOCKS5, HTTP, HTTPS with authentication |
+| 🚀 **Scalable Architecture** | Single machine to Kubernetes cluster |
+| 🔌 **REST API** | Programmatic control for automation |
+| 🖥️ **Web UI** | User-friendly browser interface |
+| ⚡ **Fast Mode** *(Beta)* | Quick extraction of up to 21 results per query |
+| ☁️ **AWS Lambda** | Serverless execution support *(experimental)* |
 
 ---
 
-## Extracted Data Points
+## 📊 Extracted Data Points
 
 <details>
-<summary><strong>Click to expand all 33 data points</strong></summary>
+<summary><b>🔍 Click to expand all 34 data points</b></summary>
+
+<br />
 
 | # | Field | Description |
 |---|-------|-------------|
@@ -235,7 +292,7 @@ go build -tags rod
 | 14 | `latitude` | GPS latitude |
 | 15 | `longitude` | GPS longitude |
 | 16 | `cid` | Unique Customer ID |
-| 17 | `status` | Business status (open/closed/temporary) |
+| 17 | `status` | Business status (open / closed / temporary) |
 | 18 | `descriptions` | Business description |
 | 19 | `reviews_link` | Direct link to reviews |
 | 20 | `thumbnail` | Thumbnail image URL |
@@ -250,60 +307,60 @@ go build -tags rod
 | 29 | `complete_address` | Full formatted address |
 | 30 | `about` | Additional business info |
 | 31 | `user_reviews` | Customer reviews (text, rating, timestamp) |
-| 32 | `emails` | Extracted email addresses (requires `-email` flag) |
-| 33 | `user_reviews_extended` | Extended reviews up to ~300 (requires `-extra-reviews`) |
+| 32 | `emails` | Extracted emails *(requires `-email`)* |
+| 33 | `user_reviews_extended` | Extended reviews up to ~300 *(requires `-extra-reviews`)* |
 | 34 | `place_id` | Unique place id |
 
 </details>
 
-**Custom Input IDs:** Define your own IDs in the input file:
-```
-Matsuhisa Athens #!#MyCustomID
-```
+> **🏷️ Custom Input IDs** — Define your own IDs in the input file:
+> ```
+> Matsuhisa Athens #!#MyCustomID
+> ```
 
 ---
 
-## Configuration
+## ⚙️ Configuration
 
-### Command Line Options
+### 🏷️ Command Line Options
 
-```
+```text
 Usage: codesommet-scrapper [options]
 
 Core Options:
   -input string       Path to input file with queries (one per line)
   -results string     Output file path (default: stdout)
-  -json              Output JSON instead of CSV
-  -depth int         Max scroll depth in results (default: 10)
-  -c int             Concurrency level (default: half of CPU cores)
+  -json               Output JSON instead of CSV
+  -depth int          Max scroll depth in results (default: 10)
+  -c int              Concurrency level (default: half of CPU cores)
 
 Email & Reviews:
-  -email             Extract emails from business websites
-  -extra-reviews     Collect extended reviews (up to ~300)
+  -email              Extract emails from business websites
+  -extra-reviews      Collect extended reviews (up to ~300)
 
 Location Settings:
-  -lang string       Language code, e.g., 'de' for German (default: "en")
-  -geo string        Coordinates for search, e.g., '37.7749,-122.4194'
-  -zoom int          Zoom level 0-21 (default: 15)
-  -radius float      Search radius in meters (default: 10000)
-  -grid-bbox string  Bounding box for grid scraping, format: "minLat,minLon,maxLat,maxLon"
-  -grid-cell float   Grid cell size in km (default: 1.0, used with -grid-bbox)
+  -lang string        Language code, e.g. 'de' (default: "en")
+  -geo string         Coordinates, e.g. '37.7749,-122.4194'
+  -zoom int           Zoom level 0-21 (default: 15)
+  -radius float       Search radius in meters (default: 10000)
+  -grid-bbox string   Bounding box "minLat,minLon,maxLat,maxLon"
+  -grid-cell float    Grid cell size in km (default: 1.0)
 
 Web Server:
-  -web               Run web server mode
-  -addr string       Server address (default: ":8080")
-  -data-folder       Data folder for web runner (default: "webdata")
+  -web                Run web server mode
+  -addr string        Server address (default: ":8080")
+  -data-folder        Data folder for web runner (default: "webdata")
 
 Database:
-  -dsn string        PostgreSQL connection string
-  -produce           Produce seed jobs only (requires -dsn)
+  -dsn string         PostgreSQL connection string
+  -produce            Produce seed jobs only (requires -dsn)
 
 Proxy:
-  -proxies string    Comma-separated proxy list
-                     Format: protocol://user:pass@host:port
+  -proxies string     Comma-separated proxy list
+                      Format: protocol://user:pass@host:port
 
 Advanced:
-  -exit-on-inactivity duration    Exit after inactivity (e.g., '5m')
+  -exit-on-inactivity duration    Exit after inactivity (e.g. '5m')
   -fast-mode                      Quick mode with reduced data
   -debug                          Show browser window
   -writer string                  Custom writer plugin (format: 'dir:pluginName')
@@ -313,11 +370,11 @@ Notes:
   -fast-mode cannot be used together with -grid-bbox
 ```
 
-Run `./codesommet-scrapper -h` for the complete list.
+> Run `./codesommet-scrapper -h` for the complete list.
 
-### Using Proxies
+### 🌐 Using Proxies
 
-For larger scraping jobs, proxies help avoid rate limiting. Here's how to configure them:
+For larger scraping jobs, proxies help avoid rate limiting:
 
 ```bash
 ./codesommet-scrapper \
@@ -327,21 +384,21 @@ For larger scraping jobs, proxies help avoid rate limiting. Here's how to config
   -depth 1 -c 2
 ```
 
-**Supported protocols:** `socks5`, `socks5h`, `http`, `https`
+✅ **Supported protocols:** `socks5` · `socks5h` · `http` · `https`
 
-### Email Extraction
+### 📧 Email Extraction
 
-Email extraction is **disabled by default**. When enabled, the scrapper visits each business website to find email addresses.
+Email extraction is **disabled by default**. When enabled, the scraper visits each business website to find email addresses.
 
 ```bash
 ./codesommet-scrapper -input queries.txt -results results.csv -email
 ```
 
-> **Note:** Email extraction increases processing time significantly.
+> ⚠️ Email extraction increases processing time significantly.
 
-### Fast Mode
+### ⚡ Fast Mode
 
-Fast mode returns up to 21 results per query, ordered by distance. Useful for quick data collection with basic fields.
+Fast mode returns up to **21 results per query**, ordered by distance — perfect for quick data collection.
 
 ```bash
 ./codesommet-scrapper \
@@ -353,20 +410,18 @@ Fast mode returns up to 21 results per query, ordered by distance. Useful for qu
   -geo '37.7749,-122.4194'
 ```
 
-> **Warning:** Fast mode is in Beta. You may experience blocking.
+> 🚧 Fast mode is in **Beta**. You may experience blocking.
 
-### Grid Scraping (BBox)
+### 🗺️ Grid Scraping (BBox)
 
-Grid mode splits a bounding box into cells and runs one search per cell. This is useful when a single search does not return enough places.
+Grid mode splits a bounding box into cells and runs one search per cell — useful when a single search doesn't return enough places.
 
-`queries.txt` example:
-
+**`queries.txt`:**
 ```text
 cafes in Peristeri, Greece
 ```
 
-Command example:
-
+**Command:**
 ```bash
 ./codesommet-scrapper \
   -input queries.txt \
@@ -378,24 +433,24 @@ Command example:
   -c 4
 ```
 
-Notes:
-- `-grid-bbox` guides where searches are launched from, but results are not strictly clipped to the box.
-- For strict distance filtering, use `-fast-mode` with `-geo` + `-radius` (or post-filter by latitude/longitude).
+> 💡 **Notes:**
+> - `-grid-bbox` guides where searches launch from, but results aren't strictly clipped to the box.
+> - For strict distance filtering, use `-fast-mode` with `-geo` + `-radius` (or post-filter by lat/lon).
 
 ---
 
-## Advanced Usage
+## 🚀 Advanced Usage
 
-### PostgreSQL Database Provider
+### 🐘 PostgreSQL Database Provider
 
 For distributed scraping across multiple machines:
 
-**1. Start PostgreSQL:**
+**1️⃣ Start PostgreSQL:**
 ```bash
 docker-compose -f docker-compose.dev.yaml up -d
 ```
 
-**2. Seed the jobs:**
+**2️⃣ Seed the jobs:**
 ```bash
 ./codesommet-scrapper \
   -dsn "postgres://postgres:postgres@localhost:5432/postgres" \
@@ -404,7 +459,7 @@ docker-compose -f docker-compose.dev.yaml up -d
   -lang en
 ```
 
-**3. Run scrapers (on multiple machines):**
+**3️⃣ Run scrapers (across machines):**
 ```bash
 ./codesommet-scrapper \
   -c 2 \
@@ -412,7 +467,7 @@ docker-compose -f docker-compose.dev.yaml up -d
   -dsn "postgres://postgres:postgres@localhost:5432/postgres"
 ```
 
-### Kubernetes Deployment
+### ☸️ Kubernetes Deployment
 
 ```yaml
 apiVersion: apps/v1
@@ -439,65 +494,74 @@ spec:
             cpu: "500m"
 ```
 
-> **Note:** The headless browser requires significant CPU/memory resources.
+> ⚠️ The headless browser requires significant CPU & memory.
 
-### Custom Writer Plugins
+### 🔌 Custom Writer Plugins
 
 Create custom output handlers using Go plugins:
 
-**1. Write the plugin** (see `examples/plugins/example_writer.go`)
+**1️⃣ Write the plugin** *(see `examples/plugins/example_writer.go`)*
 
-**2. Build:**
+**2️⃣ Build:**
 ```bash
 go build -buildmode=plugin -tags=plugin -o myplugin.so myplugin.go
 ```
 
-**3. Run:**
+**3️⃣ Run:**
 ```bash
 ./codesommet-scrapper -writer ~/plugins:MyWriter -input queries.txt
 ```
 
 ---
 
-## Performance
+## 📈 Performance
 
-**Expected throughput:** ~120 places/minute (with `-c 8 -depth 1`)
+> **Expected throughput:** ⚡ **~120 places/minute** *(with `-c 8 -depth 1`)*
 
-| Keywords | Results/Keyword | Total Jobs | Estimated Time |
-|----------|-----------------|------------|----------------|
+| Keywords | Results / Keyword | Total Jobs | ⏱️ Estimated Time |
+|----------|:-----------------:|:----------:|:------------------:|
 | 100 | 16 | 1,600 | ~13 minutes |
 | 1,000 | 16 | 16,000 | ~2.5 hours |
 | 10,000 | 16 | 160,000 | ~22 hours |
 
-For large-scale scraping, use the PostgreSQL provider with Kubernetes.
+> 🚀 For large-scale scraping, use the **PostgreSQL provider** with **Kubernetes**.
 
-### Telemetry
+### 📡 Telemetry
 
-Anonymous usage statistics are collected for improvement purposes. Opt out:
+Anonymous usage statistics are collected for improvement purposes. Opt out anytime:
+
 ```bash
 export DISABLE_TELEMETRY=1
 ```
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please:
+Contributions are welcome! 💛
 
-1. Open an issue to discuss your idea
-2. Fork the repository
-3. Create a pull request
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+1. 🐛 Open an issue to discuss your idea
+2. 🍴 Fork the repository
+3. 🔁 Create a pull request
 
 ---
 
-## Legal Notice
+## 📜 License
 
-Please use CodeSommet Scrapper responsibly and in accordance with applicable laws and regulations. Unauthorized scraping may violate terms of service.
-#   c o d e - s o m m e t - s c r a p p e r  
- 
+This project is licensed under the **[MIT License](LICENSE)**.
+
+---
+
+## ⚖️ Legal Notice
+
+> Please use **CodeSommet Scrapper** responsibly and in accordance with applicable laws and regulations. Unauthorized scraping may violate terms of service.
+
+---
+
+<div align="center">
+
+### 🌟 Built with ❤️ by [CodeSommet](https://github.com/Rochdi7)
+
+**[⬆ Back to top](#-codesommet-lead-scraper)**
+
+</div>
