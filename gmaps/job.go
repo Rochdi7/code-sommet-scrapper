@@ -317,10 +317,12 @@ func scroll(ctx context.Context,
 	// Scroll to the bottom of the page.
 	waitTime := 100.
 	cnt := 0
+	staleCount := 0
 
 	const (
-		timeout  = 500
-		maxWait2 = 2000
+		timeout       = 500
+		maxWait2      = 2000
+		maxStaleRetry = 3
 	)
 
 	for i := 0; i < maxDepth; i++ {
@@ -349,9 +351,17 @@ func scroll(ctx context.Context,
 		}
 
 		if height == currentScrollHeight {
-			break
+			staleCount++
+			// Google Maps sometimes pauses loading — wait and retry
+			if staleCount >= maxStaleRetry {
+				break
+			}
+			page.WaitForTimeout(time.Duration(1500) * time.Millisecond)
+			i-- // don't count this as a depth iteration
+			continue
 		}
 
+		staleCount = 0
 		currentScrollHeight = height
 
 		select {

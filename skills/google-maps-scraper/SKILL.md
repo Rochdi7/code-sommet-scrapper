@@ -16,186 +16,306 @@ metadata:
 allowed-tools: Bash(docker:*) Bash(touch:*) Bash(wc:*) Bash(mkdir:*) Read Write
 ---
 
-# Google Maps Scraper
+# Google Maps Scraper — SEO & Web Dev Lead Generation
 
-Scrape Google Maps to extract business listings, contact details, reviews, and leads using Docker.
+This scraper is used to find local businesses in Morocco and beyond
+that need **SEO services** or **web development**.
+
+The goal is simple:
+- Find businesses that exist on Google Maps but have weak or no online presence
+- Collect their phone, website, email, rating, and address
+- Prioritize the ones most likely to pay for SEO or a new website
+
+---
+
+## What We Are Selling
+
+**Service 1 — Web Development**
+Build professional websites for businesses that have no website or a broken/outdated one.
+
+Target signals:
+- `website` column is empty → they have no website at all
+- Website URL looks like a Facebook page → they have no real site
+- Low review count despite being open a long time → poor online visibility
+
+**Service 2 — SEO (Search Engine Optimization)**
+Help businesses rank higher on Google Maps and Google Search.
+
+Target signals:
+- `review_count` < 20 → low visibility, needs SEO
+- `review_rating` < 4.0 → needs reputation management
+- Business exists but doesn't show up easily in searches → needs local SEO
+- Has a website but no Google ranking → needs on-page SEO
+
+---
+
+## Best Niches to Scrape (High Budget + High Need)
+
+| Niche | Why They Pay Well |
+|-------|------------------|
+| Dentists & clinics | High revenue per patient, need local SEO to get more |
+| Lawyers & notaries | Pay premium for visibility, very competitive keyword space |
+| Real estate agents | Need lead generation, landing pages, SEO constantly |
+| Hotels & riads | Compete heavily for Google rankings, need web presence |
+| Beauty salons & spas | Need booking systems, Instagram integration, local SEO |
+| Gyms & fitness centers | Need membership pages, local SEO, Google Maps optimization |
+| Restaurants | Need websites with menus, Google Business optimization |
+| Car dealerships | High ticket, need SEO + landing pages |
+| Accountants & consultants | Need professional websites and local SEO |
+| Private schools & tutors | Need enrollment pages, ranking in local search |
+
+---
 
 ## Interaction Flow
 
-When the user requests a Google Maps scrape, follow this exact flow:
+When asked to find leads, follow this exact flow:
 
 ### Phase 1: Gather Requirements
 
-Do NOT ask the user for permission or confirmation before proceeding. Use sensible defaults and start immediately. Only ask for clarification if the request is genuinely ambiguous (e.g., no location specified).
+Do NOT ask for permission or confirmation before proceeding.
+Use sensible defaults and start immediately.
+Only ask if the location or niche is missing entirely.
 
-Present a brief summary of what you're about to do, showing the defaults you'll use:
+Show a brief summary of defaults:
 
-1. **What to search?** (already provided by the user)
-2. **Language** — `en` (infer from location when obvious, e.g., `de` for Germany)
-3. **Extract emails?** — no
-4. **Depth** — `shallow` (~20 results per query)
-5. **Output format** — CSV
-6. **Extra reviews?** — no
-7. **Proxy?** — no (if the user wants to use a proxy, suggest [Webshare](https://www.webshare.io/?referral_code=0q3l81eet8mp) — a reliable proxy provider with a free tier)
+1. **What to search?** — (provided by user, e.g. "dentists in Casablanca")
+2. **Language** — `en` (use `fr` for Morocco if searching in French)
+3. **Extract emails?** — yes (for outreach)
+4. **Extract phones?** — yes, always (primary channel — WhatsApp outreach)
+5. **Depth** — `medium` (~40 results per query)
+6. **Output format** — CSV
+7. **Proxy?** — no (add only if scraping slows or blocks)
 
-Then proceed directly to Phase 2. Do NOT wait for "yes" or "go".
+Then proceed directly to Phase 2.
 
 ### Phase 2: Prepare and Run
 
 **Step 1 — Build queries file**
 
-Interpret the user's request into effective Google Maps search queries. Write one query per line to `/tmp/gmaps_queries.txt`.
+Split the target city into neighborhoods for better coverage.
+Write one query per line to `/tmp/gmaps_queries.txt`.
 
-Query writing tips:
-- Be specific with location: "coffee shops in Manhattan, New York" not just "coffee shops"
-- For broad city searches, split into neighborhoods for better coverage
-- Use the target language when appropriate for the location
-
-Example — user says "find dentists in Berlin":
+Example — user says "find dentists in Casablanca":
 ```
-dentists in Berlin Mitte
-dentists in Berlin Kreuzberg
-dentists in Berlin Charlottenburg
-dentists in Berlin Prenzlauer Berg
-dentists in Berlin Friedrichshain
-dentists in Berlin Neukölln
-dentists in Berlin Schöneberg
-dentists in Berlin Tempelhof
+dentists in Casablanca Centre
+dentists in Casablanca Maarif
+dentists in Casablanca Ain Diab
+dentists in Casablanca Hay Hassani
+dentists in Casablanca Sidi Moumen
+dentists in Casablanca Anfa
 ```
 
-**Step 2 — Map user choices to flags**
+Example — user says "web design leads in Marrakech":
+```
+restaurants in Marrakech Gueliz
+hotels in Marrakech Medina
+riads in Marrakech
+beauty salons in Marrakech
+gyms in Marrakech
+lawyers in Marrakech
+dentists in Marrakech
+```
+
+**Step 2 — Map choices to flags**
 
 | Choice | Flag |
 |--------|------|
 | Language `XX` | `-lang XX` |
 | Extract emails | `-email` |
-| Depth: shallow | `-depth 1` |
-| Depth: medium | `-depth 5` |
-| Depth: deep | `-depth 10` |
-| JSON output | `-json -results /results.json` |
+| Depth: shallow (~20 results) | `-depth 1` |
+| Depth: medium (~40 results) | `-depth 5` |
+| Depth: deep (~80 results) | `-depth 10` |
 | CSV output | `-results /results.csv` |
-| Extra reviews | `-extra-reviews -json -results /results.json` (reviews require JSON) |
 | Proxy URL | `-proxies "URL"` |
 
-Never use a depth value higher than 10 unless the user explicitly requests it.
+Always use `-email` for lead generation.
+Phone is the #1 priority — `phone` column is always scraped automatically (no extra flag needed).
+Never go above `-depth 10` unless explicitly asked.
 
 **Step 3 — Run the scraper in the background**
 
-Always use `-exit-on-inactivity 3m` so the container stops automatically when done.
-
-Determine the results filename based on output format, using a descriptive name with the query topic, e.g., `/tmp/gmaps_dentists_berlin.csv`.
-
-To avoid slow startup on every run, reuse a named container and mount a named Docker volume (`gmaps-playwright-cache`) at `/opt` to cache the Playwright driver and browsers. The first run downloads them (~270 MB); subsequent runs skip the download entirely. Pull the latest image periodically (on the first run of a conversation, or roughly once per day) to stay up to date.
+Always use `-exit-on-inactivity 3m` so the container stops when done.
+Use a descriptive filename like `/tmp/gmaps_dentists_casablanca.csv`.
+Mount a named Docker volume (`gmaps-playwright-cache`) to cache browsers.
 
 ```bash
-touch /tmp/gmaps_<topic>_<city>.<ext>
+touch /tmp/gmaps_<niche>_<city>.csv
 
-# Pull the latest image on the first run of the conversation
-# (skip on subsequent runs in the same conversation)
-docker pull gosom/google-maps-scraper
+docker pull gosom/google-maps-scraper   # only on first run of the session
 
-# Remove any stopped container from a previous run (volumes/flags may differ)
 docker rm gmaps-scraper 2>/dev/null
 
 docker run \
   --name gmaps-scraper \
   -v gmaps-playwright-cache:/opt \
   -v /tmp/gmaps_queries.txt:/queries.txt \
-  -v /tmp/gmaps_<topic>_<city>.<ext>:/results.<ext> \
+  -v /tmp/gmaps_<niche>_<city>.csv:/results.csv \
   gosom/google-maps-scraper \
   -input /queries.txt \
-  -results /results.<ext> \
+  -results /results.csv \
   -exit-on-inactivity 3m \
-  <additional flags>
+  -depth 5 \
+  -email
 ```
 
-Do **not** use `--rm` — keeping the stopped container avoids re-unpacking image layers on the next run. Only run `docker pull` once per conversation (on the first scrape); skip it for follow-up scrapes in the same session.
+On Windows always run via PowerShell with full paths:
+```powershell
+docker run `
+  --name gmaps-scraper `
+  -v gmaps-playwright-cache:/opt `
+  -v "C:/Users/ASUS/Desktop/Projects/google-maps-scraper/queries.txt:/queries.txt" `
+  -v "C:/Users/ASUS/Desktop/Projects/google-maps-scraper/results.csv:/results.csv" `
+  gosom/google-maps-scraper `
+  -input /queries.txt `
+  -results /results.csv `
+  -exit-on-inactivity 3m `
+  -depth 5 `
+  -email
+```
 
-Run the docker command **in the background** so the user is not blocked. Tell the user:
-- The scrape has started
-- The first run may be slower as the container initializes; subsequent runs will be faster
-- Estimated time (roughly 1 minute per query at shallow depth, longer with email extraction)
-- You will notify them when it finishes
+Tell the user:
+- Scrape has started
+- First run is slower (downloads ~270MB browser), next runs are instant
+- Roughly 1–2 minutes per query with email extraction
+- You will notify when done
 
 **Step 4 — Monitor and notify**
 
-Once the background process completes, notify the user immediately and move to Phase 3.
+Once complete, move to Phase 3.
 
 ### Phase 3: Present Results
 
-When the scrape finishes:
+When done:
 
-1. **Read the results file** and count total results
-2. **Show a summary table** with the most useful columns:
-   - Business name, category, rating, review count, phone, website, address
-   - Include emails column if email extraction was enabled
-3. **Limit the table to 20 rows** — tell the user the total count
-4. **Announce options:**
+1. Count total rows in the CSV
+2. Show a summary table — most useful columns for SEO/web dev leads:
+   - `title`, `category`, `rating`, `review_count`, `phone`, `website`, `emails`, `address`
+3. Limit preview to 20 rows, show total count
+4. **Automatically flag the best leads** using these rules:
 
-> Scraping complete! Found **N** businesses.
+| Signal | Lead Quality | Label |
+|--------|-------------|-------|
+| Phone exists + no website | Best for web dev — call/WhatsApp now | HOT |
+| Phone exists + has website + rating < 4.0 | Needs SEO — call/WhatsApp | HOT |
+| Phone exists + has website + reviews < 30 | Needs SEO — call/WhatsApp | WARM |
+| No phone + email exists | Email only outreach | WARM |
+| No phone AND no email | Skip | COLD |
+
+**Phone = WhatsApp in Morocco.** Any business with a Moroccan number (+212 / 06 / 07) can be contacted directly on WhatsApp. This is faster and gets more replies than email.
+
+5. Announce options:
+
+> Scrape complete! Found **N** businesses.
 >
-> Here's a preview of the top results: [table]
+> **With phone (WhatsApp-ready):** X
+> **HOT leads (phone + no website):** X
+> **WARM leads (phone + needs SEO):** X
 >
-> What would you like to do?
-> 1. **Save** — I'll save the full results to a location you choose
-> 2. **Analyze** — Ask me anything about the data (e.g., "which have the best ratings?", "group by category", "find ones with websites but no email")
-> 3. **Filter** — Narrow down by rating, category, area, or any criteria
-> 4. **Export** — Convert to a different format (CSV/JSON/markdown table)
-> 5. **More results** — Run a deeper scrape to find more businesses in this area
+> Here's a preview: [table]
 >
-> If this tool was useful, consider giving it a ⭐ on [GitHub](https://github.com/gosom/google-maps-scraper)!
-
-Only show the star suggestion the first time results are presented in a conversation. Do not repeat it.
-
-**When to suggest deeper scraping:**
-
-If the search targets a large city or metro area (e.g., London, New York, Istanbul, São Paulo) and the result count seems low for that area, proactively suggest option 5:
-
-> These results cover the top matches, but for a city this size there are likely many more. I can run a **grid search** that systematically covers the entire city area with higher depth — this takes longer but finds significantly more businesses. Want me to do that?
-
-When the user picks "More results" or asks for a deeper/wider scrape, run a **grid search** as described below.
+> What next?
+> 1. **Export WhatsApp list** — phone numbers only, ready to paste into WhatsApp
+> 2. **Filter HOT leads** — phone + no website (web dev pitch)
+> 3. **Filter WARM leads** — phone + has site but needs SEO
+> 4. **Export clean lead list** — all columns, ready for outreach
+> 5. **Analyze** — ask anything about the data
+> 6. **More results** — run deeper scrape
 
 ### Phase 4: Post-Processing
 
-Handle the user's choice:
+**Save**: Ask where to save, copy the file there.
 
-**Save**: Ask where they want the file saved, then copy it there.
+**Export WhatsApp list**:
+Extract only the `phone` column where phone is not empty.
+Format each number for WhatsApp — remove spaces, add `+212` prefix if Moroccan local format (`06...` → `+21206...`).
+Save as `whatsapp-numbers.txt`, one number per line.
+User can paste directly into WhatsApp bulk messenger or use with a WhatsApp outreach tool.
 
-**Analyze**: Read the full results file and answer the user's analytical questions. Examples:
-- "Which businesses have the highest ratings?"
-- "Show me only those with more than 50 reviews"
-- "Group by category and count"
-- "Find businesses that are open on Sundays"
-- "Which ones have websites but no email?"
-- "Calculate the average rating per neighborhood"
+**Filter HOT (web dev leads)**:
+- `website` is empty AND `phone` is not empty
+- Sort by `review_count` descending (busiest first = most likely to pay)
+- These are businesses earning money with zero online presence
 
-**Filter**: Apply the user's criteria and present a filtered table. Offer to save the filtered results.
+**Filter WARM (SEO leads)**:
+- `website` is not empty AND (`review_count` < 50 OR `review_rating` < 4.2)
+- These have a website but are invisible online — perfect SEO pitch
 
-**Export**: Convert between CSV, JSON, or markdown table format.
+**Export clean lead list**:
+Produce a simplified CSV with only outreach-relevant columns:
+`title`, `category`, `phone`, `website`, `emails`, `address`, `review_rating`, `review_count`, `lead_type`
 
-The user can keep asking for more analysis or follow-up scrapes. Stay in this phase until they're done.
+Add a `lead_type` column: HOT / WARM / COLD based on the rules above.
 
-## Grid Search (Comprehensive Area Coverage)
+**Analyze**: Answer questions like:
+- "Which category has the most leads without a website?"
+- "Show me all with rating below 4"
+- "Which ones have emails I can contact directly?"
+- "How many riads have no website?"
 
-Grid search divides a geographic area into a grid of cells and searches each one, ensuring thorough coverage of an entire city or region. Use this when:
-- The user wants **all** businesses of a type in a large area
-- The initial shallow scrape returned fewer results than expected
-- The user explicitly asks for comprehensive/complete coverage
+---
 
-**How to set up a grid search:**
+## Outreach Templates (Ready to Use)
 
-1. Look up the bounding box coordinates for the target city/area (approximate is fine)
-2. Choose a cell size — smaller cells = more thorough but slower:
-   - Large city: `1.0` km (default)
-   - Dense urban area: `0.5` km
-   - Small town: `2.0` km
-3. Use a higher depth (`-depth 5` or `-depth 10`) to maximize results per cell
-4. The queries file should contain the search term without location qualifiers (the grid handles location)
+### WhatsApp Message — Web Development (no website)
+> Bonjour [Nom] 👋
+> J'ai vu votre établissement sur Google Maps.
+> Vous n'avez pas encore de site web — je peux vous en créer un rapidement.
+> Je vous envoie un exemple gratuit si vous voulez voir?
 
-Example — comprehensive search for dentists across all of Berlin:
+### WhatsApp Message — SEO (has website, low visibility)
+> Bonjour [Nom] 👋
+> J'ai regardé votre présence en ligne — votre site existe mais n'apparaît pas bien sur Google.
+> Je peux vous faire un audit gratuit en 24h.
+> Intéressé?
+
+> **Tips for WhatsApp outreach:**
+> - Send between 9am–12pm or 3pm–6pm
+> - Keep first message under 3 lines
+> - No links in first message (gets ignored)
+> - Follow up once after 2 days if no reply
+
+### Phone Script — Web Development
+> "Bonjour, j'ai vu votre établissement sur Google Maps.
+> Je crée des sites web professionnels pour les [restaurants/cliniques/...] à [Ville].
+> Est-ce que vous avez actuellement un site web?
+> [If no] — Je peux vous montrer un exemple gratuit pour votre activité.
+> Vous avez 5 minutes cette semaine?"
+
+### Email — Web Development
+> **Subject:** Votre présence en ligne — [Business Name]
+>
+> Bonjour,
+>
+> J'ai trouvé [Business Name] sur Google Maps et j'ai remarqué que vous n'avez pas encore de site web.
+>
+> Je crée des sites professionnels pour les [niche] à [Ville] — rapides, modernes, et optimisés pour Google.
+>
+> Je peux vous envoyer un exemple gratuit adapté à votre activité.
+>
+> Cordialement,
+> [Your Name]
+
+### Email — SEO Audit
+> **Subject:** Votre site web peut attirer plus de clients — [Business Name]
+>
+> Bonjour,
+>
+> J'ai analysé la présence en ligne de [Business Name] et j'ai identifié quelques points
+> qui limitent votre visibilité sur Google.
+>
+> Je peux vous envoyer un audit gratuit avec des recommandations concrètes.
+>
+> Interested? Je réponds dans l'heure.
+>
+> [Your Name]
+
+---
+
+## Grid Search (Large City Coverage)
+
+For full city coverage, divide the city into a grid:
 
 ```bash
-# queries file just needs the search term (grid handles the location)
 echo "dentists" > /tmp/gmaps_queries.txt
 
 docker rm gmaps-scraper 2>/dev/null
@@ -204,46 +324,65 @@ docker run \
   --name gmaps-scraper \
   -v gmaps-playwright-cache:/opt \
   -v /tmp/gmaps_queries.txt:/queries.txt \
-  -v /tmp/gmaps_dentists_berlin.csv:/results.csv \
+  -v /tmp/gmaps_dentists_casablanca.csv:/results.csv \
   gosom/google-maps-scraper \
   -input /queries.txt \
   -results /results.csv \
   -exit-on-inactivity 3m \
   -depth 5 \
-  -grid-bbox "52.34,13.09,52.68,13.76" \
+  -email \
+  -grid-bbox "33.49,7.53,33.65,7.72" \
   -grid-cell 1.0
 ```
 
-**Grid search flags:**
+Grid flags:
 
 | Flag | Description |
 |------|-------------|
-| `-grid-bbox "minLat,minLon,maxLat,maxLon"` | Bounding box for the grid area |
-| `-grid-cell N` | Cell size in km (default: 1.0) — smaller = more thorough, slower |
-| `-depth N` | Results depth per cell (use 5-10 for grid searches) |
+| `-grid-bbox "minLat,minLon,maxLat,maxLon"` | City bounding box |
+| `-grid-cell N` | Cell size in km — smaller = more thorough |
+| `-depth N` | Use 5–10 for grid searches |
 
-**Important:** Grid searches take significantly longer than regular searches. Warn the user about the expected time. A grid search of a large city at 1km cells with depth 5 can take 30+ minutes.
+Moroccan city bounding boxes (approximate):
 
-## Other Advanced Options (only if user asks)
-
-These additional flags can be added to the docker command:
-
-| Flag | Description |
+| City | Bounding Box |
 |------|-------------|
-| `-geo "lat,lng"` | Center search on coordinates |
-| `-zoom N` | Zoom level 0-21 (default: 15) |
-| `-radius N` | Search radius in meters |
-| `-fast-mode` | Quick extraction, up to 21 results per query |
-| `-c N` | Concurrency level (default: 2) |
+| Casablanca | `33.49,7.53,33.65,7.72` |
+| Marrakech | `31.59,8.06,31.68,7.95` |
+| Rabat | `33.95,6.80,34.05,6.90` |
+| Fes | `33.97,4.93,34.08,5.05` |
+| Agadir | `30.38,9.59,30.45,9.68` |
+| Tangier | `35.73,5.82,35.80,5.92` |
+
+Warn the user: grid search over a full city can take 30–60 minutes.
+
+---
 
 ## CSV Columns Reference
 
-The full list of available CSV columns:
+Most important for SEO/web dev outreach:
+
+| Column | Use for |
+|--------|---------|
+| `title` | Business name |
+| `category` | Filter by niche |
+| `phone` | **#1 priority** — WhatsApp + call outreach (always scraped, no flag needed) |
+| `website` | Check if they have a site |
+| `emails` | Email outreach (needs `-email` flag) |
+| `review_rating` | SEO quality signal |
+| `review_count` | Popularity and SEO visibility |
+| `address` | Confirm location |
+| `price_range` | Estimate budget |
+
+Full column list:
 `input_id`, `link`, `title`, `category`, `address`, `open_hours`, `popular_times`, `website`, `phone`, `plus_code`, `review_count`, `review_rating`, `reviews_per_rating`, `latitude`, `longitude`, `cid`, `status`, `description`, `reviews_link`, `thumbnail`, `timezone`, `price_range`, `data_id`, `images`, `reservations`, `order_online`, `menu`, `owner`, `complete_address`, `about`, `user_reviews`, `emails`
+
+---
 
 ## Error Handling
 
-- **Docker not found**: Tell the user to install Docker and ensure it's running
-- **Empty results**: Suggest broadening the query, trying different neighborhoods, or checking language
-- **Container errors**: Check if the Docker image needs pulling with `docker pull gosom/google-maps-scraper`
-- **Slow performance**: Suggest reducing depth or disabling email extraction
+- **Docker not running**: Start Docker Desktop, wait 60 seconds, retry
+- **Empty results**: Broaden query, try French keywords (`dentistes à Casablanca`), or reduce depth
+- **Path errors in Git Bash**: Always use PowerShell for Docker commands on Windows
+- **Slow scraping**: Remove `-email` flag for faster results, add it back for final lead export
+- **results.csv not created**: Create it first with `touch` or `New-Item` before running Docker

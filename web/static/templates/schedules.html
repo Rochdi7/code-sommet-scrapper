@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduled Scrapes - CodeSommet Lead Scraper</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.6/htmx.min.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/webscraper" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Website Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Schedules</h2>
+                    <span class="topbar-breadcrumb">Recurring scraping jobs</span>
+                </div>
+                <div class="topbar-right"></div>
+            </header>
+            <div class="content-area">
+                <div class="schedule-layout">
+                    <div class="card">
+                        <div class="card-header"><h3>New Schedule</h3></div>
+                        <div class="card-body">
+                            <div id="error-container" class="error-message"></div>
+                            <form
+                                hx-post="/schedules"
+                                hx-swap="none"
+                                hx-on::before-request="document.getElementById('error-container').innerHTML = ''"
+                                hx-on::after-request="if(!event.detail.successful) document.getElementById('error-container').innerHTML = event.detail.xhr.responseText"
+                            >
+                                <fieldset>
+                                    <legend>New Scheduled Scrape</legend>
+                                    <div class="form-group">
+                                        <label for="name">Schedule Name:</label>
+                                        <input type="text" id="name" name="name" placeholder="e.g. Weekly Dentistes Marrakech" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cron_expr">Frequency:</label>
+                                        <select id="cron-preset" onchange="applyCronPreset(this.value)">
+                                            <option value="">-- Select preset --</option>
+                                            <option value="every 1h">Every hour</option>
+                                            <option value="every 6h">Every 6 hours</option>
+                                            <option value="every 12h">Every 12 hours</option>
+                                            <option value="every 24h">Every 24 hours</option>
+                                            <option value="daily 09:00">Daily at 09:00</option>
+                                            <option value="daily 14:00">Daily at 14:00</option>
+                                            <option value="weekly mon 09:00">Weekly Monday 09:00</option>
+                                            <option value="weekly fri 09:00">Weekly Friday 09:00</option>
+                                            <option value="custom">Custom...</option>
+                                        </select>
+                                        <input type="text" id="cron_expr" name="cron_expr" placeholder="e.g. every 24h, daily 09:00, weekly mon 09:00" style="margin-top: 8px;" required>
+                                        <small style="color: var(--color-text-light); display: block; margin-top: 4px;">
+                                            Formats: every 1h | daily 09:00 | weekly mon 09:00
+                                        </small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="keywords">Keywords (one per line):</label>
+                                        <textarea id="keywords" name="keywords" rows="4" placeholder="agence immobiliere marrakech&#10;restaurants casablanca" required>{{.Form.KeywordsString}}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="country">Country:</label>
+                                        <select id="country" name="country">
+                                            <option value="Morocco" {{if eq .Form.Country "Morocco"}}selected{{end}}>Morocco</option>
+                                            <option value="France" {{if eq .Form.Country "France"}}selected{{end}}>France</option>
+                                            <option value="Spain" {{if eq .Form.Country "Spain"}}selected{{end}}>Spain</option>
+                                            <option value="Germany" {{if eq .Form.Country "Germany"}}selected{{end}}>Germany</option>
+                                            <option value="United Kingdom" {{if eq .Form.Country "United Kingdom"}}selected{{end}}>United Kingdom</option>
+                                            <option value="United States" {{if eq .Form.Country "United States"}}selected{{end}}>United States</option>
+                                            <option value="Canada" {{if eq .Form.Country "Canada"}}selected{{end}}>Canada</option>
+                                            <option value="UAE" {{if eq .Form.Country "UAE"}}selected{{end}}>UAE</option>
+                                            <option value="Saudi Arabia" {{if eq .Form.Country "Saudi Arabia"}}selected{{end}}>Saudi Arabia</option>
+                                            <option value="Tunisia" {{if eq .Form.Country "Tunisia"}}selected{{end}}>Tunisia</option>
+                                            <option value="Algeria" {{if eq .Form.Country "Algeria"}}selected{{end}}>Algeria</option>
+                                            <option value="Egypt" {{if eq .Form.Country "Egypt"}}selected{{end}}>Egypt</option>
+                                            <option value="Turkey" {{if eq .Form.Country "Turkey"}}selected{{end}}>Turkey</option>
+                                            <option value="Italy" {{if eq .Form.Country "Italy"}}selected{{end}}>Italy</option>
+                                            <option value="Portugal" {{if eq .Form.Country "Portugal"}}selected{{end}}>Portugal</option>
+                                            <option value="Netherlands" {{if eq .Form.Country "Netherlands"}}selected{{end}}>Netherlands</option>
+                                            <option value="Belgium" {{if eq .Form.Country "Belgium"}}selected{{end}}>Belgium</option>
+                                            <option value="Other" {{if eq .Form.Country "Other"}}selected{{end}}>Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lang">Language:</label>
+                                        <input type="text" id="lang" name="lang" value="{{.Form.Language}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="maxresults">Max Results:</label>
+                                        <select id="maxresults" name="maxresults">
+                                            <option value="20" {{if eq .Form.MaxResults 20}}selected{{end}}>20 results</option>
+                                            <option value="50" {{if eq .Form.MaxResults 50}}selected{{end}}>50 results</option>
+                                            <option value="100" {{if eq .Form.MaxResults 100}}selected{{end}}>100 results</option>
+                                            <option value="200" {{if eq .Form.MaxResults 200}}selected{{end}}>200 results</option>
+                                            <option value="500" {{if eq .Form.MaxResults 500}}selected{{end}}>500 results</option>
+                                        </select>
+                                    </div>
+                                </fieldset>
+
+                                <details class="expandable-section">
+                                    <summary>Location Settings</summary>
+                                    <fieldset>
+                                        <div class="form-group"><label for="zoom">Zoom:</label><input type="number" id="zoom" name="zoom" value="{{.Form.Zoom}}"></div>
+                                        <div class="form-group"><label for="latitude">Latitude:</label><input type="number" step="0.000000000000001" id="latitude" name="latitude" value="{{.Form.Lat}}"></div>
+                                        <div class="form-group"><label for="longitude">Longitude:</label><input type="number" step="0.000000000000001" id="longitude" name="longitude" value="{{.Form.Lon}}"></div>
+                                    </fieldset>
+                                </details>
+
+                                <details class="expandable-section">
+                                    <summary>Advanced Options</summary>
+                                    <fieldset>
+                                        <div class="form-group"><label for="fastmode">Fast Mode (BETA):</label><input type="checkbox" id="fastmode" name="fastmode" {{if .Form.FastMode}}checked{{end}}></div>
+                                        <div class="form-group"><label for="radius">Radius (BETA):</label><input type="number" id="radius" name="radius" value="{{.Form.Radius}}"></div>
+                                        <div class="form-group"><label for="depth">Depth:</label><input type="number" step="1" id="depth" name="depth" value="{{.Form.Depth}}"></div>
+                                        <div class="form-group checkbox"><input type="checkbox" id="email" name="email" {{if .Form.Email}}checked{{end}}><label for="email">Fetch Emails</label></div>
+                                        <div class="form-group"><label for="maxtime">Max job time:</label><input type="text" id="maxtime" name="maxtime" value="{{.Form.MaxTime}}"></div>
+                                    </fieldset>
+                                </details>
+
+                                <details class="expandable-section">
+                                    <summary>Proxies</summary>
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label for="proxies">Proxies (one per line):</label>
+                                            <textarea id="proxies" name="proxies" rows="3">{{.Form.ProxiesString}}</textarea>
+                                        </div>
+                                    </fieldset>
+                                </details>
+
+                                <button type="submit">Create Schedule</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 style="color: var(--color-primary); margin-top: 0;">Active Schedules</h2>
+                        {{if .Schedules}}
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Schedule</th>
+                                    <th>Next Run</th>
+                                    <th>Last Run</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Schedules}}
+                                <tr id="schedule-{{.ID}}">
+                                    <td>{{.Name}}</td>
+                                    <td><span class="cron-badge">{{.CronExpr}}</span></td>
+                                    <td>{{if .Enabled}}{{.NextRun.Format "Jan 02, 15:04 UTC"}}{{else}}-{{end}}</td>
+                                    <td>{{if le .LastRun.Unix 0}}Never{{else}}{{.LastRun.Format "Jan 02, 15:04 UTC"}}{{end}}</td>
+                                    <td>
+                                        <span class="status-indicator {{if .Enabled}}schedule-enabled{{else}}schedule-disabled{{end}}">
+                                            {{if .Enabled}}Enabled{{else}}Disabled{{end}}
+                                        </span>
+                                    </td>
+                                    <td class="action-cell">
+                                        <button
+                                            hx-post="/schedules/{{.ID}}/toggle"
+                                            hx-swap="none"
+                                            class="btn btn-sm {{if .Enabled}}btn-secondary{{else}}btn-success{{end}}"
+                                        >{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
+                                        <button
+                                            hx-delete="/schedules/{{.ID}}/delete"
+                                            hx-target="#schedule-{{.ID}}"
+                                            hx-swap="outerHTML"
+                                            hx-confirm="Delete this schedule?"
+                                            class="delete-button"
+                                        >Delete</button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                        {{else}}
+                        <div class="empty-state">
+                            <p style="color: var(--color-text-light); font-size: 16px;">No schedules yet. Create one using the form on the left.</p>
+                            <p style="color: var(--color-text-light); font-size: 14px;">Schedules automatically create scraping jobs on a recurring basis.</p>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applyCronPreset(value) {
+            var input = document.getElementById('cron_expr');
+            if (value && value !== 'custom') {
+                input.value = value;
+            } else if (value === 'custom') {
+                input.value = '';
+                input.focus();
+            }
+        }
+    </script>
+</body>
+</html>

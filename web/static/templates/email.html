@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSommet Email Sender</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.6/htmx.min.js"></script>
+    <style>
+        .email-page-container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; display: flex; flex-direction: column; gap: 24px; }
+        .email-config-section { background: var(--color-surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; }
+        .email-config-section h2 { margin: 0 0 8px 0; color: #2563eb; font-size: 20px; }
+        .email-config-section p { color: var(--color-text-light); margin: 0 0 20px 0; font-size: 14px; }
+        .email-config-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 700px) { .email-config-form { grid-template-columns: 1fr; } }
+        .email-config-form .form-group { margin-bottom: 0; }
+        .email-config-form input[type="text"], .email-config-form input[type="password"], .email-config-form input[type="email"], .email-config-form input[type="number"] { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: white; }
+        .config-actions { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+        .btn-save-config { background: #2563eb; color: white; border: none; padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-save-config:hover { background: #1d4ed8; }
+        .config-status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+        .config-status.ok { color: var(--color-success); }
+        .config-status.not-configured { color: var(--color-text-light); }
+        .config-status.error { color: var(--color-error); }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; padding-top: 28px; }
+        .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .checkbox-group label { margin-bottom: 0; cursor: pointer; }
+        .email-status-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--color-surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .email-status-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.configured { background: var(--color-success); }
+        .status-dot.not-configured { background: var(--color-text-light); }
+        .email-card { background: var(--color-surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; }
+        .email-card h3 { margin: 0 0 16px 0; font-size: 16px; color: var(--color-primary); }
+        .email-template-select { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 14px; margin-bottom: 12px; box-sizing: border-box; cursor: pointer; }
+        .import-row { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
+        .import-row select { flex: 1; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+        .btn-import { background: var(--color-primary); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .btn-import:hover { opacity: 0.9; }
+        .recipient-count { margin-top: 10px; font-size: 13px; color: var(--color-text-light); font-weight: 500; }
+        .recipient-count strong { color: var(--color-primary); }
+        .send-controls { background: var(--color-surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; }
+        .send-buttons { display: flex; gap: 10px; margin-bottom: 16px; }
+        .btn-start-send { flex: 1; background: #2563eb; color: white; border: none; padding: 14px 24px; border-radius: 4px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-start-send:hover { background: #1d4ed8; }
+        .btn-start-send:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-stop-send { background: var(--color-error); color: white; border: none; padding: 14px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .btn-stop-send:hover { opacity: 0.9; }
+        .send-progress { margin-top: 12px; }
+        .send-progress-text { font-size: 14px; font-weight: 500; color: var(--color-text); margin-bottom: 8px; }
+        .send-progress-bar { width: 100%; height: 8px; background: var(--color-border); border-radius: 4px; overflow: hidden; }
+        .send-progress-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #3b82f6); border-radius: 4px; transition: width 0.3s ease; width: 0%; }
+        .rate-limit-info { margin-top: 10px; font-size: 12px; color: var(--color-text-light); display: flex; justify-content: space-between; }
+        .status-table-wrap { background: var(--color-surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; }
+        .status-table { width: 100%; font-size: 13px; box-shadow: none; }
+        .status-table th { font-size: 12px; padding: 12px 16px; background: var(--color-background); text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-table td { padding: 10px 16px; }
+        .delivery-sent { color: var(--color-success); font-weight: 600; }
+        .delivery-pending { color: var(--color-text-light); font-weight: 500; }
+        .delivery-failed { color: var(--color-error); font-weight: 600; }
+        .delivery-sending { color: #d97706; font-weight: 600; }
+        .delivery-paused { color: #6366f1; font-weight: 500; }
+        .delivery-skipped { color: var(--color-text-light); font-weight: 500; font-style: italic; }
+        .info-banner { display: flex; align-items: center; gap: 10px; padding: 12px 20px; background: #eff6ff; border: 1px solid #93c5fd; border-radius: 8px; color: #1e40af; font-size: 13px; font-weight: 500; }
+        .info-banner .info-icon { font-size: 18px; flex-shrink: 0; }
+        .hidden { display: none !important; }
+        .test-send-row { display: flex; gap: 8px; margin-top: 12px; }
+        .test-send-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+        .test-send-row button { white-space: nowrap; }
+        .btn-test-email { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+        .btn-test-email:hover { background: #1d4ed8; }
+
+        /* === Sending Animation === */
+        @keyframes pulse-send { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .row-sending { animation: pulse-send 1.2s ease-in-out infinite; background: #fef3c7 !important; }
+        .row-sent { background: #f0fdf4 !important; }
+        .row-failed { background: #fef2f2 !important; }
+        .row-no-email { opacity: 0.45; }
+        .sent-badge { display: inline-block; background: #dcfce7; color: #16a34a; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-left: 6px; }
+        .already-sent-badge { display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-left: 6px; }
+
+        /* === Campaign History === */
+        .campaign-list { display: flex; flex-direction: column; gap: 8px; }
+        .campaign-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid var(--color-border); border-radius: 8px; gap: 12px; flex-wrap: wrap; }
+        .campaign-item:hover { background: var(--color-background); }
+        .campaign-info { flex: 1; min-width: 200px; }
+        .campaign-name { font-weight: 600; font-size: 14px; }
+        .campaign-meta { font-size: 12px; color: var(--color-text-light); margin-top: 2px; }
+        .campaign-stats { display: flex; gap: 12px; font-size: 12px; font-weight: 600; }
+        .campaign-actions { display: flex; gap: 6px; }
+        .campaign-actions button { padding: 6px 14px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-resume { background: #2563eb; color: white; }
+        .btn-resume:hover { background: #1d4ed8; }
+        .btn-view { background: var(--color-border); color: var(--color-text); }
+        .btn-view:hover { background: #d1d5db; }
+        .btn-delete-campaign { background: none; color: var(--color-error); border: 1px solid var(--color-error) !important; }
+        .btn-delete-campaign:hover { background: #fef2f2; }
+        .campaign-status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge-completed { background: #dcfce7; color: #16a34a; }
+        .badge-paused { background: #e0e7ff; color: #4338ca; }
+
+        /* === Edit Campaign Modal === */
+        .edit-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .edit-modal { background: white; border-radius: 12px; padding: 28px 32px; width: 420px; max-width: 90vw; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+        .edit-modal h3 { margin: 0 0 20px 0; font-size: 18px; color: #2563eb; }
+        .edit-modal .form-group { margin-bottom: 14px; }
+        .edit-modal label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--color-text); }
+        .edit-modal input { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+        .edit-modal .delay-row { display: flex; gap: 12px; }
+        .edit-modal .delay-row .form-group { flex: 1; }
+        .edit-modal .delay-hint { font-size: 12px; color: var(--color-text-light); margin: 4px 0 16px 0; }
+        .edit-modal .edit-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .edit-modal .btn-cancel { background: var(--color-border); color: var(--color-text); border: none; padding: 10px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .edit-modal .btn-cancel:hover { background: #d1d5db; }
+        .edit-modal .btn-save { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .edit-modal .btn-save:hover { background: #1d4ed8; }
+        .btn-edit-campaign { background: none; color: #2563eb; border: 1px solid #2563eb !important; }
+        .btn-edit-campaign:hover { background: #eff6ff; }
+        .badge-sending { background: #fef3c7; color: #d97706; animation: pulse-send 1.2s ease-in-out infinite; }
+        .badge-failed { background: #fef2f2; color: #dc2626; }
+
+        /* === Tabs === */
+        .email-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--color-border); margin-bottom: 24px; }
+        .email-tab { padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--color-text-light); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .email-tab:hover { color: var(--color-text); }
+        .email-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+                    <a href="/" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Scraper</a>
+                    <a href="/webscraper" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Website Scraper</a>
+                    <a href="/countfiche" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>Count Fiche</a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Leads CRM</a>
+                    <a href="/email" class="sidebar-link active"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</a>
+                    <a href="/whatsapp" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>WhatsApp</a><a href="/whatsapp-desktop" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>WA Desktop</a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Schedules</a>
+                    <a href="/webhooks" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>Webhooks</a>
+                    <a href="/queue" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>Queue</a>
+                    <a href="/proxies" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>Proxy Monitor</a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>API Docs</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer"><a href="https://codesommet.com" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>codesommet.com</a></div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Email Campaigns</h2>
+                    <span class="topbar-breadcrumb">Send emails to leads with campaign tracking</span>
+                </div>
+                <div class="topbar-right"></div>
+            </header>
+            <div class="content-area">
+        <div class="email-page-container">
+
+            <!-- SMTP Status Bar -->
+            <div class="email-status-bar" id="email-status-bar">
+                <div class="email-status-info">
+                    <span class="status-dot not-configured" id="smtp-status-dot"></span>
+                    <span id="smtp-status-text">Not configured</span>
+                </div>
+                <button class="btn-save-config" style="padding:6px 16px;font-size:12px;" onclick="document.getElementById('config-section').classList.toggle('hidden')">SMTP Settings</button>
+            </div>
+
+            <!-- SMTP Configuration (collapsed by default when configured) -->
+            <div class="email-config-section hidden" id="config-section">
+                <h2>SMTP Configuration</h2>
+                <p>Enter your SMTP server details to start sending emails</p>
+                <div class="email-config-form" id="smtp-config-form">
+                    <div class="form-group"><label for="smtp-host">SMTP Host</label><input type="text" id="smtp-host" placeholder="smtp.gmail.com"></div>
+                    <div class="form-group"><label for="smtp-port">Port</label><input type="number" id="smtp-port" placeholder="587" value="587"></div>
+                    <div class="form-group"><label for="smtp-user">Username / Email</label><input type="text" id="smtp-user" placeholder="your-email@gmail.com"></div>
+                    <div class="form-group"><label for="smtp-pass">Password / App Password</label><input type="password" id="smtp-pass" placeholder="App password"></div>
+                    <div class="form-group"><label for="smtp-from-name">From Name</label><input type="text" id="smtp-from-name" placeholder="CodeSommet"></div>
+                    <div class="form-group"><label for="smtp-from-email">From Email</label><input type="email" id="smtp-from-email" placeholder="contact@codesommet.com"></div>
+                    <div class="checkbox-group"><input type="checkbox" id="smtp-secure"><label for="smtp-secure">Use SSL/TLS (port 465)</label></div>
+                    <div class="config-actions"><button class="btn-save-config" onclick="saveAndTestConfig()">Save &amp; Test</button><span class="config-status not-configured" id="config-status-msg"></span></div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="email-tabs">
+                <button class="email-tab active" onclick="switchTab('new')">New Campaign</button>
+                <button class="email-tab" onclick="switchTab('history')">Campaign History</button>
+                <button class="email-tab hidden" id="tab-detail-btn" onclick="switchTab('detail')">Campaign Details</button>
+            </div>
+
+            <!-- TAB: New Campaign -->
+            <div class="tab-content active" id="tab-new">
+                <!-- Campaign Name -->
+                <div class="email-card" style="margin-bottom:24px;">
+                    <h3>New Email Campaign</h3>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label for="campaign-name">Campaign Name</label>
+                        <input type="text" id="campaign-name" placeholder="e.g. Travel Agencies Marrakech" style="width:100%;padding:10px 12px;border:1px solid var(--color-border);border-radius:4px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <p style="color:var(--color-text-light);font-size:13px;margin:0;">Import leads from a scrape job. Auto-detect: no website = Web Dev template, has website = Redesign+SEO.</p>
+                    <div class="import-row">
+                        <select id="job-select"><option value="">-- Select a completed scrape job --</option></select>
+                        <button class="btn-import" onclick="importFromJob()">Import Leads</button>
+                    </div>
+                    <div class="recipient-count" id="recipient-count" style="margin-top:10px;"><strong>0</strong> recipients loaded</div>
+                </div>
+
+                <!-- Import Preview Table -->
+                <div class="email-card hidden" id="import-preview" style="padding:0;overflow:hidden;">
+                    <div style="padding:16px 24px 8px;display:flex;align-items:center;justify-content:space-between;">
+                        <h3 style="margin:0;">Imported Leads</h3>
+                        <span style="font-size:12px;color:var(--color-text-light);" id="import-count-label">0 leads</span>
+                    </div>
+                    <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+                        <table class="status-table" style="font-size:12px;">
+                            <thead><tr>
+                                <th style="padding:6px 8px;text-align:left;">Business</th>
+                                <th style="padding:6px 8px;text-align:left;">Phone</th>
+                                <th style="padding:6px 8px;text-align:left;">Email</th>
+                                <th style="padding:6px 8px;text-align:left;">Website</th>
+                                <th style="padding:6px 8px;text-align:left;">Template</th>
+                                <th style="padding:6px 8px;width:40px;"></th>
+                            </tr></thead>
+                            <tbody id="import-preview-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Template Preview -->
+                <div class="email-card hidden" id="template-preview-card" style="margin-top:24px;">
+                    <h3>Template Preview</h3>
+                    <label style="font-size:13px;">Preview template:</label>
+                    <select class="email-template-select" id="email-template-preview-select" onchange="previewTemplate()"></select>
+                    <div style="margin-top:12px;"><label style="font-size:13px;font-weight:600;">Subject:</label><div id="preview-subject" style="padding:8px 12px;background:var(--color-background);border-radius:4px;font-size:13px;margin-top:4px;"></div></div>
+                    <div style="margin-top:12px;"><label style="font-size:13px;font-weight:600;">Body:</label><pre id="preview-body" style="padding:12px;background:var(--color-background);border-radius:4px;font-size:12px;margin-top:4px;white-space:pre-wrap;font-family:inherit;line-height:1.5;max-height:300px;overflow-y:auto;"></pre></div>
+                    <div class="test-send-row" style="margin-top:16px;"><input type="email" id="test-email" placeholder="test@example.com"><button class="btn-test-email" onclick="sendTestEmail()" style="width:auto;">Send Test</button></div>
+                </div>
+
+                <!-- Send Controls -->
+                <div class="send-controls" style="margin-top:24px;">
+                    <h3 style="margin:0 0 16px 0;font-size:16px;color:var(--color-primary);">Send Controls</h3>
+                    <div style="display:flex;gap:16px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;">
+                        <div class="form-group" style="margin-bottom:0;min-width:120px;"><label for="delay-min">Min delay (sec)</label><input type="number" id="delay-min" value="5" min="5" max="300" style="width:100%;padding:8px 12px;border:1px solid var(--color-border);border-radius:4px;font-size:14px;box-sizing:border-box;"></div>
+                        <div class="form-group" style="margin-bottom:0;min-width:120px;"><label for="delay-max">Max delay (sec)</label><input type="number" id="delay-max" value="10" min="5" max="300" style="width:100%;padding:8px 12px;border:1px solid var(--color-border);border-radius:4px;font-size:14px;box-sizing:border-box;"></div>
+                        <div style="font-size:12px;color:var(--color-text-light);padding-bottom:4px;">Random delay to avoid spam filters. Min 5s.</div>
+                    </div>
+                    <div class="send-buttons">
+                        <button class="btn-start-send" id="btn-start" onclick="startCampaign()">Start Campaign</button>
+                        <button class="btn-stop-send hidden" id="btn-stop" onclick="stopCampaign()">Pause Campaign</button>
+                    </div>
+                    <div class="send-progress hidden" id="send-progress">
+                        <div class="send-progress-text" id="progress-text">Sending 0/0...</div>
+                        <div class="send-progress-bar"><div class="send-progress-fill" id="progress-fill"></div></div>
+                        <div class="rate-limit-info"><span id="send-stats">Sent: 0 | Failed: 0</span><span id="delay-info">Delay: 5-10s</span></div>
+                    </div>
+                </div>
+
+                <!-- Live Status Table -->
+                <div style="margin-top:24px;">
+                    <h3 style="margin:0 0 16px 0;font-size:16px;color:var(--color-primary);">Delivery Status</h3>
+                    <div class="status-table-wrap">
+                        <table class="status-table" id="status-table">
+                            <thead><tr><th>Email</th><th>Business</th><th>Template</th><th>Status</th><th>Time</th></tr></thead>
+                            <tbody id="status-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="empty-status" style="text-align:center;padding:32px;color:var(--color-text-light);font-size:14px;">Import leads and start a campaign to see delivery status here.</div>
+                </div>
+            </div>
+
+            <!-- TAB: Campaign History -->
+            <div class="tab-content" id="tab-history">
+                <div class="email-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <h3 style="margin:0;">Campaign History</h3>
+                        <button class="btn-import" onclick="loadCampaigns()" style="font-size:12px;padding:6px 14px;">Refresh</button>
+                    </div>
+                    <div class="campaign-list" id="campaign-list">
+                        <div style="text-align:center;padding:24px;color:var(--color-text-light);font-size:14px;">Loading campaigns...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Campaign Detail -->
+            <div class="tab-content" id="tab-detail">
+                <div class="email-card" id="detail-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <div>
+                            <h3 style="margin:0;" id="detail-name">Campaign</h3>
+                            <div style="font-size:12px;color:var(--color-text-light);margin-top:4px;" id="detail-meta"></div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn-resume hidden" id="detail-resume-btn" onclick="resumeFromDetail()">Resume</button>
+                            <button class="btn-edit-campaign" id="detail-edit-btn" onclick="editCampaignFromDetail()">Edit</button>
+                            <button class="btn-view" onclick="switchTab('history')">Back</button>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;" id="detail-stats"></div>
+                    <div class="status-table-wrap">
+                        <table class="status-table" style="font-size:12px;">
+                            <thead><tr><th>Email</th><th>Business</th><th>Template</th><th>Status</th><th>Time</th><th>Error</th></tr></thead>
+                            <tbody id="detail-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /email-page-container -->
+            </div><!-- /content-area -->
+        </div><!-- /main-area -->
+    </div><!-- /app-layout -->
+
+    <script>
+    var EMAIL_BRIDGE = 'http://localhost:3002';
+
+    // === Email Templates ===
+    const EMAIL_TEMPLATES = {
+        'nosite-fr': { subject: 'Proposition de creation de site web professionnel pour {{"{{business_name}}"}}', body: "Bonjour {{"{{business_name}}"}},\n\nVotre entreprise n'a pas de site web ? Aujourd'hui, la majorite des clients cherchent les entreprises en ligne avant d'acheter.\n\nCodeSommet cree des sites web professionnels avec un design moderne, optimise pour Google et concus pour convertir vos visiteurs en clients.\n\nNos sites incluent : formulaires de contact, galerie produits, integration reseaux sociaux, et bien plus.\n\nSeriez-vous interesse(e) par un devis gratuit ?\n\nCordialement,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'nosite-darija': { subject: 'Proposition de site web - {{"{{business_name}}"}}', body: "Salam {{"{{business_name}}"}},\n\nL'entreprise dyalkom bla site web ? Daba l'awal haja li kaytfarej clients online hiya site web dyal l'entreprise.\n\nCodeSommet kaynbni likom site web professionnel m3a design moderne w optimise l Google.\n\nWach bgheeti devis gratuit ?\n\nMerhba bikom,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'nosite-en': { subject: 'Professional website proposal for {{"{{business_name}}"}}', body: "Hello {{"{{business_name}}"}},\n\nDoes your business lack a professional website? Most customers search online before making a purchase.\n\nCodeSommet builds professional websites optimized for Google, built to convert visitors into customers.\n\nWould you like a free quote?\n\nBest regards,\nCodeSommet Team\ncodesommet.com | +212 632 582 096" },
+        'redesign-fr': { subject: 'Ameliorez votre site web et votre referencement - {{"{{business_name}}"}}', body: "Bonjour {{"{{business_name}}"}},\n\nVotre site web existe deja, mais pourrait-il etre meilleur ?\n\nCodeSommet aide les entreprises a :\n- Refonte complete du design (moderne & responsif)\n- Optimisation SEO (Google ranking)\n- Amelioration de la vitesse & performance\n- Integration CRM & formulaires avances\n\nCombien d'appels telephoniques aimeriez-vous recevoir en plus chaque mois ?\n\nCordialement,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'redesign-darija': { subject: 'Amelioration du site web - {{"{{business_name}}"}}', body: "Salam {{"{{business_name}}"}},\n\nSite web dyalkom kayn walakin yemken ykon best ?\n\nCodeSommet kayndir:\n- Redesign complet (modern & responsive)\n- SEO optimization (l Google ranking)\n- Performance w speed\n- CRM integration\n\nMerhba bikom,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'redesign-en': { subject: 'Improve your website and SEO - {{"{{business_name}}"}}', body: "Hello {{"{{business_name}}"}},\n\nYou have a website, but could it perform better?\n\nCodeSommet helps with:\n- Complete design overhaul (modern & responsive)\n- SEO optimization (higher Google rankings)\n- Speed & performance improvements\n- CRM & advanced form integration\n\nBest regards,\nCodeSommet Team\ncodesommet.com | +212 632 582 096" },
+        'ecommerce-fr': { subject: 'Developpez vos ventes en ligne - {{"{{business_name}}"}}', body: "Bonjour {{"{{business_name}}"}},\n\nVendez-vous des produits ? CodeSommet cree des boutiques e-commerce completes.\n\nNos clients voient en moyenne +40% d'augmentation des ventes dans les 3 premiers mois.\n\nSeriez-vous interesse(e) par un devis ?\n\nCordialement,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'ecommerce-darija': { subject: 'Boutique e-commerce - {{"{{business_name}}"}}', body: "Salam {{"{{business_name}}"}},\n\nKatbi3ou des produits w bgheeti tzdadou f les ventes online ?\n\nCodeSommet kayndirlkom boutique e-commerce complete. Wach bgheeti devis gratuit ?\n\nMerhba bikom,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'ecommerce-en': { subject: 'Grow your online sales - {{"{{business_name}}"}}', body: "Hello {{"{{business_name}}"}},\n\nCodeSommet builds complete e-commerce stores. Our clients see +40% sales increase in 3 months.\n\nWould you like a free quote?\n\nBest regards,\nCodeSommet Team\ncodesommet.com | +212 632 582 096" },
+        'social-fr': { subject: 'Boostez votre presence sociale - {{"{{business_name}}"}}', body: "Bonjour {{"{{business_name}}"}},\n\nVotre entreprise est-elle visible sur Instagram et Facebook ?\n\nCodeSommet propose : creation de contenu, publicites ciblees et gestion de communaute.\n\nCordialement,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'social-darija': { subject: 'Reseaux sociaux - {{"{{business_name}}"}}', body: "Salam {{"{{business_name}}"}},\n\nL'entreprise dyalkom bana f Instagram w Facebook ?\n\nCodeSommet kayndirlkom contenu professionnel w publicites ciblees.\n\nMerhba bikom,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'social-en': { subject: 'Boost your social media - {{"{{business_name}}"}}', body: "Hello {{"{{business_name}}"}},\n\nIs your business visible on social media?\n\nCodeSommet offers content creation, targeted ads, and community management.\n\nBest regards,\nCodeSommet Team\ncodesommet.com | +212 632 582 096" },
+        'followup-fr': { subject: 'Suivi - {{"{{business_name}}"}}', body: "Bonjour {{"{{business_name}}"}},\n\nJe vous ai contacte recemment. Nous avons une offre speciale pour votre secteur.\n\nSeriez-vous disponible pour un appel de 10 minutes ?\n\nCordialement,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'followup-darija': { subject: 'Suivi - {{"{{business_name}}"}}', body: "Salam {{"{{business_name}}"}},\n\nKontaktit m3akom 9bel. 3ndna offre speciale daba. Wach yemken nhedrou 10 d9ay9 ?\n\nMerhba bikom,\nL'equipe CodeSommet\ncodesommet.com | +212 632 582 096" },
+        'followup-en': { subject: 'Follow-up - {{"{{business_name}}"}}', body: "Hello {{"{{business_name}}"}},\n\nI reached out recently. We have a special offer for your sector.\n\nWould you be available for a quick 10-minute call?\n\nBest regards,\nCodeSommet Team\ncodesommet.com | +212 632 582 096" },
+        'custom': { subject: '', body: '' }
+    };
+
+    const TEMPLATE_OPTIONS_HTML =
+        '<option value="nosite-fr">Pas de site - FR</option><option value="nosite-darija">Pas de site - Darija</option><option value="nosite-en">No Website - EN</option>' +
+        '<option value="redesign-fr">Redesign+SEO - FR</option><option value="redesign-darija">Redesign+SEO - Darija</option><option value="redesign-en">Redesign+SEO - EN</option>' +
+        '<option value="ecommerce-fr">E-commerce - FR</option><option value="ecommerce-darija">E-commerce - Darija</option><option value="ecommerce-en">E-commerce - EN</option>' +
+        '<option value="social-fr">Social - FR</option><option value="social-darija">Social - Darija</option><option value="social-en">Social - EN</option>' +
+        '<option value="followup-fr">Relance - FR</option><option value="followup-darija">Relance - Darija</option><option value="followup-en">Follow-up - EN</option>' +
+        '<option value="custom">Custom</option>';
+
+    const TEMPLATE_LABELS = {'nosite-fr':'Pas de site FR','nosite-darija':'Pas de site Darija','nosite-en':'No Website EN','redesign-fr':'Redesign FR','redesign-darija':'Redesign Darija','redesign-en':'Redesign EN','ecommerce-fr':'E-commerce FR','ecommerce-darija':'E-commerce Darija','ecommerce-en':'E-commerce EN','social-fr':'Social FR','social-darija':'Social Darija','social-en':'Social EN','followup-fr':'Relance FR','followup-darija':'Relance Darija','followup-en':'Follow-up EN','custom':'Custom'};
+
+    // === State ===
+    let isConfigured = false;
+    let isSending = false;
+    let activeCampaignId = null;
+    let recipients = [];
+    let sentEmailsSet = new Set(); // emails already sent in past campaigns
+    let statusPollTimer = null;
+
+    // === Init ===
+    document.addEventListener('DOMContentLoaded', () => {
+        checkStatus();
+        loadJobs();
+        loadSavedConfig();
+        loadSentEmails();
+        const sel = document.getElementById('email-template-preview-select');
+        if (sel) { sel.innerHTML = TEMPLATE_OPTIONS_HTML; previewTemplate(); }
+    });
+
+    // === Tabs ===
+    function switchTab(name) {
+        document.querySelectorAll('.email-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        // Activate corresponding tab button
+        const btns = document.querySelectorAll('.email-tab');
+        btns.forEach(b => { if (b.textContent.toLowerCase().includes(name === 'new' ? 'new' : name === 'history' ? 'history' : 'detail')) b.classList.add('active'); });
+        if (name === 'history') loadCampaigns();
+        if (name === 'detail') document.getElementById('tab-detail-btn').classList.remove('hidden');
+    }
+
+    // === Helpers ===
+    function detectEmailTemplate(r) { return (r.website && r.website.trim() && r.website.trim() !== '--') ? 'redesign-fr' : 'nosite-fr'; }
+    function fillTemplate(text, r) { return text.replace(/\{\{business_name\}\}/g, r.business || r.email || 'there'); }
+    function templateOptionsWithSelected(selected) { return TEMPLATE_OPTIONS_HTML.replace('value="' + selected + '"', 'value="' + selected + '" selected'); }
+    function setRowTemplate(idx, tpl) { if (recipients[idx]) recipients[idx].template = tpl; }
+    function removeRecipient(idx) { recipients.splice(idx, 1); renderImportTable(); updateRecipientCount(); }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function previewTemplate() {
+        const sel = document.getElementById('email-template-preview-select');
+        const tmpl = EMAIL_TEMPLATES[sel.value];
+        if (tmpl) { document.getElementById('preview-subject').textContent = tmpl.subject || '(empty)'; document.getElementById('preview-body').textContent = tmpl.body || '(custom)'; }
+    }
+
+    function updateRecipientCount() {
+        document.getElementById('recipient-count').innerHTML = '<strong>' + recipients.length + '</strong> recipients loaded';
+    }
+
+    // === Load sent emails for dedup ===
+    async function loadSentEmails() {
+        try {
+            const resp = await fetch(EMAIL_BRIDGE + '/sent-emails');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            sentEmailsSet = new Set((data.emails || []).map(e => e.toLowerCase()));
+        } catch (e) {}
+    }
+
+    // === SMTP ===
+    async function checkStatus() {
+        try {
+            const resp = await fetch(EMAIL_BRIDGE + '/status');
+            const data = await resp.json();
+            if (data.configured) { setConfigured(true, data.email, data.host); }
+            else { setConfigured(false); document.getElementById('config-section').classList.remove('hidden'); }
+        } catch (e) {
+            setConfigured(false);
+            document.getElementById('config-section').classList.remove('hidden');
+            document.getElementById('config-status-msg').textContent = 'Cannot reach email bridge on port 3002';
+            document.getElementById('config-status-msg').className = 'config-status error';
+        }
+    }
+
+    function setConfigured(ok, email, host) {
+        isConfigured = ok;
+        document.getElementById('smtp-status-dot').className = 'status-dot ' + (ok ? 'configured' : 'not-configured');
+        document.getElementById('smtp-status-text').textContent = ok ? 'SMTP: ' + (email||'') + ' via ' + (host||'') : 'Not configured';
+        if (ok) { document.getElementById('config-status-msg').textContent = 'Ready'; document.getElementById('config-status-msg').className = 'config-status ok'; }
+    }
+
+    async function loadSavedConfig() {
+        try {
+            const resp = await fetch(EMAIL_BRIDGE + '/config');
+            if (!resp.ok) return;
+            const d = await resp.json();
+            if (!d.configured) return;
+            if (d.host) document.getElementById('smtp-host').value = d.host;
+            if (d.port) document.getElementById('smtp-port').value = d.port;
+            document.getElementById('smtp-secure').checked = !!d.secure;
+            if (d.user) document.getElementById('smtp-user').value = d.user;
+            if (d.fromName) document.getElementById('smtp-from-name').value = d.fromName;
+            if (d.fromEmail) document.getElementById('smtp-from-email').value = d.fromEmail;
+            if (d.hasPassword) document.getElementById('smtp-pass').placeholder = '(saved - leave blank to keep)';
+        } catch (e) {}
+    }
+
+    async function saveAndTestConfig() {
+        const passValue = document.getElementById('smtp-pass').value;
+        const config = { host: document.getElementById('smtp-host').value.trim(), port: parseInt(document.getElementById('smtp-port').value)||587, secure: document.getElementById('smtp-secure').checked, user: document.getElementById('smtp-user').value.trim(), pass: passValue, fromName: document.getElementById('smtp-from-name').value.trim(), fromEmail: document.getElementById('smtp-from-email').value.trim() };
+        if (!passValue) config.keepPassword = true;
+        if (!config.host || !config.user || !config.fromEmail) { document.getElementById('config-status-msg').textContent = 'Fill all required fields'; document.getElementById('config-status-msg').className = 'config-status error'; return; }
+        if (!passValue && !isConfigured) { document.getElementById('config-status-msg').textContent = 'Password required'; document.getElementById('config-status-msg').className = 'config-status error'; return; }
+        document.getElementById('config-status-msg').textContent = 'Saving...'; document.getElementById('config-status-msg').className = 'config-status not-configured';
+        try {
+            const sr = await fetch(EMAIL_BRIDGE+'/configure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+            if (!sr.ok) { const e = await sr.json(); document.getElementById('config-status-msg').textContent = 'Save failed: '+(e.error||''); document.getElementById('config-status-msg').className = 'config-status error'; return; }
+            document.getElementById('config-status-msg').textContent = 'Testing...';
+            const tr = await fetch(EMAIL_BRIDGE+'/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:config.fromEmail})});
+            if (tr.ok) { setConfigured(true,config.fromEmail,config.host); document.getElementById('config-section').classList.add('hidden'); }
+            else { const e = await tr.json(); document.getElementById('config-status-msg').textContent = 'Test failed: '+(e.error||''); document.getElementById('config-status-msg').className = 'config-status error'; }
+        } catch (e) { document.getElementById('config-status-msg').textContent = 'Error: '+e.message; document.getElementById('config-status-msg').className = 'config-status error'; }
+    }
+
+    // === Jobs ===
+    async function loadJobs() {
+        try {
+            const resp = await fetch('/api/v1/jobs');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            const sel = document.getElementById('job-select');
+            (Array.isArray(data)?data:[]).forEach(job => {
+                const id = job.ID||job.id||'', name = job.Name||job.name||'Job', status = job.Status||job.status||'';
+                if (status !== 'ok') return;
+                const opt = document.createElement('option'); opt.value = id; opt.textContent = name + ' (Completed)'; sel.appendChild(opt);
+            });
+        } catch (e) {}
+    }
+
+    // === Import ===
+    // Validate email: reject image filenames, URL-encoded junk, placeholder domains
+    function isValidEmail(e) {
+        if (!e || !e.includes('@')) return false;
+        // Reject URL-encoded emails
+        if (e.includes('%') || e.includes(' ')) return false;
+        // Reject image/file extensions scraped from websites
+        if (/\.(png|jpg|jpeg|gif|svg|webp|bmp|ico)$/i.test(e)) return false;
+        // Reject placeholder/example domains
+        const domain = e.split('@')[1] || '';
+        if (/^(example|exemple|test|localhost|yourdomain)\./i.test(domain)) return false;
+        // Basic email format check
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+    }
+
+    async function importFromJob() {
+        const jobId = document.getElementById('job-select').value;
+        if (!jobId) { alert('Select a scrape job first.'); return; }
+        try {
+            const resp = await fetch('/results-preview?id=' + encodeURIComponent(jobId));
+            if (!resp.ok) { alert('Could not load results.'); return; }
+            const data = await resp.json();
+            const seen = new Set();
+            recipients = [];
+            let skippedNoEmail = 0;
+            let skippedInvalid = 0;
+            const items = data.results || data.data || data || [];
+            if (Array.isArray(items)) {
+                items.forEach(item => {
+                    const rawEmail = item.emails||item.email||item.Email||item.email_address||item.mail||'';
+                    const business = item.title||item.name||item.business||item.Name||'';
+                    const website = item.website||item.Website||'';
+                    const phone = item.phone||item.Phone||'';
+                    // Split and validate emails
+                    const emailList = rawEmail.split(/[,;\s]+/).map(e=>e.trim()).filter(e => {
+                        if (!e.includes('@')) return false;
+                        if (!isValidEmail(e)) { skippedInvalid++; return false; }
+                        return true;
+                    });
+                    // Only import leads that have at least one valid email
+                    if (emailList.length === 0) { skippedNoEmail++; return; }
+                    emailList.forEach(email => {
+                        const key = email.toLowerCase();
+                        if (seen.has(key)) return;
+                        seen.add(key);
+                        const r = { email, business, website, phone, template: '', status: 'pending', time: '', error: '', alreadySent: sentEmailsSet.has(key) };
+                        r.template = detectEmailTemplate(r);
+                        recipients.push(r);
+                    });
+                });
+            }
+            renderImportTable(); updateRecipientCount();
+            if (recipients.length === 0) {
+                alert('No leads with valid email found.\n' + skippedNoEmail + ' leads had no email.\n' + skippedInvalid + ' had invalid/fake emails.');
+            } else {
+                document.getElementById('template-preview-card').classList.remove('hidden');
+                if (skippedNoEmail > 0 || skippedInvalid > 0) {
+                    console.log('Import: skipped ' + skippedNoEmail + ' without email, ' + skippedInvalid + ' invalid emails');
+                }
+            }
+        } catch (e) { alert('Error: '+e.message); }
+    }
+
+    // === Import Table ===
+    function renderImportTable() {
+        const tbody = document.getElementById('import-preview-body');
+        const wrapper = document.getElementById('import-preview');
+        if (recipients.length === 0) { wrapper.classList.add('hidden'); return; }
+        wrapper.classList.remove('hidden');
+        const alreadySent = recipients.filter(r=>r.alreadySent).length;
+        const newCount = recipients.length - alreadySent;
+        let label = recipients.length + ' leads with email';
+        if (alreadySent) label += ' (' + alreadySent + ' already sent in past campaigns)';
+        document.getElementById('import-count-label').textContent = label;
+        tbody.innerHTML = recipients.map((r,i) => {
+            return '<tr style="border-top:1px solid var(--color-border);">' +
+            '<td style="padding:4px 8px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(r.business||'--')+'</td>' +
+            '<td style="padding:4px 8px;font-family:monospace;font-size:11px;">'+escapeHtml(r.phone||'--')+'</td>' +
+            '<td style="padding:4px 8px;font-family:monospace;font-size:11px;">'+escapeHtml(r.email) + (r.alreadySent ? '<span class="already-sent-badge">SENT</span>' : '') + '</td>' +
+            '<td style="padding:4px 8px;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(r.website ? escapeHtml(r.website) : '<span style="color:var(--color-error);">No site</span>')+'</td>' +
+            '<td style="padding:4px 6px;"><select style="font-size:11px;padding:2px 4px;border:1px solid var(--color-border);border-radius:3px;" onchange="setRowTemplate('+i+',this.value)">'+templateOptionsWithSelected(r.template)+'</select></td>' +
+            '<td style="padding:4px 6px;text-align:center;"><button onclick="removeRecipient('+i+')" style="background:none;border:none;color:var(--color-error);cursor:pointer;font-size:14px;">&times;</button></td></tr>';
+        }).join('');
+    }
+
+    // === Test Send ===
+    async function sendTestEmail() {
+        const testTo = document.getElementById('test-email').value.trim();
+        if (!testTo) { alert('Enter a test email.'); return; }
+        if (!isConfigured) { alert('Configure SMTP first.'); return; }
+        const sel = document.getElementById('email-template-preview-select');
+        const tmpl = EMAIL_TEMPLATES[sel.value];
+        if (!tmpl) return;
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:testTo,subject:fillTemplate(tmpl.subject,{business:'Test Business',email:testTo}),body:fillTemplate(tmpl.body,{business:'Test Business',email:testTo})})});
+            alert(resp.ok ? 'Test email sent!' : 'Failed: '+((await resp.json()).error||''));
+        } catch (e) { alert('Error: '+e.message); }
+    }
+
+    // === Start Campaign ===
+    async function startCampaign() {
+        if (!isConfigured) { alert('Configure SMTP first.'); return; }
+        if (recipients.length === 0) { alert('Import leads first.'); return; }
+        const sendable = recipients.filter(r => !r.alreadySent);
+        const skippedAlready = recipients.length - sendable.length;
+        if (sendable.length === 0) { alert('All recipients were already sent in past campaigns.'); return; }
+        let msg = 'Start campaign with ' + sendable.length + ' recipients?';
+        if (skippedAlready) msg += '\n' + skippedAlready + ' already sent in past campaigns will be skipped.';
+        if (!confirm(msg)) return;
+
+        const campaignName = document.getElementById('campaign-name').value.trim() || 'Campaign ' + new Date().toLocaleDateString();
+        const messages = sendable.map(r => {
+            const tmpl = (r.template && EMAIL_TEMPLATES[r.template]) ? EMAIL_TEMPLATES[r.template] : EMAIL_TEMPLATES['nosite-fr'];
+            return { to: r.email, business: r.business||'', subject: fillTemplate(tmpl.subject,r), body: fillTemplate(tmpl.body,r), template: r.template||'nosite-fr' };
+        });
+
+        let delayMin = Math.max(5, parseInt(document.getElementById('delay-min').value)||5);
+        let delayMax = Math.max(delayMin, parseInt(document.getElementById('delay-max').value)||10);
+        document.getElementById('delay-info').textContent = 'Delay: '+delayMin+'-'+delayMax+'s';
+
+        isSending = true; updateSendUI();
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/campaigns',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:campaignName,messages,delayMin,delayMax})});
+            if (!resp.ok) { const e = await resp.json(); alert('Failed: '+(e.error||'')); isSending=false; updateSendUI(); return; }
+            const data = await resp.json();
+            activeCampaignId = data.id;
+            startStatusPolling();
+        } catch (e) { alert('Error: '+e.message); isSending=false; updateSendUI(); }
+    }
+
+    // === Stop/Pause Campaign ===
+    async function stopCampaign() {
+        if (!activeCampaignId) return;
+        if (!confirm('Pause this campaign? You can resume it later from Campaign History.')) return;
+        try { await fetch(EMAIL_BRIDGE+'/campaigns/'+activeCampaignId+'/stop',{method:'POST'}); } catch(e){}
+    }
+
+    // === Send UI ===
+    function updateSendUI() {
+        const btnStart = document.getElementById('btn-start');
+        const btnStop = document.getElementById('btn-stop');
+        const progress = document.getElementById('send-progress');
+        if (isSending) { btnStart.disabled=true; btnStart.textContent='Sending...'; btnStop.classList.remove('hidden'); progress.classList.remove('hidden'); }
+        else { btnStart.disabled=false; btnStart.textContent='Start Campaign'; btnStop.classList.add('hidden'); }
+    }
+
+    // === Status Polling ===
+    function startStatusPolling() {
+        if (statusPollTimer) clearInterval(statusPollTimer);
+        statusPollTimer = setInterval(pollStatus, 2000);
+        pollStatus();
+    }
+
+    async function pollStatus() {
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/bulk-status');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            const msgs = data.messages||[];
+            const done = (data.sent||0)+(data.failed||0);
+            const total = data.total||msgs.length;
+            const pct = total>0 ? Math.round((done/total)*100) : 0;
+            document.getElementById('progress-text').textContent = data.running ? 'Sending '+done+'/'+total+'...' : 'Completed: '+(data.sent||0)+' sent, '+(data.failed||0)+' failed';
+            document.getElementById('progress-fill').style.width = pct+'%';
+            document.getElementById('send-stats').textContent = 'Sent: '+(data.sent||0)+' | Failed: '+(data.failed||0);
+
+            // Update status table
+            const tbody = document.getElementById('status-tbody');
+            const emptyEl = document.getElementById('empty-status');
+            if (msgs.length > 0) {
+                emptyEl.style.display = 'none';
+                tbody.innerHTML = msgs.map(m => {
+                    const cls = m.status === 'sending' ? 'row-sending' : m.status === 'sent' ? 'row-sent' : m.status === 'failed' ? 'row-failed' : '';
+                    const statusCls = 'delivery-'+(m.status||'pending');
+                    const statusText = (m.status||'pending').charAt(0).toUpperCase()+(m.status||'pending').slice(1);
+                    const errorTip = m.error ? ' title="'+escapeHtml(m.error)+'"' : '';
+                    return '<tr class="'+cls+'"><td style="font-family:monospace;font-size:12px;">'+escapeHtml(m.to)+'</td><td>'+escapeHtml(m.business||'--')+'</td><td style="font-size:11px;">'+(TEMPLATE_LABELS[m.template]||m.template||'--')+'</td><td><span class="'+statusCls+'"'+errorTip+'>'+statusText+'</span></td><td style="color:var(--color-text-light);font-size:12px;">'+escapeHtml(m.sentAt||'--')+'</td></tr>';
+                }).join('');
+            }
+
+            if (!data.running && done > 0) {
+                isSending = false; updateSendUI();
+                clearInterval(statusPollTimer); statusPollTimer = null;
+                activeCampaignId = null;
+                loadSentEmails(); // refresh sent emails set
+            }
+        } catch (e) {}
+    }
+
+    // === Campaign History ===
+    async function loadCampaigns() {
+        const list = document.getElementById('campaign-list');
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/campaigns');
+            if (!resp.ok) { list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-light);">Failed to load campaigns.</div>'; return; }
+            const campaigns = await resp.json();
+            if (campaigns.length === 0) { list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-light);">No campaigns yet. Start one from the "New Campaign" tab.</div>'; return; }
+            list.innerHTML = campaigns.map(c => {
+                const badgeClass = c.status === 'completed' ? 'badge-completed' : c.status === 'paused' ? 'badge-paused' : c.status === 'sending' ? 'badge-sending' : 'badge-failed';
+                const remaining = c.total - c.sent - c.failed;
+                const canResume = c.status === 'paused' || c.status === 'stopped' || (c.status === 'completed' && c.failed > 0) || (c.status === 'sending' && remaining > 0);
+                const date = c.createdAt ? new Date(c.createdAt).toLocaleString() : '--';
+                return '<div class="campaign-item">' +
+                    '<div class="campaign-info"><div class="campaign-name">'+escapeHtml(c.name||'Unnamed')+'</div><div class="campaign-meta">'+date+'</div></div>' +
+                    '<div class="campaign-stats"><span style="color:var(--color-success);">'+c.sent+' sent</span><span style="color:var(--color-error);">'+c.failed+' failed</span><span style="color:var(--color-text-light);">'+(c.total-c.sent-c.failed)+' remaining</span></div>' +
+                    '<span class="campaign-status-badge '+badgeClass+'">'+c.status.toUpperCase()+'</span>' +
+                    '<div class="campaign-actions">' +
+                    (canResume ? '<button class="btn-resume" onclick="resumeCampaign(\''+c.id+'\')">Resume</button>' : '') +
+                    (c.status !== 'sending' ? '<button class="btn-edit-campaign" onclick="editCampaign(\''+c.id+'\')">Edit</button>' : '') +
+                    '<button class="btn-view" onclick="viewCampaign(\''+c.id+'\')">Details</button>' +
+                    '<button class="btn-delete-campaign" onclick="deleteCampaign(\''+c.id+'\')">Delete</button>' +
+                    '</div></div>';
+            }).join('');
+        } catch (e) { list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-error);">Error loading campaigns.</div>'; }
+    }
+
+    // === View Campaign Detail ===
+    let viewingCampaignId = null;
+    async function viewCampaign(id) {
+        viewingCampaignId = id;
+        switchTab('detail');
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/campaigns/'+id);
+            if (!resp.ok) { document.getElementById('detail-name').textContent = 'Error loading campaign'; return; }
+            const c = await resp.json();
+            document.getElementById('detail-name').textContent = c.name || 'Campaign';
+            document.getElementById('detail-meta').textContent = 'Created: ' + (c.createdAt ? new Date(c.createdAt).toLocaleString() : '--') + ' | Delay: ' + (c.delayMin||5) + '-' + (c.delayMax||10) + 's';
+            document.getElementById('detail-stats').innerHTML =
+                '<span style="background:#dcfce7;color:#16a34a;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;">'+(c.sent||0)+' Sent</span>' +
+                '<span style="background:#fef2f2;color:#dc2626;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;">'+(c.failed||0)+' Failed</span>' +
+                '<span style="background:var(--color-background);color:var(--color-text-light);padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;">'+ ((c.total||0)-(c.sent||0)-(c.failed||0)) +' Remaining</span>';
+
+            const detailRemaining = (c.total||0) - (c.sent||0) - (c.failed||0);
+            const canResume = c.status === 'paused' || c.status === 'stopped' || (c.status === 'completed' && c.failed > 0) || (c.status === 'sending' && detailRemaining > 0);
+            const resumeBtn = document.getElementById('detail-resume-btn');
+            if (canResume) resumeBtn.classList.remove('hidden'); else resumeBtn.classList.add('hidden');
+
+            const editBtn = document.getElementById('detail-edit-btn');
+            if (c.status === 'sending') editBtn.classList.add('hidden'); else editBtn.classList.remove('hidden');
+
+            const msgs = c.messages || [];
+            document.getElementById('detail-tbody').innerHTML = msgs.map(m => {
+                const cls = m.status==='sending'?'row-sending':m.status==='sent'?'row-sent':m.status==='failed'?'row-failed':'';
+                return '<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px;">'+escapeHtml(m.to)+'</td><td>'+escapeHtml(m.business||'--')+'</td><td style="font-size:11px;">'+(TEMPLATE_LABELS[m.template]||'--')+'</td><td><span class="delivery-'+(m.status||'pending')+'">'+(m.status||'pending')+'</span></td><td style="font-size:11px;">'+escapeHtml(m.sentAt||'--')+'</td><td style="font-size:11px;color:var(--color-error);">'+escapeHtml(m.error||'')+'</td></tr>';
+            }).join('');
+        } catch (e) { document.getElementById('detail-name').textContent = 'Error: '+e.message; }
+    }
+
+    // === Resume Campaign ===
+    async function resumeCampaign(id) {
+        if (!isConfigured) { alert('Configure SMTP first.'); return; }
+        if (isSending) { alert('A campaign is already running. Stop it first.'); return; }
+        const retryFailed = confirm('Resume campaign?\n\nClick OK to resume (paused + retry failed)\nClick Cancel to go back');
+        if (retryFailed === undefined) return;
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/campaigns/'+id+'/resume',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({retryFailed:true})});
+            if (!resp.ok) { const e = await resp.json(); alert('Failed: '+(e.error||'')); return; }
+            const data = await resp.json();
+            if (!data.resumed) { alert(data.message || 'Nothing to resume.'); return; }
+            activeCampaignId = id;
+            isSending = true;
+            switchTab('new');
+            updateSendUI();
+            startStatusPolling();
+        } catch (e) { alert('Error: '+e.message); }
+    }
+
+    function resumeFromDetail() {
+        if (viewingCampaignId) resumeCampaign(viewingCampaignId);
+    }
+
+    function editCampaignFromDetail() {
+        if (viewingCampaignId) editCampaign(viewingCampaignId);
+    }
+
+    // === Edit Campaign ===
+    async function editCampaign(id) {
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/campaigns/'+id);
+            if (!resp.ok) { alert('Failed to load campaign.'); return; }
+            const c = await resp.json();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'edit-overlay';
+            overlay.innerHTML =
+                '<div class="edit-modal">' +
+                    '<h3>Edit Campaign</h3>' +
+                    '<div class="form-group"><label for="edit-name">Campaign Name</label><input type="text" id="edit-name" value="'+escapeHtml(c.name||'')+'"></div>' +
+                    '<div class="delay-row">' +
+                        '<div class="form-group"><label for="edit-delay-min">Min delay (sec)</label><input type="number" id="edit-delay-min" value="'+(c.delayMin||5)+'" min="5" max="300"></div>' +
+                        '<div class="form-group"><label for="edit-delay-max">Max delay (sec)</label><input type="number" id="edit-delay-max" value="'+(c.delayMax||10)+'" min="5" max="300"></div>' +
+                    '</div>' +
+                    '<div class="delay-hint">Random delay to avoid spam filters. Min 5s.</div>' +
+                    '<div class="edit-actions">' +
+                        '<button class="btn-cancel" onclick="closeEditModal()">Cancel</button>' +
+                        '<button class="btn-save" id="btn-save-edit" onclick="saveEditCampaign(\''+id+'\')">Save Changes</button>' +
+                    '</div>' +
+                '</div>';
+            overlay.addEventListener('click', function(e) { if (e.target === overlay) closeEditModal(); });
+            document.body.appendChild(overlay);
+        } catch (e) { alert('Error: '+e.message); }
+    }
+
+    function closeEditModal() {
+        const overlay = document.querySelector('.edit-overlay');
+        if (overlay) overlay.remove();
+    }
+
+    async function saveEditCampaign(id) {
+        const name = document.getElementById('edit-name').value.trim();
+        const delayMin = Math.max(5, parseInt(document.getElementById('edit-delay-min').value)||5);
+        const delayMax = Math.max(delayMin, parseInt(document.getElementById('edit-delay-max').value)||10);
+        const btn = document.getElementById('btn-save-edit');
+        btn.disabled = true; btn.textContent = 'Saving...';
+        try {
+            const resp = await fetch(EMAIL_BRIDGE+'/campaigns/'+id, {
+                method: 'PATCH',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ name, delayMin, delayMax })
+            });
+            if (!resp.ok) { const e = await resp.json(); alert('Failed: '+(e.error||'')); btn.disabled=false; btn.textContent='Save Changes'; return; }
+            closeEditModal();
+            loadCampaigns();
+            // If viewing this campaign's detail, refresh it
+            if (viewingCampaignId === id) viewCampaign(id);
+        } catch (e) { alert('Error: '+e.message); btn.disabled=false; btn.textContent='Save Changes'; }
+    }
+
+    // === Delete Campaign ===
+    async function deleteCampaign(id) {
+        if (!confirm('Delete this campaign permanently?')) return;
+        try {
+            await fetch(EMAIL_BRIDGE+'/campaigns/'+id,{method:'DELETE'});
+            loadCampaigns();
+        } catch (e) { alert('Error: '+e.message); }
+    }
+    </script>
+</body>
+</html>

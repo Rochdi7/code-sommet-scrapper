@@ -1,18 +1,44 @@
-<tr>
-    <td>{{.ID}}</td>
-    <td>{{.Name}}</td>
-    <td>{{.Date}}</td>
+<tr data-job-id="{{.ID}}" data-job-name="{{.Name}}">
+    <td title="{{.ID}}">{{ truncate .ID 8 }}</td>
+    <td style="font-weight:500;">{{.Name}}</td>
+    <td style="color:var(--text-secondary); font-size:12px;">{{.Date}}</td>
     <td>
-        <span class="status-indicator status-{{.Status}}">{{.Status}}</span>
+        <span class="status-indicator status-{{.Status}}" data-status="{{.Status}}">
+            {{ if eq .Status "working" }}Scraping{{ else if eq .Status "ok" }}Completed{{ else if eq .Status "failed" }}Failed{{ else }}{{.Status}}{{ end }}
+        </span>
+        {{ if eq .Status "working" }}
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="progress-counter" id="progress-{{.ID}}">Starting...</div>
+            <div class="elapsed-timer" data-started="{{.Date}}">starting...</div>
+        {{ end }}
     </td>
     <td>
-        {{ if eq .Status "ok" }}
-            <a href="/download?id={{.ID}}" download class="button download-button">Download</a>
-        {{ end }}
-        <button hx-delete="/delete?id={{.ID}}" 
-                hx-target="closest tr"
-                hx-swap="outerHTML"
-                hx-confirm="Are you sure you want to delete this job?"
-                class="delete-button">Delete</button>
+        <div class="row-actions">
+            {{ if or (eq .Status "working") (eq .Status "pending") }}
+                <button class="stop-button" onclick="stopJob('{{.ID}}', event)" title="Stop Job">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                    Stop
+                </button>
+            {{ end }}
+            {{ if eq .Status "ok" }}
+                <a href="/download?id={{.ID}}" download class="download-button" title="Download CSV">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    CSV
+                </a>
+                <a href="/results?id={{.ID}}" class="view-btn" title="View Results">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                </a>
+            {{ end }}
+            <button hx-delete="/delete?id={{.ID}}"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to delete this job?"
+                    class="delete-button" title="Delete Job">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+        </div>
     </td>
 </tr>

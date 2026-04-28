@@ -3,157 +3,1058 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Maps Scraper</title>
+    <title>CodeSommet Lead Scraper</title>
     <link rel="stylesheet" href="/static/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.6/htmx.min.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>Google Maps Scraper</h1>
-            <nav>
-                <a href="/api/docs" target="_blank" rel="noopener noreferrer">API Documentation</a>
+    <div class="app-layout">
+        <!-- ===== SIDEBAR NAVIGATION ===== -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/webscraper" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Website Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
             </nav>
-            <div class="github-section">
-                <p>If you find this tool useful, please consider starring our repository: </p>
-                <a href="https://github.com/gosom/google-maps-scraper" class="github-button">
-                <svg height="16" width="16" viewBox="0 0 16 16">
-                    <path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/>
-                  </svg>
-                  Star on GitHub
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
                 </a>
             </div>
-            <div id="sponsor-section" class="sponsor-section">
-    <button class="sponsor-close" onclick="hideSponsor()">
-        ×
-    </button>
-    <p class="sponsor-text">Support the ongoing maintenance and development of this project by becoming a sponsor. Your contribution helps ensure the tool's continued improvement and reliability.</p>
-    <a href="https://github.com/sponsors/gosom" class="sponsor-button" target="_blank" rel="noopener noreferrer">
-        <svg height="16" width="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 2.5C4.25 1.83696 4.67143 1.25 5.25 1.25C5.82857 1.25 6.25 1.83696 6.25 2.5C6.25 3.16304 5.82857 3.75 5.25 3.75C4.67143 3.75 4.25 3.16304 4.25 2.5ZM2.5 3.75C1.92143 3.75 1.5 3.16304 1.5 2.5C1.5 1.83696 1.92143 1.25 2.5 1.25C3.07857 1.25 3.5 1.83696 3.5 2.5C3.5 3.16304 3.07857 3.75 2.5 3.75ZM8 1.25C7.42143 1.25 7 1.83696 7 2.5C7 3.16304 7.42143 3.75 8 3.75C8.57857 3.75 9 3.16304 9 2.5C9 1.83696 8.57857 1.25 8 1.25ZM10.75 2.5C10.75 1.83696 11.1714 1.25 11.75 1.25C12.3286 1.25 12.75 1.83696 12.75 2.5C12.75 3.16304 12.3286 3.75 11.75 3.75C11.1714 3.75 10.75 3.16304 10.75 2.5ZM14.5 1.25C13.9214 1.25 13.5 1.83696 13.5 2.5C13.5 3.16304 13.9214 3.75 14.5 3.75C15.0786 3.75 15.5 3.16304 15.5 2.5C15.5 1.83696 15.0786 1.25 14.5 1.25ZM1.25 5.25C1.25 4.67143 1.83696 4.25 2.5 4.25C3.16304 4.25 3.75 4.67143 3.75 5.25C3.75 5.82857 3.16304 6.25 2.5 6.25C1.83696 6.25 1.25 5.82857 1.25 5.25ZM5.25 4.25C4.67143 4.25 4.25 4.67143 4.25 5.25C4.25 5.82857 4.67143 6.25 5.25 6.25C5.82857 6.25 6.25 5.82857 6.25 5.25C6.25 4.67143 5.82857 4.25 5.25 4.25ZM7 5.25C7 4.67143 7.42143 4.25 8 4.25C8.57857 4.25 9 4.67143 9 5.25C9 5.82857 8.57857 6.25 8 6.25C7.42143 6.25 7 5.82857 7 5.25ZM11.75 4.25C11.1714 4.25 10.75 4.67143 10.75 5.25C10.75 5.82857 11.1714 6.25 11.75 6.25C12.3286 6.25 12.75 5.82857 12.75 5.25C12.75 4.67143 12.3286 4.25 11.75 4.25ZM13.5 5.25C13.5 4.67143 13.9214 4.25 14.5 4.25C15.0786 4.25 15.5 4.67143 15.5 5.25C15.5 5.82857 15.0786 6.25 14.5 6.25C13.9214 6.25 13.5 5.82857 13.5 5.25ZM2.5 7.25C1.83696 7.25 1.25 7.67143 1.25 8.25C1.25 8.82857 1.83696 9.25 2.5 9.25C3.16304 9.25 3.75 8.82857 3.75 8.25C3.75 7.67143 3.16304 7.25 2.5 7.25ZM4.25 8.25C4.25 7.67143 4.67143 7.25 5.25 7.25C5.82857 7.25 6.25 7.67143 6.25 8.25C6.25 8.82857 5.82857 9.25 5.25 9.25C4.67143 9.25 4.25 8.82857 4.25 8.25ZM8 7.25C7.42143 7.25 7 7.67143 7 8.25C7 8.82857 7.42143 9.25 8 9.25C8.57857 9.25 9 8.82857 9 8.25C9 7.67143 8.57857 7.25 8 7.25ZM10.75 8.25C10.75 7.67143 11.1714 7.25 11.75 7.25C12.3286 7.25 12.75 7.67143 12.75 8.25C12.75 8.82857 12.3286 9.25 11.75 9.25C11.1714 9.25 10.75 8.82857 10.75 8.25ZM14.5 7.25C13.9214 7.25 13.5 7.67143 13.5 8.25C13.5 8.82857 13.9214 9.25 14.5 9.25C15.0786 9.25 15.5 8.82857 15.5 8.25C15.5 7.67143 15.0786 7.25 14.5 7.25Z" fill="currentColor"/>
-        </svg>
-        Sponsor on GitHub
-    </a>
-</div>
+        </aside>
 
-        </header>
-        <main>
-            <div class="sidebar">
+        <!-- ===== MAIN AREA ===== -->
+        <div class="main-area">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Scraper</h2>
+                    <span class="topbar-breadcrumb">Create and manage scraping jobs</span>
+                </div>
+                <div class="topbar-right">
+                    <button type="button" class="topbar-btn" onclick="openJobModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        New Job
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-area">
                 <div id="error-container" class="error-message"></div>
-                <form 
-                    hx-post="/scrape" 
-                    hx-target="#job-table tbody" 
-                    hx-swap="beforeend"
-                    hx-indicator="#spinner"
-                    hx-on::before-request="document.getElementById('error-container').innerHTML = ''"
-                    hx-on::after-request="if(!event.detail.successful) document.getElementById('error-container').innerHTML = event.detail.xhr.responseText"
-                >
-                    
-                    <fieldset>
-                        <legend>Job Details</legend>
+
+                <!-- Filter Bar -->
+                <div id="filter-bar" class="filter-bar" style="display:none;">
+                    <h3>Filter & Score Leads</h3>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="applyFilter('all', this)">All</button>
+                        <button class="filter-btn filter-hot" onclick="applyFilter('no-website', this)">No Website (HOT)</button>
+                        <button class="filter-btn filter-warm" onclick="applyFilter('low-rating', this)">Rating &lt; 4.0</button>
+                        <button class="filter-btn" onclick="applyFilter('has-email', this)">Has Email</button>
+                        <button class="filter-btn" onclick="applyFilter('has-phone', this)">Has Phone</button>
+                        <button class="filter-btn filter-score" onclick="applyFilter('top-leads', this)">Top 10 Leads</button>
+                    </div>
+                    <div class="filter-stats" id="filter-stats"></div>
+                </div>
+
+                <!-- Results Preview -->
+                <div id="results-preview" class="results-preview" style="display:none;">
+                    <div class="results-header">
+                        <h3>Results <span id="results-count-badge" class="count-badge"></span></h3>
+                        <div class="export-buttons">
+                            <button class="export-btn export-csv" onclick="exportAs('csv')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                CSV
+                            </button>
+                            <button class="export-btn export-json" onclick="exportAs('json')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                JSON
+                            </button>
+                            <button class="export-btn export-sheets" onclick="exportToGoogleSheets()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                Google Sheets
+                            </button>
+                        </div>
+                    </div>
+                    <div class="results-table-wrap">
+                        <table id="results-table">
+                            <thead><tr id="results-thead"></tr></thead>
+                            <tbody id="results-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="duplicate-warning" class="duplicate-warning" style="display:none;"></div>
+                </div>
+
+                <!-- Jobs Table -->
+                <div class="table-wrapper">
+                    <div class="table-toolbar">
+                        <div class="table-search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            <input type="text" placeholder="Search jobs..." id="job-search" oninput="filterJobs(this.value)">
+                        </div>
+                        <div class="table-filters">
+                            <button class="btn btn-sm btn-secondary" onclick="openJobModal()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                New Job
+                            </button>
+                        </div>
+                    </div>
+                    <table id="job-table">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody hx-get="/jobs" hx-trigger="load, every 5s"></tbody>
+                    </table>
+                    <div id="jobs-empty" class="empty-state" style="display:none;">
+                        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        <div class="empty-state-title">No jobs yet</div>
+                        <div class="empty-state-text">Create your first scraping job to start collecting leads from Google Maps.</div>
+                        <button class="btn btn-primary mt-4" onclick="openJobModal()">Create Job</button>
+                    </div>
+                </div>
+
+                <!-- Outreach Modal (CodeSommet Branded) -->
+                <div id="outreach-modal" class="modal" style="display:none;">
+                    <div class="modal-content">
+                        <div class="modal-header modal-header-brand">
+                            <div>
+                                <h3>CodeSommet Outreach</h3>
+                                <small>codesommet.com | +212 632 582 096</small>
+                            </div>
+                            <button class="modal-close" onclick="closeOutreach()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Template:</label>
+                                <select id="outreach-template" onchange="generateOutreach()">
+                                    <option value="wa-webdev-fr">WhatsApp - Site Web (FR)</option>
+                                    <option value="wa-seo-fr">WhatsApp - SEO (FR)</option>
+                                    <option value="wa-webdev-ar">WhatsApp - Site Web (AR)</option>
+                                    <option value="email-webdev-fr">Email - Site Web (FR)</option>
+                                    <option value="email-seo-fr">Email - SEO Audit (FR)</option>
+                                    <option value="email-ecom-fr">Email - E-commerce (FR)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Your Name:</label>
+                                <input type="text" id="outreach-name" value="CodeSommet" oninput="generateOutreach()">
+                            </div>
+                            <div class="outreach-output">
+                                <label>Message:</label>
+                                <textarea id="outreach-text" rows="12" readonly></textarea>
+                                <div class="outreach-actions">
+                                    <button class="copy-btn" onclick="copyOutreach()">Copy</button>
+                                    <a id="wa-direct-link" class="wa-btn" href="#" target="_blank" rel="noopener">Open WhatsApp</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JOB CREATION MODAL ===== -->
+    <div id="job-modal" class="modal" style="display:none;">
+        <div class="modal-content job-modal-content">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Keywords</span>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Location</span>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Settings</span>
+                </div>
+            </div>
+
+            <form id="job-form"
+                hx-post="/scrape"
+                hx-target="#job-table tbody"
+                hx-swap="beforeend"
+                hx-indicator="#modal-spinner"
+                hx-on::before-request="document.getElementById('error-container').innerHTML = ''"
+                hx-on::after-request="if(event.detail.successful) closeJobModal(); else document.getElementById('modal-error').textContent = event.detail.xhr.responseText || 'An error occurred';"
+            >
+                <!-- Step 1: Keywords / Source -->
+                <div class="step-panel active" data-panel="1">
+                    <div class="form-group">
+                        <label>Job Name</label>
+                        <input type="text" id="name" name="name" value="{{.Name}}" placeholder="e.g. Dentistes Marrakech">
+                    </div>
+                    <div class="form-group">
+                        <label>Search Method</label>
+                        <div class="input-mode-tabs">
+                            <button type="button" class="mode-tab active" data-mode="keywords">Keywords</button>
+                            <button type="button" class="mode-tab" data-mode="gmaps-link">Google Maps Link</button>
+                        </div>
+                    </div>
+                    <div id="input-keywords" class="input-mode-panel">
                         <div class="form-group">
-                            <label for="name">Job Name:</label>
-                            <input type="text" id="name" name="name" value="{{.Name}}">
+                            <label>Keywords (one per line)</label>
+                            <textarea id="keywords" name="keywords" rows="5" placeholder="agence immobiliere marrakech&#10;restaurants casablanca&#10;dentistes rabat">{{ .KeywordsString }}</textarea>
+                        </div>
+                    </div>
+                    <div id="input-gmaps-link" class="input-mode-panel" style="display:none;">
+                        <div class="form-group">
+                            <label>Google Maps URL</label>
+                            <input type="url" id="gmaps-url" placeholder="https://www.google.com/maps/search/travel+agency+marrakech/@31.66,-8.01,15z" />
+                        </div>
+                        <div id="gmaps-parsed" class="gmaps-parsed-info" style="display:none;">
+                            <span id="gmaps-parsed-query"></span>
+                            <span id="gmaps-parsed-coords"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Location & Filters -->
+                <div class="step-panel" data-panel="2">
+                    <div class="form-group">
+                        <label>Country</label>
+                        <select id="country" name="country">
+                            <option value="Morocco" {{if eq .Country "Morocco"}}selected{{end}}>Morocco</option>
+                            <option value="France" {{if eq .Country "France"}}selected{{end}}>France</option>
+                            <option value="Spain" {{if eq .Country "Spain"}}selected{{end}}>Spain</option>
+                            <option value="Germany" {{if eq .Country "Germany"}}selected{{end}}>Germany</option>
+                            <option value="United Kingdom" {{if eq .Country "United Kingdom"}}selected{{end}}>United Kingdom</option>
+                            <option value="United States" {{if eq .Country "United States"}}selected{{end}}>United States</option>
+                            <option value="Canada" {{if eq .Country "Canada"}}selected{{end}}>Canada</option>
+                            <option value="UAE" {{if eq .Country "UAE"}}selected{{end}}>UAE</option>
+                            <option value="Saudi Arabia" {{if eq .Country "Saudi Arabia"}}selected{{end}}>Saudi Arabia</option>
+                            <option value="Tunisia" {{if eq .Country "Tunisia"}}selected{{end}}>Tunisia</option>
+                            <option value="Algeria" {{if eq .Country "Algeria"}}selected{{end}}>Algeria</option>
+                            <option value="Egypt" {{if eq .Country "Egypt"}}selected{{end}}>Egypt</option>
+                            <option value="Turkey" {{if eq .Country "Turkey"}}selected{{end}}>Turkey</option>
+                            <option value="Italy" {{if eq .Country "Italy"}}selected{{end}}>Italy</option>
+                            <option value="Portugal" {{if eq .Country "Portugal"}}selected{{end}}>Portugal</option>
+                            <option value="Netherlands" {{if eq .Country "Netherlands"}}selected{{end}}>Netherlands</option>
+                            <option value="Belgium" {{if eq .Country "Belgium"}}selected{{end}}>Belgium</option>
+                            <option value="Other" {{if eq .Country "Other"}}selected{{end}}>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Language</label>
+                        <input type="text" id="lang" name="lang" value="{{.Language}}">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+                        <div class="form-group">
+                            <label>Zoom</label>
+                            <input type="number" id="zoom" name="zoom" value="{{.Zoom}}">
                         </div>
                         <div class="form-group">
-                            <label for="keywords">Keywords:</label>
-                            <textarea id="keywords" name="keywords" rows="10">{{ .KeywordsString }}</textarea>
+                            <label>Latitude</label>
+                            <input type="number" step="0.000000000000001" id="latitude" name="latitude" value="{{.Lat}}">
                         </div>
                         <div class="form-group">
-                            <label for="lang">Language:</label>
-                            <input type="text" id="lang" name="lang" value="{{.Language}}">
+                            <label>Longitude</label>
+                            <input type="number" step="0.000000000000001" id="longitude" name="longitude" value="{{.Lon}}">
                         </div>
-                    </fieldset>
-                    
-                    <details class="expandable-section">
-                        <summary>Location Settings</summary>
-                        <fieldset>
-                            <div class="form-group">
-                                <label for="zoom">Zoom:</label>
-                                <input type="number" id="zoom" name="zoom" value="{{.Zoom}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="latitude">Latitude:</label>
-                                <input type="number" step="0.000000000000001" id="latitude" name="latitude" value="{{.Lat}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="longitude">Longitude:</label>
-                                <input type="number" step="0.000000000000001" id="longitude" name="longitude" value="{{.Lon}}">
-                            </div>
-                        </fieldset>
-                    </details>
-                    
-                    <details class="expandable-section">
-                        <summary>Advanced Options</summary>
-                        <fieldset>
-                            <div class="form-group">
-                                <label for="fastmode">Fast Mode (BETA):</label>
-                                <input type="checkbox" id="fastmode" name="fastmode" {{if .FastMode}}checked{{end}}>
-                            </div>
-                            <div class="form-group">
-                                    <label for="radius">Radius (BETA):</label>
-                                    <input type="number" id="radius" name="radius" value="{{.Radius}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="depth">Depth:</label>
-                                <input type="number" step="1" id="depth" name="depth" value="{{.Depth}}">
-                            </div>
-                            <div class="form-group checkbox">
-                                <input type="checkbox" id="email" name="email" {{if .Email}}checked{{end}}>
-                                <label for="email">Fetch Emails</label>
-                            </div>
-                            <div class="form-group">
-                                <label for="maxtime">Max job time:</label>
-                                <input type="text" id="maxtime" name="maxtime" value="{{.MaxTime}}">
-                            </div>
-                        </fieldset>
-                    </details>
+                    </div>
+                </div>
+
+                <!-- Step 3: Output Settings -->
+                <div class="step-panel" data-panel="3">
+                    <div class="form-group">
+                        <label>Max Results</label>
+                        <select id="maxresults" name="maxresults">
+                            <option value="20" {{if eq .MaxResults 20}}selected{{end}}>20 results</option>
+                            <option value="50" {{if eq .MaxResults 50}}selected{{end}}>50 results</option>
+                            <option value="100" {{if eq .MaxResults 100}}selected{{end}}>100 results</option>
+                            <option value="200" {{if eq .MaxResults 200}}selected{{end}}>200 results</option>
+                            <option value="500" {{if eq .MaxResults 500}}selected{{end}}>500 results</option>
+                        </select>
+                    </div>
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="email" name="email" {{if .Email}}checked{{end}}>
+                        <label for="email">Fetch Emails</label>
+                    </div>
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="fastmode" name="fastmode" {{if .FastMode}}checked{{end}}>
+                        <label for="fastmode">Fast Mode (BETA)</label>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="form-group">
+                            <label>Depth</label>
+                            <input type="number" step="1" id="depth" name="depth" value="{{.Depth}}">
+                        </div>
+                        <div class="form-group">
+                            <label>Radius (BETA)</label>
+                            <input type="number" id="radius" name="radius" value="{{.Radius}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Job Time</label>
+                        <input type="text" id="maxtime" name="maxtime" value="{{.MaxTime}}" placeholder="e.g. 10m">
+                    </div>
+
                     <details class="expandable-section">
                         <summary>Proxies</summary>
                         <fieldset>
                             <div class="form-group">
-                                <label for="proxies">Proxies:(one per line)</label>
-                                <p class="text-muted"><small>Examples:<br>
-                                        <p>HTTPS proxy with username/password: https://username:password@myproxy.local:443<p>
-                                        <p>HTTP proxy with username/password: http://username:password@myproxy.local:443<p>
-                                        <p>SOCKS5 proxy without auth: socks5://127.0.0.1:8000</p>
-                                </p>
-
-                                <textarea id="proxies" name="proxies" rows="5">{{.ProxiesString}}</textarea>
+                                <label>Proxies (one per line)</label>
+                                <textarea id="proxies" name="proxies" rows="3">{{.ProxiesString}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Import from file (.txt, .csv, .json)</label>
+                                <div class="proxy-import-row">
+                                    <input type="file" id="proxy-file" accept=".txt,.csv,.json" />
+                                    <button type="button" id="btn-clear-proxies" class="btn-clear-proxies" title="Clear all proxies">Clear</button>
+                                </div>
                             </div>
                         </fieldset>
                     </details>
-                    
-                    <button type="submit">Start Scraping</button>
-                </form>
+
+                    <div id="modal-error" class="error-message"></div>
+                    <div id="modal-spinner" class="spinner"></div>
+                </div>
+            </form>
+
+            <!-- Step Actions -->
+            <div class="step-actions">
+                <button type="button" class="btn btn-secondary" id="step-prev" onclick="prevStep()" style="visibility:hidden;">Back</button>
+                <button type="button" class="btn btn-primary" id="step-next" onclick="nextStep()">
+                    Next
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
             </div>
-            <div class="content">
-                <div id="spinner" class="spinner"></div>
-                <table id="job-table">
-                    <thead>
-                        <tr>
-                            <th>Job ID</th>
-                            <th>Job Name</th>
-                            <th>Job Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody hx-get="/jobs" hx-trigger="load, every 10s">
-                        <!-- Job rows will be inserted here by HTMX -->
-                    </tbody>
-                </table>
-            </div>
-        </main>
+        </div>
     </div>
 
 <script>
-function hideSponsor() {
-    const sponsorSection = document.getElementById('sponsor-section');
-    if (sponsorSection) {
-        sponsorSection.style.display = 'none';
+// =============================================
+// CODESOMMET LEAD SCRAPER — ALL FEATURES
+// =============================================
+
+// === BRAND CONFIG ===
+var BRAND = {
+    name: 'CodeSommet',
+    phone: '+212632582096',
+    phoneFmt: '+212 632 582 096',
+    website: 'https://codesommet.com',
+    instagram: '@code_sommet',
+    whatsapp: '212632582096'
+};
+
+// === JOB MODAL ===
+var currentStep = 1;
+var totalSteps = 3;
+
+function openJobModal() {
+    document.getElementById('job-modal').style.display = 'flex';
+    document.getElementById('modal-error').textContent = '';
+    goToStep(1);
+}
+
+function closeJobModal() {
+    document.getElementById('job-modal').style.display = 'none';
+    currentStep = 1;
+}
+
+function goToStep(n) {
+    currentStep = n;
+    // Update panels
+    document.querySelectorAll('.step-panel').forEach(function(p) {
+        p.classList.toggle('active', parseInt(p.getAttribute('data-panel')) === n);
+    });
+    // Update step indicators
+    document.querySelectorAll('.step-indicator .step').forEach(function(s) {
+        var sn = parseInt(s.getAttribute('data-step'));
+        s.classList.remove('active', 'completed');
+        if (sn === n) s.classList.add('active');
+        else if (sn < n) s.classList.add('completed');
+    });
+    // Update connectors
+    document.querySelectorAll('.step-connector').forEach(function(c, i) {
+        c.classList.toggle('done', (i + 1) < n);
+    });
+    // Update buttons
+    document.getElementById('step-prev').style.visibility = n === 1 ? 'hidden' : 'visible';
+    var nextBtn = document.getElementById('step-next');
+    if (n === totalSteps) {
+        nextBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Start Scraping';
+        nextBtn.className = 'btn btn-primary btn-lg';
+    } else {
+        nextBtn.innerHTML = 'Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+        nextBtn.className = 'btn btn-primary';
     }
 }
+
+function nextStep() {
+    if (currentStep < totalSteps) {
+        goToStep(currentStep + 1);
+    } else {
+        // Submit form
+        var form = document.getElementById('job-form');
+        if (form.requestSubmit) form.requestSubmit();
+        else htmx.trigger(form, 'submit');
+    }
+}
+
+function prevStep() {
+    if (currentStep > 1) goToStep(currentStep - 1);
+}
+
+// Close modal on backdrop click
+document.getElementById('job-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeJobModal();
+});
+
+// Escape key closes modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        if (document.getElementById('job-modal').style.display === 'flex') closeJobModal();
+        if (document.getElementById('outreach-modal').style.display === 'flex') closeOutreach();
+    }
+});
+
+// === JOB SEARCH ===
+function filterJobs(query) {
+    query = query.toLowerCase();
+    document.querySelectorAll('#job-table tbody tr').forEach(function(row) {
+        var text = row.textContent.toLowerCase();
+        row.style.display = text.indexOf(query) !== -1 ? '' : 'none';
+    });
+}
+
+// === PROXY FILE IMPORT ===
+(function() {
+    var fileInput = document.getElementById('proxy-file');
+    var clearBtn = document.getElementById('btn-clear-proxies');
+    var textarea = document.getElementById('proxies');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var text = ev.target.result.trim();
+                var proxies = [];
+                var ext = file.name.split('.').pop().toLowerCase();
+
+                if (ext === 'json') {
+                    try {
+                        var data = JSON.parse(text);
+                        if (Array.isArray(data)) {
+                            data.forEach(function(item) {
+                                if (typeof item === 'string') {
+                                    proxies.push(item.trim());
+                                } else if (item && typeof item === 'object') {
+                                    if (item.proxy) proxies.push(item.proxy.trim());
+                                    else if (item.url) proxies.push(item.url.trim());
+                                    else if (item.host) {
+                                        var p = (item.protocol || item.scheme || 'http') + '://';
+                                        if (item.username || item.user) p += (item.username || item.user) + ':' + (item.password || item.pass || '') + '@';
+                                        p += item.host + ':' + (item.port || 8080);
+                                        proxies.push(p);
+                                    }
+                                }
+                            });
+                        }
+                    } catch(err) {
+                        alert('Invalid JSON file: ' + err.message);
+                        return;
+                    }
+                } else if (ext === 'csv') {
+                    var lines = text.split(/\r?\n/);
+                    var first = lines[0].toLowerCase();
+                    var startIdx = (first.indexOf('proxy') >= 0 || first.indexOf('host') >= 0 || first.indexOf('url') >= 0 || first.indexOf('protocol') >= 0) ? 1 : 0;
+                    for (var i = startIdx; i < lines.length; i++) {
+                        var line = lines[i].trim();
+                        if (!line) continue;
+                        var cols = line.split(',');
+                        if (cols.length === 1) {
+                            proxies.push(cols[0].trim());
+                        } else if (cols.length >= 2) {
+                            var host = cols[0].trim(), port = cols[1].trim();
+                            if (host.indexOf('://') >= 0) {
+                                proxies.push(host);
+                            } else {
+                                var proto = (cols[4] || 'http').trim();
+                                var user = (cols[2] || '').trim();
+                                var pass = (cols[3] || '').trim();
+                                var url = proto + '://';
+                                if (user) url += user + ':' + pass + '@';
+                                url += host + ':' + port;
+                                proxies.push(url);
+                            }
+                        }
+                    }
+                } else {
+                    text.split(/\r?\n/).forEach(function(line) {
+                        line = line.trim();
+                        if (line && line.charAt(0) !== '#') proxies.push(line);
+                    });
+                }
+
+                proxies = proxies.filter(function(p) { return p.length > 0; });
+
+                if (proxies.length === 0) {
+                    alert('No proxies found in the file.');
+                    return;
+                }
+
+                var existing = textarea.value.trim();
+                if (existing) {
+                    textarea.value = existing + '\n' + proxies.join('\n');
+                } else {
+                    textarea.value = proxies.join('\n');
+                }
+
+                alert('Imported ' + proxies.length + ' proxies.');
+            };
+            reader.readAsText(file);
+            fileInput.value = '';
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            textarea.value = '';
+        });
+    }
+})();
+
+// === INPUT MODE TOGGLE (Keywords vs Google Maps Link) ===
+(function() {
+    var tabs = document.querySelectorAll('.mode-tab');
+    var panelKeywords = document.getElementById('input-keywords');
+    var panelLink = document.getElementById('input-gmaps-link');
+    var gmapsInput = document.getElementById('gmaps-url');
+    var parsedBox = document.getElementById('gmaps-parsed');
+    var parsedQuery = document.getElementById('gmaps-parsed-query');
+    var parsedCoords = document.getElementById('gmaps-parsed-coords');
+    var keywordsField = document.getElementById('keywords');
+    var latField = document.getElementById('latitude');
+    var lonField = document.getElementById('longitude');
+    var zoomField = document.getElementById('zoom');
+
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            tab.classList.add('active');
+
+            var mode = tab.getAttribute('data-mode');
+            if (mode === 'keywords') {
+                panelKeywords.style.display = '';
+                panelLink.style.display = 'none';
+            } else {
+                panelKeywords.style.display = 'none';
+                panelLink.style.display = '';
+            }
+        });
+    });
+
+    function parseGmapsUrl(url) {
+        var result = { query: '', lat: '', lon: '', zoom: '' };
+        var searchMatch = url.match(/\/maps\/search\/([^/@?]+)/);
+        if (searchMatch) {
+            result.query = decodeURIComponent(searchMatch[1].replace(/\+/g, ' '));
+        }
+        if (!result.query) {
+            var placeMatch = url.match(/\/maps\/place\/([^/@?]+)/);
+            if (placeMatch) {
+                result.query = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+            }
+        }
+        if (!result.query) {
+            var qMatch = url.match(/[?&]q=([^&]+)/);
+            if (qMatch) {
+                result.query = decodeURIComponent(qMatch[1].replace(/\+/g, ' '));
+            }
+        }
+        var coordMatch = url.match(/@(-?[\d.]+),(-?[\d.]+),(\d+)z/);
+        if (coordMatch) {
+            result.lat = coordMatch[1];
+            result.lon = coordMatch[2];
+            result.zoom = coordMatch[3];
+        }
+        return result;
+    }
+
+    if (gmapsInput) {
+        gmapsInput.addEventListener('input', function() {
+            var url = gmapsInput.value.trim();
+            if (!url) {
+                parsedBox.style.display = 'none';
+                return;
+            }
+            var parsed = parseGmapsUrl(url);
+            if (parsed.query) {
+                keywordsField.value = parsed.query;
+                parsedQuery.textContent = parsed.query;
+                if (parsed.lat && parsed.lon) {
+                    latField.value = parsed.lat;
+                    lonField.value = parsed.lon;
+                    if (parsed.zoom) zoomField.value = parsed.zoom;
+                    parsedCoords.textContent = parsed.lat + ', ' + parsed.lon + ' (zoom ' + (parsed.zoom || zoomField.value) + ')';
+                    parsedCoords.style.display = '';
+                } else {
+                    parsedCoords.style.display = 'none';
+                }
+                parsedBox.style.display = '';
+            } else {
+                parsedBox.style.display = 'none';
+            }
+        });
+    }
+})();
+
+// High-value niches get a score bonus
+var HIGH_VALUE_NICHES = ['dentist','doctor','clinic','lawyer','notary','hotel','riad','real estate','immobilier','avocat','dentiste','medecin','clinique','pharmacie','cabinet','gym','spa','salon','school','auto','car dealer','assurance','insurance','architect','architecte','comptable','accountant'];
+
+// === LEAD SCORING (0-100) ===
+function scoreLeads(data) {
+    return data.map(function(r) {
+        var score = 0;
+        var reasons = [];
+        var hasWebsite = r.website && r.website.trim() !== '';
+        var hasPhone = r.phone && r.phone.trim() !== '';
+        var hasEmail = r.emails && r.emails.trim() !== '';
+        var rating = parseFloat(r.review_rating || '0');
+        var reviews = parseInt(r.review_count || '0', 10);
+        var cat = (r.category || '').toLowerCase();
+        var site = (r.website || '').toLowerCase();
+
+        if (!hasWebsite) { score += 40; reasons.push('No website'); }
+        else if (site.indexOf('facebook.com') !== -1 || site.indexOf('fb.com') !== -1) { score += 30; reasons.push('Facebook only'); }
+        else if (rating > 0 && rating < 4.0) { score += 15; reasons.push('Low rating'); }
+        else if (reviews < 20 && reviews > 0) { score += 10; reasons.push('Low visibility'); }
+
+        if (hasPhone) { score += 5; reasons.push('Has phone'); }
+        if (hasEmail) { score += 5; reasons.push('Has email'); }
+        if (reviews < 30 && reviews > 0) { score += 10; reasons.push('Few reviews'); }
+        var isHighValue = HIGH_VALUE_NICHES.some(function(n) { return cat.indexOf(n) !== -1; });
+        if (isHighValue) { score += 15; reasons.push('High-value niche'); }
+        if (reviews > 5) { score += 5; }
+
+        score = Math.min(score, 100);
+        r._score = score;
+        r._reasons = reasons;
+        r._grade = score >= 70 ? 'A' : score >= 50 ? 'B' : score >= 30 ? 'C' : 'D';
+        return r;
+    }).sort(function(a, b) { return b._score - a._score; });
+}
+
+// === NOTIFICATIONS ===
+var previousStatuses = {};
+var progressIntervals = {};
+if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+
+function notifyJobComplete(name) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('CodeSommet - Scraping Done!', { body: name + ' — Results ready!' });
+    }
+    try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var o = ctx.createOscillator(); var g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination); o.frequency.value = 800; g.gain.value = 0.3; o.start();
+        setTimeout(function(){ o.frequency.value = 1000; }, 150);
+        setTimeout(function(){ o.frequency.value = 1200; }, 300);
+        setTimeout(function(){ o.stop(); ctx.close(); }, 500);
+    } catch(e) {}
+}
+
+function pollJobProgress(id, name) {
+    if (progressIntervals[id]) return;
+    progressIntervals[id] = setInterval(function() {
+        fetch('/job-progress?id=' + id).then(function(r) { return r.json(); }).then(function(d) {
+            var c = document.getElementById('progress-' + id);
+            if (c && d.status === 'working') c.textContent = 'Found ' + d.result_count + ' results...';
+            if (d.status === 'ok' || d.status === 'failed') {
+                clearInterval(progressIntervals[id]); delete progressIntervals[id];
+                if (d.status === 'ok') notifyJobComplete(name);
+            }
+        }).catch(function(){});
+    }, 3000);
+}
+
+document.body.addEventListener('htmx:afterSwap', function() {
+    document.querySelectorAll('#job-table tbody tr').forEach(function(row) {
+        var el = row.querySelector('.status-indicator');
+        if (!el) return;
+        var st = el.getAttribute('data-status'), id = row.getAttribute('data-job-id'), nm = row.getAttribute('data-job-name') || 'Job';
+        if (st === 'working' && id) pollJobProgress(id, nm);
+        if (id && previousStatuses[id] === 'working' && st === 'ok') notifyJobComplete(nm);
+        if (id) previousStatuses[id] = st;
+    });
+
+    // Show/hide empty state
+    var rows = document.querySelectorAll('#job-table tbody tr');
+    var emptyEl = document.getElementById('jobs-empty');
+    if (emptyEl) {
+        emptyEl.style.display = rows.length === 0 ? '' : 'none';
+    }
+});
+
+// === ELAPSED TIMER ===
+setInterval(function() {
+    document.querySelectorAll('.elapsed-timer').forEach(function(el) {
+        var s = el.getAttribute('data-started'); if (!s) return;
+        var d = new Date(s); if (isNaN(d.getTime())) { el.textContent = 'scraping...'; return; }
+        var diff = Math.max(0, Math.floor((new Date() - d) / 1000));
+        el.textContent = 'Elapsed: ' + Math.floor(diff/60) + 'm ' + (diff%60 < 10 ? '0' : '') + (diff%60) + 's';
+    });
+}, 1000);
+
+// === RESULTS + FILTERS ===
+var allResults = [];
+var selectedJobId = null;
+
+function stopJob(jobId, e) {
+    if (!confirm('Stop this scraping job? Partial results collected so far will be saved.')) return;
+    var btn = e ? e.target.closest('.stop-button') : null;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Stopping...'; }
+    fetch('/api/v1/jobs/' + jobId + '/stop', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function() {
+            setTimeout(function() { location.reload(); }, 3000);
+        })
+        .catch(function() { alert('Failed to stop job.'); if (btn) { btn.disabled = false; btn.textContent = 'Stop'; } });
+}
+
+function viewResults(jobId) {
+    selectedJobId = jobId;
+    var preview = document.getElementById('results-preview');
+    var filterBar = document.getElementById('filter-bar');
+    // Show loading state immediately
+    preview.style.display = 'block';
+    filterBar.style.display = 'block';
+    document.getElementById('results-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-secondary);">Loading results...</td></tr>';
+    preview.scrollIntoView({behavior: 'smooth'});
+
+    fetch('/results-preview?id=' + jobId).then(function(r) { return r.json(); }).then(function(data) {
+        if (!data || data.length === 0) {
+            document.getElementById('results-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-secondary);">No results found for this job.</td></tr>';
+            document.getElementById('results-count-badge').textContent = '0 results';
+            document.getElementById('filter-stats').innerHTML = '';
+            return;
+        }
+        allResults = scoreLeads(data);
+        detectDuplicates(allResults);
+        renderResults(allResults);
+        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelector('.filter-btn').classList.add('active');
+        preview.scrollIntoView({behavior: 'smooth'});
+    }).catch(function(err) {
+        document.getElementById('results-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--error-600);">Failed to load results.</td></tr>';
+    });
+}
+
+function applyFilter(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var f = allResults;
+    if (type === 'no-website') f = allResults.filter(function(r) { return !r.website || r.website.trim() === ''; });
+    else if (type === 'low-rating') f = allResults.filter(function(r) { return parseFloat(r.review_rating||'5') < 4.0; });
+    else if (type === 'has-email') f = allResults.filter(function(r) { return r.emails && r.emails.trim() !== ''; });
+    else if (type === 'has-phone') f = allResults.filter(function(r) { return r.phone && r.phone.trim() !== ''; });
+    else if (type === 'top-leads') f = allResults.slice(0, 10);
+    renderResults(f);
+}
+
+function renderResults(data) {
+    var cols = ['_score','title','category','phone','website','emails','review_rating','review_count','address'];
+    var labels = {'_score':'Score','title':'Business','category':'Category','phone':'Phone','website':'Website','emails':'Emails','review_rating':'Rating','review_count':'Reviews','address':'Address'};
+    var thead = document.getElementById('results-thead');
+    var tbody = document.getElementById('results-tbody');
+
+    thead.innerHTML = cols.map(function(c) { return '<th>' + labels[c] + '</th>'; }).join('') + '<th>Actions</th>';
+    tbody.innerHTML = '';
+    document.getElementById('results-count-badge').textContent = data.length + ' results';
+
+    var noWeb = allResults.filter(function(r){ return !r.website || r.website.trim()===''; }).length;
+    var lowR = allResults.filter(function(r){ return parseFloat(r.review_rating||'5') < 4.0; }).length;
+    var avgScore = allResults.length ? Math.round(allResults.reduce(function(s,r){ return s+r._score; }, 0) / allResults.length) : 0;
+    document.getElementById('filter-stats').innerHTML =
+        '<span class="stat-hot">' + noWeb + ' no website</span>' +
+        '<span class="stat-warm">' + lowR + ' low rating</span>' +
+        '<span class="stat-score">Avg score: ' + avgScore + '/100</span>' +
+        '<span>Total: ' + allResults.length + '</span>';
+
+    data.forEach(function(row) {
+        var tr = document.createElement('tr');
+        if (row._score >= 70) tr.classList.add('row-grade-a');
+        else if (row._score >= 50) tr.classList.add('row-grade-b');
+
+        cols.forEach(function(c) {
+            var td = document.createElement('td');
+            var val = row[c] || '';
+
+            if (c === '_score') {
+                td.innerHTML = '<span class="score-badge score-' + row._grade + '" title="' + (row._reasons||[]).join(', ') + '">' + row._score + ' <small>' + row._grade + '</small></span>';
+            } else if (c === 'website' && !val) {
+                td.innerHTML = '<span class="no-website">No Website</span>';
+            } else if (c === 'website' && val) {
+                td.innerHTML = '<a href="' + val + '" target="_blank" rel="noopener">' + val.substring(0, 30) + '</a>';
+            } else if (c === 'review_rating') {
+                var rating = parseFloat(val);
+                td.innerHTML = '<span class="' + (rating < 4.0 ? 'rating-low' : 'rating-ok') + '">' + (val ? parseFloat(val).toFixed(1) : '-') + '</span>';
+            } else if (c === 'phone' && val) {
+                var cleanPhone = val.replace(/[\s\-\.]/g, '');
+                td.innerHTML = val + ' <a class="wa-icon" href="https://wa.me/' + cleanPhone.replace('+','') + '?text=' + encodeURIComponent(getQuickWAMsg(row.title)) + '" target="_blank" title="WhatsApp">WA</a>';
+            } else {
+                td.textContent = (val+'').substring(0, 40);
+            }
+            tr.appendChild(td);
+        });
+
+        var actTd = document.createElement('td');
+        actTd.className = 'action-cell';
+        var phone = (row.phone||'').replace(/[\s\-\.]/g, '').replace('+','');
+        var btns = '<button class="outreach-btn" onclick=\'openOutreach(' + JSON.stringify(row) + ')\'>Message</button>';
+        if (phone) {
+            btns += ' <a class="wa-direct" href="https://wa.me/' + phone + '?text=' + encodeURIComponent(getQuickWAMsg(row.title)) + '" target="_blank">WhatsApp</a>';
+        }
+        actTd.innerHTML = btns;
+        tr.appendChild(actTd);
+        tbody.appendChild(tr);
+    });
+}
+
+function getQuickWAMsg(bizName) {
+    return 'Bonjour, je suis de CodeSommet (codesommet.com). J\'ai vu ' + (bizName||'votre entreprise') + ' sur Google Maps. Nous creons des sites web professionnels et des solutions SEO pour ameliorer votre visibilite en ligne. Puis-je vous envoyer un exemple ? Merci !';
+}
+
+// === DUPLICATES ===
+function detectDuplicates(data) {
+    var seen = {}; var dupes = 0;
+    data.forEach(function(r) {
+        var key = (r.title||'').toLowerCase().trim() + '|' + (r.phone||'').replace(/\s/g,'');
+        if (seen[key]) dupes++; seen[key] = true;
+    });
+    var el = document.getElementById('duplicate-warning');
+    if (dupes > 0) { el.style.display = 'block'; el.textContent = dupes + ' duplicate(s) detected (same name + phone).'; }
+    else el.style.display = 'none';
+}
+
+// === EXPORT ===
+function exportAs(format) {
+    if (!selectedJobId) return;
+    if (format === 'csv') { window.location.href = '/download?id=' + selectedJobId; return; }
+    if (format === 'json') {
+        var clean = allResults.map(function(r) {
+            return {title:r.title,category:r.category,phone:r.phone,website:r.website,emails:r.emails,rating:r.review_rating,reviews:r.review_count,address:r.address,score:r._score,grade:r._grade};
+        });
+        var blob = new Blob([JSON.stringify(clean, null, 2)], {type: 'application/json'});
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'codesommet-leads-' + selectedJobId.substring(0,8) + '.json'; a.click();
+    }
+}
+
+function exportToGoogleSheets() {
+    if (!allResults.length) { alert('No results to export.'); return; }
+    var headers = ['Score','Grade','Business','Category','Phone','Website','Emails','Rating','Reviews','Address','WhatsApp Link'];
+    var rows = [headers.join('\t')];
+    allResults.forEach(function(r) {
+        var phone = (r.phone||'').replace(/[\s\-\.]/g,'').replace('+','');
+        var waLink = phone ? 'https://wa.me/' + phone + '?text=' + encodeURIComponent(getQuickWAMsg(r.title)) : '';
+        rows.push([
+            r._score, r._grade, r.title||'', r.category||'', r.phone||'', r.website||'',
+            r.emails||'', r.review_rating||'', r.review_count||'', (r.address||'').replace(/\t/g,' '), waLink
+        ].join('\t'));
+    });
+    var tsv = rows.join('\n');
+
+    navigator.clipboard.writeText(tsv).then(function() {
+        alert('Data copied to clipboard!\n\n1. Google Sheets will open in a new tab\n2. Click cell A1\n3. Press Ctrl+V to paste\n\nAll ' + allResults.length + ' leads with scores and WhatsApp links will be pasted.');
+        window.open('https://docs.google.com/spreadsheets/create', '_blank');
+    }).catch(function() {
+        var blob = new Blob([tsv], {type: 'text/tab-separated-values'});
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'codesommet-leads.tsv'; a.click();
+        alert('Downloaded as .tsv file. Open it with Google Sheets or Excel.');
+    });
+}
+
+// === OUTREACH (CODESOMMET BRANDED) ===
+var outreachRow = {};
+
+function openOutreach(row) {
+    outreachRow = row;
+    document.getElementById('outreach-modal').style.display = 'flex';
+    generateOutreach();
+}
+
+function closeOutreach() { document.getElementById('outreach-modal').style.display = 'none'; }
+
+function generateOutreach() {
+    var tpl = document.getElementById('outreach-template').value;
+    var name = document.getElementById('outreach-name').value || BRAND.name;
+    var biz = outreachRow.title || 'votre entreprise';
+    var cat = (outreachRow.category || 'entreprise').toLowerCase();
+    var phone = (outreachRow.phone||'').replace(/[\s\-\.]/g,'').replace('+','');
+    var msg = '';
+
+    if (tpl === 'wa-webdev-fr') {
+        msg = 'Bonjour,\n\n';
+        msg += 'Je suis ' + name + ' de l\'agence CodeSommet (codesommet.com).\n\n';
+        msg += 'J\'ai vu ' + biz + ' sur Google Maps et j\'ai remarque que vous n\'avez pas encore de site web professionnel.\n\n';
+        msg += 'Nous creons des sites modernes et optimises pour Google, specialement pour les ' + cat + '.\n\n';
+        msg += 'Je peux vous montrer un exemple gratuit adapte a votre activite. Vous avez 5 minutes cette semaine ?\n\n';
+        msg += name + '\nCodeSommet | ' + BRAND.website + '\nWhatsApp: ' + BRAND.phoneFmt;
+    } else if (tpl === 'wa-seo-fr') {
+        msg = 'Bonjour,\n\n';
+        msg += 'Je suis ' + name + ' de CodeSommet (codesommet.com).\n\n';
+        msg += 'J\'ai analyse la presence en ligne de ' + biz + ' et j\'ai identifie des opportunites pour ameliorer votre visibilite sur Google.\n\n';
+        msg += 'Nous proposons un audit SEO gratuit avec des recommandations concretes.\n\n';
+        msg += 'Interesse(e) ? Je reponds dans l\'heure.\n\n';
+        msg += name + '\nCodeSommet | ' + BRAND.website;
+    } else if (tpl === 'wa-webdev-ar') {
+        msg += '\u0645\u0631\u062d\u0628\u0627\u060c\n\n';
+        msg += '\u0623\u0646\u0627 ' + name + ' \u0645\u0646 \u0648\u0643\u0627\u0644\u0629 CodeSommet (codesommet.com).\n\n';
+        msg += '\u0634\u0641\u062a ' + biz + ' \u0641\u064a Google Maps \u0648\u0644\u0627\u062d\u0638\u062a \u0623\u0646\u0647 \u0645\u0627 \u0639\u0646\u062f\u0643\u0645\u0634 \u0645\u0648\u0642\u0639 \u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a.\n\n';
+        msg += '\u0643\u0646\u0642\u062f\u0631\u0648 \u0646\u062e\u062f\u0645\u0648 \u0644\u064a\u0643\u0645 \u0645\u0648\u0642\u0639 \u062d\u062f\u064a\u062b \u0648 \u0627\u062d\u062a\u0631\u0627\u0641\u064a \u0645\u0635\u0645\u0645 \u062e\u0635\u064a\u0635\u0627 \u0644 ' + cat + '.\n\n';
+        msg += '\u0648\u0627\u0634 \u062a\u0642\u062f\u0631\u0648 \u062a\u0639\u0637\u064a\u0648\u0646\u064a 5 \u062f\u0642\u0627\u064a\u0642 \u0647\u0627\u062f \u0627\u0644\u0633\u064a\u0645\u0627\u0646\u0629 \u0628\u0627\u0634 \u0646\u0648\u0631\u064a\u0643\u0645 \u0645\u062b\u0627\u0644 \u0645\u062c\u0627\u0646\u064a ?\n\n';
+        msg += name + '\nCodeSommet | ' + BRAND.website + '\nWhatsApp: ' + BRAND.phoneFmt;
+    } else if (tpl === 'email-webdev-fr') {
+        msg = 'Objet: Votre presence en ligne \u2014 ' + biz + '\n\n';
+        msg += 'Bonjour,\n\n';
+        msg += 'Je suis ' + name + ' de l\'agence CodeSommet, specialisee en creation de sites web et solutions digitales au Maroc.\n\n';
+        msg += 'J\'ai trouve ' + biz + ' sur Google Maps et j\'ai remarque que vous n\'avez pas encore de site web, ou que votre presence en ligne pourrait etre amelioree.\n\n';
+        msg += 'Nous creons des sites professionnels, rapides et optimises pour Google. Voici ce que nous proposons :\n';
+        msg += '- Sites vitrine modernes et responsive\n';
+        msg += '- Solutions e-commerce (Shopify)\n';
+        msg += '- Branding et identite visuelle\n';
+        msg += '- SEO et marketing digital\n\n';
+        msg += 'Je serais ravi de vous envoyer un exemple gratuit adapte a votre activite.\n\n';
+        msg += 'Cordialement,\n' + name + '\nCodeSommet \u2014 Agence Creative\n' + BRAND.website + '\nWhatsApp: ' + BRAND.phoneFmt + '\nInstagram: ' + BRAND.instagram;
+    } else if (tpl === 'email-seo-fr') {
+        msg = 'Objet: Votre site peut attirer plus de clients \u2014 ' + biz + '\n\n';
+        msg += 'Bonjour,\n\n';
+        msg += 'Je suis ' + name + ' de CodeSommet. J\'ai analyse la presence en ligne de ' + biz + '.\n\n';
+        msg += 'J\'ai identifie plusieurs opportunites pour ameliorer votre visibilite sur Google et attirer plus de clients.\n\n';
+        msg += 'Nous proposons un audit SEO gratuit qui inclut :\n';
+        msg += '- Analyse de votre positionnement Google\n';
+        msg += '- Recommandations techniques concretes\n';
+        msg += '- Strategie de mots-cles adaptee a votre secteur\n\n';
+        msg += 'Interesse(e) ? Repondez a cet email ou contactez-moi sur WhatsApp.\n\n';
+        msg += 'Cordialement,\n' + name + '\nCodeSommet | ' + BRAND.website + '\nWhatsApp: ' + BRAND.phoneFmt;
+    } else if (tpl === 'email-ecom-fr') {
+        msg = 'Objet: Vendez en ligne \u2014 ' + biz + '\n\n';
+        msg += 'Bonjour,\n\n';
+        msg += 'Je suis ' + name + ' de CodeSommet, agence specialisee en solutions e-commerce.\n\n';
+        msg += 'J\'ai vu ' + biz + ' sur Google Maps et je pense que votre activite a un fort potentiel de vente en ligne.\n\n';
+        msg += 'Nous creons des boutiques en ligne sur Shopify avec :\n';
+        msg += '- Design professionnel adapte a votre marque\n';
+        msg += '- Paiement en ligne securise\n';
+        msg += '- Optimisation SEO pour etre trouve sur Google\n';
+        msg += '- Formation pour gerer votre boutique\n\n';
+        msg += 'Je peux vous montrer un exemple en 5 minutes. Quand etes-vous disponible ?\n\n';
+        msg += 'Cordialement,\n' + name + '\nCodeSommet | ' + BRAND.website + '\nWhatsApp: ' + BRAND.phoneFmt;
+    }
+
+    document.getElementById('outreach-text').value = msg;
+
+    var waLink = document.getElementById('wa-direct-link');
+    if (phone) {
+        waLink.href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+        waLink.style.display = 'inline-flex';
+    } else {
+        waLink.style.display = 'none';
+    }
+}
+
+function copyOutreach() {
+    var t = document.getElementById('outreach-text'); t.select(); document.execCommand('copy');
+    var btn = document.querySelector('.copy-btn'); btn.textContent = 'Copied!';
+    setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+}
+
+document.addEventListener('click', function(e) { if (e.target === document.getElementById('outreach-modal')) closeOutreach(); });
+
+// Auto-fill proxies from Proxy Monitor (via localStorage)
+(function() {
+    var saved = localStorage.getItem('healthy_proxies');
+    if (saved) {
+        var proxyField = document.getElementById('proxies');
+        if (proxyField && !proxyField.value.trim()) {
+            proxyField.value = saved;
+        }
+    }
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Health Monitor - CodeSommet Lead Scraper</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand">
+                <h1>CodeSommet</h1>
+                <span class="brand-tagline">Lead Scraper</span>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Scraper
+                    </a>
+                    <a href="/webscraper" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Website Scraper
+                    </a>
+                    <a href="/countfiche" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Count Fiche
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Outreach</div>
+                    <a href="/leads" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Leads CRM
+                    </a>
+                    <a href="/email" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Email
+                    </a>
+                    <a href="/whatsapp" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="/whatsapp-desktop" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        WA Desktop
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Automation</div>
+                    <a href="/schedules" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Schedules
+                    </a>
+                    <a href="/webhooks" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8H12"/></svg>
+                        Webhooks
+                    </a>
+                    <a href="/queue" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                        Queue
+                    </a>
+                    <a href="/proxies" class="sidebar-link active">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        Proxy Monitor
+                    </a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Developer</div>
+                    <a href="/api/docs" target="_blank" rel="noopener noreferrer" class="sidebar-link">
+                        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        API Docs
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://codesommet.com" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    codesommet.com
+                </a>
+            </div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="topbar-title">Proxy Monitor</h2>
+                    <span class="topbar-breadcrumb">Test and manage your proxy servers</span>
+                </div>
+                <div class="topbar-right"></div>
+            </header>
+            <div class="content-area">
+                <!-- Input Section -->
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Check Proxies</h2>
+                        <form id="proxy-form" onsubmit="return submitProxyCheck(event)">
+                            <div class="form-group">
+                                <label for="proxy-textarea">Proxy List (one per line, e.g. http://user:pass@host:port):</label>
+                                <textarea id="proxy-textarea" name="proxies" rows="6" placeholder="http://proxy1:8080&#10;socks5://user:pass@proxy2:1080&#10;http://proxy3:3128"></textarea>
+                            </div>
+                            <div class="proxy-actions-row" style="display:flex; gap:0.5rem; align-items:center;">
+                                <button type="submit" id="check-all-btn" class="btn btn-primary">Check All</button>
+                                <label class="btn btn-secondary btn-sm">
+                                    Import from file
+                                    <input type="file" accept=".txt,.csv" onchange="importProxyFile(this)" style="display:none;">
+                                </label>
+                                <label class="proxy-auto-refresh">
+                                    <input type="checkbox" id="auto-refresh-toggle" onchange="toggleAutoRefresh(this)">
+                                    Check every 60s
+                                </label>
+                                <span id="proxy-spinner" style="display:none; color: var(--color-primary); font-weight: 500;">Checking proxies...</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results (rendered via JS) -->
+                <div id="proxy-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function submitProxyCheck(e) {
+        e.preventDefault();
+        var textarea = document.getElementById('proxy-textarea');
+        var proxies = textarea.value.trim();
+        if (!proxies) {
+            alert('Please enter at least one proxy.');
+            return false;
+        }
+
+        var spinner = document.getElementById('proxy-spinner');
+        var btn = document.getElementById('check-all-btn');
+        spinner.style.display = 'inline';
+        btn.disabled = true;
+        btn.textContent = 'Checking...';
+
+        var formData = new FormData();
+        formData.append('proxies', proxies);
+
+        fetch('/proxies/check', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(r) {
+            if (!r.ok) return r.text().then(function(t) { throw new Error(t); });
+            return r.text();
+        })
+        .then(function() {
+            loadProxyStatuses();
+        })
+        .catch(function(err) {
+            alert('Error: ' + err.message);
+        })
+        .finally(function() {
+            spinner.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = 'Check All';
+        });
+
+        return false;
+    }
+
+    function loadProxyStatuses() {
+        fetch('/api/v1/proxies/status')
+            .then(function(r) { return r.json(); })
+            .then(function(statuses) {
+                renderProxyResults(statuses);
+            });
+    }
+
+    function renderProxyResults(statuses) {
+        var container = document.getElementById('proxy-results');
+        if (!statuses || statuses.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        var alive = 0, dead = 0, totalMs = 0, aliveForAvg = 0;
+        statuses.forEach(function(s) {
+            var ms = s.response_time_ms / 1000000;
+            if (s.alive) {
+                alive++;
+                totalMs += ms;
+                aliveForAvg++;
+            } else {
+                dead++;
+            }
+        });
+
+        var avgText = 'N/A';
+        if (aliveForAvg > 0) {
+            var avg = totalMs / aliveForAvg;
+            avgText = avg < 1000 ? Math.round(avg) + 'ms' : (avg / 1000).toFixed(1) + 's';
+        }
+
+        var html = '';
+
+        // Summary
+        html += '<div class="proxy-summary">';
+        html += '<div class="stat-cards stat-cards-small">';
+        html += '<div class="stat-card stat-card-primary stat-card-mini"><div class="stat-card-value">' + statuses.length + '</div><div class="stat-card-label">Total Proxies</div></div>';
+        html += '<div class="stat-card stat-card-success stat-card-mini"><div class="stat-card-value">' + alive + '</div><div class="stat-card-label">Alive</div></div>';
+        html += '<div class="stat-card stat-card-error stat-card-mini"><div class="stat-card-value">' + dead + '</div><div class="stat-card-label">Dead</div></div>';
+        html += '<div class="stat-card stat-card-warning stat-card-mini"><div class="stat-card-value">' + avgText + '</div><div class="stat-card-label">Avg Response</div></div>';
+        html += '</div></div>';
+
+        // Table
+        html += '<div class="proxy-card">';
+        html += '<div class="proxy-table-header"><h2>Results</h2>';
+        html += '<div class="proxy-table-actions">';
+        html += '<button type="button" class="btn btn-sm btn-secondary" onclick="copyHealthyProxies()">Copy Healthy Proxies</button>';
+        html += '<button type="button" class="btn btn-sm btn-success" onclick="useInNextJob()">Use in Next Job</button>';
+        html += '</div></div>';
+        html += '<div class="results-table-wrap"><table id="proxy-table"><thead><tr>';
+        html += '<th>URL</th><th>Status</th><th>Response Time</th><th>Success Rate</th><th>Last Checked</th><th>Actions</th>';
+        html += '</tr></thead><tbody>';
+
+        statuses.forEach(function(s) {
+            var rtMs = s.response_time_ms / 1000000;
+            var rtText = rtMs < 1000 ? Math.round(rtMs) + 'ms' : (rtMs / 1000).toFixed(1) + 's';
+            var rtClass = rtMs < 2000 ? 'rt-fast' : (rtMs < 5000 ? 'rt-medium' : 'rt-slow');
+            var rowClass = !s.alive ? 'proxy-dead' : (rtMs > 5000 ? 'proxy-slow' : 'proxy-alive');
+            var badgeClass = s.alive ? 'proxy-badge-alive' : 'proxy-badge-dead';
+            var badgeText = s.alive ? 'Alive' : 'Dead';
+            var rate = Math.round(s.success_rate);
+            var lastChecked = s.last_checked ? new Date(s.last_checked).toLocaleString() : '-';
+
+            html += '<tr class="proxy-row ' + rowClass + '">';
+            html += '<td class="proxy-url-cell">' + escapeHtml(s.url) + '</td>';
+            html += '<td><span class="proxy-status-badge ' + badgeClass + '">' + badgeText + '</span></td>';
+            html += '<td><span class="' + rtClass + '">' + rtText + '</span></td>';
+            html += '<td><div class="proxy-bar-wrap"><div class="proxy-bar" style="width:' + rate + '%"></div></div><span class="proxy-rate-text">' + rate + '%</span></td>';
+            html += '<td>' + lastChecked + '</td>';
+            html += '<td class="action-cell"><button type="button" class="view-btn" onclick="recheckProxy(\'' + escapeAttr(s.url) + '\')">Recheck</button></td>';
+            html += '</tr>';
+        });
+
+        html += '</tbody></table></div></div>';
+        container.innerHTML = html;
+    }
+
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
+    function escapeAttr(text) {
+        return text.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function importProxyFile(input) {
+        var file = input.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('proxy-textarea').value = e.target.result;
+        };
+        reader.readAsText(file);
+    }
+
+    var autoRefreshTimer = null;
+    function toggleAutoRefresh(cb) {
+        if (cb.checked) {
+            autoRefreshTimer = setInterval(function() {
+                submitProxyCheck(new Event('submit'));
+            }, 60000);
+        } else {
+            clearInterval(autoRefreshTimer);
+            autoRefreshTimer = null;
+        }
+    }
+
+    function copyHealthyProxies() {
+        var rows = document.querySelectorAll('#proxy-table tbody tr.proxy-alive, #proxy-table tbody tr.proxy-slow');
+        var urls = [];
+        rows.forEach(function(row) {
+            var urlCell = row.querySelector('.proxy-url-cell');
+            if (urlCell) urls.push(urlCell.textContent.trim());
+        });
+        if (urls.length === 0) {
+            alert('No healthy proxies to copy.');
+            return;
+        }
+        navigator.clipboard.writeText(urls.join('\n')).then(function() {
+            alert('Copied ' + urls.length + ' healthy proxies to clipboard.');
+        });
+    }
+
+    function useInNextJob() {
+        var rows = document.querySelectorAll('#proxy-table tbody tr.proxy-alive, #proxy-table tbody tr.proxy-slow');
+        var urls = [];
+        rows.forEach(function(row) {
+            var urlCell = row.querySelector('.proxy-url-cell');
+            if (urlCell) urls.push(urlCell.textContent.trim());
+        });
+        if (urls.length === 0) {
+            alert('No healthy proxies available.');
+            return;
+        }
+        localStorage.setItem('healthy_proxies', urls.join('\n'));
+        alert('Saved ' + urls.length + ' healthy proxies. They will be auto-filled on the scraper page.');
+    }
+
+    function recheckProxy(url) {
+        var textarea = document.getElementById('proxy-textarea');
+        textarea.value = url;
+        submitProxyCheck(new Event('submit'));
+    }
+
+    // Initial load
+    loadProxyStatuses();
+    </script>
+</body>
+</html>

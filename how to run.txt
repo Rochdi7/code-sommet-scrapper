@@ -1,0 +1,201 @@
+============================================
+  CodeSommet Lead Scraper - How to Run
+============================================
+
+REQUIREMENT: Docker Desktop must be installed and running.
+Project folder: C:\Users\ASUS\Desktop\Projects\google-maps-scraper
+
+
+============================================
+  STEP 1: Open Docker Desktop
+============================================
+
+  - Open Docker Desktop from Start Menu or Taskbar
+  - Wait 30 seconds until it says "Docker is running"
+  - You can verify by opening PowerShell and typing:
+
+    docker info
+
+
+============================================
+  STEP 2: Open Terminal
+============================================
+
+  - Open PowerShell (recommended) or Git Bash
+  - Navigate to the project folder:
+
+    cd C:\Users\ASUS\Desktop\Projects\google-maps-scraper
+
+
+============================================
+  STEP 3: Start All Services (docker-compose)
+============================================
+
+  This project has 3 services that run together:
+    - Scraper (port 8080) - Main web UI + scraping engine
+    - WhatsApp Bridge (port 3001) - WhatsApp messaging via whatsapp-web.js
+    - Email Bridge (port 3002) - Email sending service
+
+  To start everything at once:
+
+    docker compose up -d
+
+  To rebuild after code changes:
+
+    docker compose up -d --build
+
+  To stop everything:
+
+    docker compose down
+
+
+============================================
+  STEP 4: Open the Web UI
+============================================
+
+  Main Scraper UI:     http://localhost:8080
+  Dashboard:           http://localhost:8080/dashboard
+  Leads CRM:           http://localhost:8080/leads
+  WhatsApp Sender:     http://localhost:8080/whatsapp
+  Email Sender:        http://localhost:8080/email
+  Schedules:           http://localhost:8080/schedules
+  Proxies:             http://localhost:8080/proxies
+  Webhooks:            http://localhost:8080/webhooks
+  API Docs:            http://localhost:8080/api/docs
+
+
+============================================
+  STEP 5: Use the Scraper
+============================================
+
+  1. Enter a Job Name (e.g. "Dentistes Marrakech")
+  2. Enter Keywords (one per line):
+       dentistes marrakech
+       restaurants casablanca
+  3. Select Country (default: Morocco)
+  4. Select Language (default: fr)
+  5. Email extraction is ON by default
+  6. Click "Start Scraping"
+  7. Wait 2-5 minutes (progress bar shows live count)
+  8. When done, click "View" to see results with lead scores
+  9. Export CSV to download results
+
+
+============================================
+  STEP 6: WhatsApp Sender
+============================================
+
+  1. Go to http://localhost:8080/whatsapp
+  2. Scan the QR code with WhatsApp on your phone
+     (must have free linked device slot - max 4 devices)
+  3. Import recipients:
+     - "Import from Scraper" tab: select a completed scrape job
+     - "Import CSV" tab: upload any CSV with a "phone" column
+     - "Manual List" tab: paste phone numbers (one per line)
+  4. Auto-detection: businesses with no website get "Build website"
+     template, businesses with website get "Redesign + SEO" template
+  5. Change template per-row in the import table if needed
+  6. Set delay between messages (default: 30-90 seconds)
+  7. Click "Start Sending"
+  8. Duplicate detection: already-contacted numbers are flagged
+     and auto-switched to "Follow-up" template
+  9. History tab: view all sent messages with filters
+
+
+============================================
+  STEP 7: Email Sender
+============================================
+
+  1. Go to http://localhost:8080/email
+  2. Configure SMTP settings
+  3. Import recipients from scrape jobs (dropdown loads your jobs)
+  4. Compose and send
+
+
+============================================
+  MANUAL BUILD (if not using docker-compose)
+============================================
+
+  Build custom scraper image:
+    docker build -t codesommet-scrapper-custom .
+
+  Build WhatsApp bridge:
+    docker build -t wa-bridge-test -f wa-bridge/Dockerfile wa-bridge/
+
+  Run scraper manually:
+    docker run --name codesommet-web -v C:/Users/ASUS/Desktop/Projects/google-maps-scraper/gmapsdata:/gmapsdata -p 8080:8080 codesommet-scrapper-custom -data-folder /gmapsdata
+
+  Run WhatsApp bridge manually:
+    docker run --name codesommet-wa-bridge -p 3001:3001 wa-bridge-test
+
+
+============================================
+  CLI MODE (No Browser, Command Line Only)
+============================================
+
+  Step 1: Edit queries.txt with your search queries (one per line)
+  Step 2: Run:
+
+    docker run -v C:/Users/ASUS/Desktop/Projects/google-maps-scraper/queries.txt:/queries.txt -v C:/Users/ASUS/Desktop/Projects/google-maps-scraper/results.csv:/results.csv codesommet-scrapper-custom -depth 3 -email -input /queries.txt -results /results.csv -exit-on-inactivity 3m
+
+  Results saved to: results.csv
+
+
+============================================
+  AFTER CODE CHANGES (rebuild required)
+============================================
+
+  If you edited any file in web/static/ (HTML, CSS, JS)
+  or any .go file, you must rebuild:
+
+    docker compose up -d --build
+
+  Or manually:
+
+    docker compose down
+    docker compose build
+    docker compose up -d
+
+
+============================================
+  TROUBLESHOOTING
+============================================
+
+  ERROR: "port is already allocated"
+    -> docker compose down
+    -> Then: docker compose up -d
+
+  ERROR: Path errors in Git Bash
+    -> Use PowerShell instead, or prefix with MSYS_NO_PATHCONV=1
+
+  ERROR: "Docker daemon is not running"
+    -> Open Docker Desktop and wait 30 seconds
+
+  WhatsApp QR not showing
+    -> Check: docker logs codesommet-wa-bridge
+    -> The wa-bridge uses whatsapp-web.js with Chromium
+
+  WhatsApp "impossible to connect new device"
+    -> Go to WhatsApp on phone > Settings > Linked Devices
+    -> Remove old/unused devices (max 4 allowed)
+    -> Try scanning again
+
+  UI changes not showing after edit
+    -> You must rebuild! docker compose up -d --build
+
+  Empty job dropdown in WhatsApp/Email sender
+    -> Make sure you have completed scrape jobs
+    -> The dropdown loads from /api/v1/jobs
+
+
+============================================
+  SPEED GUIDE
+============================================
+
+  Depth 1  = ~20 results  = ~1-2 minutes
+  Depth 3  = ~40 results  = ~2-4 minutes
+  Depth 5  = ~60 results  = ~5-8 minutes
+  Depth 10 = ~100 results = ~15+ minutes
+
+  Email extraction doubles the time.
+  Without proxies, Google may throttle after ~60 results.
