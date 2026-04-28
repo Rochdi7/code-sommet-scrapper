@@ -1,214 +1,124 @@
-# Google Maps Scraper
+# CodeSommet Lead Scraper
 
-<p align="center">
-  <a href="https://github.com/gosom/google-maps-scraper/stargazers"><img src="https://img.shields.io/github/stars/gosom/google-maps-scraper?style=social" alt="GitHub Stars"></a>
-  <a href="https://github.com/gosom/google-maps-scraper/network/members"><img src="https://img.shields.io/github/forks/gosom/google-maps-scraper?style=social" alt="GitHub Forks"></a>
-  <a href="https://twitter.com/intent/tweet?text=Powerful%20open-source%20Google%20Maps%20scraper%20-%20extract%20business%20data%20at%20scale%20with%20CLI%2C%20Web%20UI%2C%20or%20REST%20API&url=https%3A%2F%2Fgithub.com%2Fgosom%2Fgoogle-maps-scraper&hashtags=golang,webscraping,googlemaps,opensource"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a>
-</p>
-
-[![Build Status](https://github.com/gosom/google-maps-scraper/actions/workflows/build.yml/badge.svg)](https://github.com/gosom/google-maps-scraper/actions/workflows/build.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/gosom/google-maps-scraper)](https://goreportcard.com/report/github.com/gosom/google-maps-scraper)
-[![GoDoc](https://godoc.org/github.com/gosom/google-maps-scraper?status.svg)](https://godoc.org/github.com/gosom/google-maps-scraper)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-7289DA?logo=discord&logoColor=white)](https://discord.gg/fpaAVhNCCu)
-
-**A powerful, free, and open-source Google Maps scraper** for extracting business data at scale. Available as CLI, Web UI, REST API, or deployable to Kubernetes/AWS Lambda.
-
-> **SaaS Edition Available (BETA):** Deploy as a multi-user platform with REST API, admin dashboard,
-> job queue, and cloud provisioning. Try it now — just Docker required:
-> ```bash
-> curl -fsSL https://raw.githubusercontent.com/gosom/google-maps-scraper/main/PROVISION | sh
-> ```
-> [Read the SaaS documentation](docs/saas.md)
->
-> [Deploy your own Maps scraping API in 5 minutes (includes video walkthrough)](https://gosom.dev/deploy-your-own-maps-scraping-api-in-5-minutes/)
->
-> [Video walkthrough (YouTube)](https://www.youtube.com/watch?v=STG9mZw_nac)
+**A full lead-generation platform** - scrape business data from Google Maps, then reach out via WhatsApp and Email, all from one interface.
 
 ![Example GIF](img/example.gif)
 
-> 💡 **New:** Export leads directly to [LeadsDB](https://getleadsdb.com/) - manage via API, AI/MCP integration, or UI with custom filtering and exports.
-
-> **Love this project?** A star helps others discover it and motivates continued development. [Become a sponsor](https://github.com/sponsors/gosom) to directly support new features and maintenance.
-
 ---
 
-## Sponsored By
-
-<p align="center"><i>This project is made possible by our amazing sponsors</i></p>
-
-### [Scrap.io](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper) - Extract ALL Google Maps listings at country-scale
-
-[![Scrap.io - Extract ALL Google Maps Listings](./img/premium_scrap_io.png)](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper)
-
-No keywords needed. No limits. Export millions of businesses in 2 clicks. [**Try it free →**](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper)
-
----
-
-### [G Maps Extractor](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom) - No-code Google Maps scraper
-
-[![G Maps Extractor](./img/gmaps-extractor-banner.png)](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom)
-
-Chrome extension that extracts emails, social profiles, phone numbers, reviews & more. [**Get 1,000 free leads →**](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom)
-
----
-
-### [SerpApi](https://serpapi.com/?utm_source=google-maps-scraper) - Google Maps API and 30+ search engine APIs
-
-[![SerpApi](./img/SerpApi-banner.png)](https://serpapi.com/?utm_source=google-maps-scraper)
-
-Fast, reliable, and scalable. Used by Fortune 500 companies. [**View all APIs →**](https://serpapi.com/search-api)
-
----
-
-### [HasData](https://hasdata.com/scrapers/google-maps?utm_source=github&utm_medium=sponsorship&utm_campaign=gosom) - No-code Google Maps Scraper & Email Extraction
-
-[![HasData Google Maps Scraper](./img/hd-gm-banner.png)](https://hasdata.com/scrapers/google-maps?utm_source=github&utm_medium=sponsorship&utm_campaign=gosom)
-
-Extract business leads, emails, addresses, phones, reviews and more. [**Get 1,000 free credits →**](https://hasdata.com/scrapers/google-maps?utm_source=github&utm_medium=sponsorship&utm_campaign=gosom)
-
----
-
-### [RapidProxy](https://www.rapidproxy.io/?ref=gosom) - High-Performance Proxy Solution
-
-[![RapidProxy](./img/rapidproxy-banner.png)](https://www.rapidproxy.io/?ref=gosom)
-
-Unlock global access with consistent, high-speed connections from $0.65/GB, 90M+ real residential IPs worldwide, and traffic that never expires. [**Try it free →**](https://www.rapidproxy.io/?ref=gosom)
-
----
-
-### [LeadsDB](https://getleadsdb.com/) - Your Central Database for Business Leads
-
-[![LeadsDB](./img/leadsdb-banner.png)](https://getleadsdb.com/)
-
-Push leads via API or AI agent, remove duplicates automatically, and export when ready. [**Start free →**](https://getleadsdb.com/)
-
----
-
-### [Webshare](https://www.webshare.io/?referral_code=0q3l81eet8mp) - Premium proxies for scraping at scale
-
-[![Webshare](./img/webshare-banner.png)](https://www.webshare.io/?referral_code=0q3l81eet8mp)
-
-The most affordable premium proxies across 195 countries & 80+ million IPs, plus a FREE plan for new users. [Learn more](webshare.md)
-
----
-
-<p align="center">
-  <a href="#sponsors">View all sponsors</a> | <a href="https://github.com/sponsors/gosom">Become a sponsor</a>
-</p>
-
----
-
-## Why Use This Scraper?
+## Platform Features
 
 | | |
 |---|---|
-| **Completely Free & Open Source** | MIT licensed, no hidden costs or usage limits |
-| **Multiple Interfaces** | CLI, Web UI, REST API - use what fits your workflow |
-| **High Performance** | ~120 places/minute with optimized concurrency |
-| **33+ Data Points** | Business details, reviews, emails, coordinates, and more |
-| **Production Ready** | Scale from a single machine to Kubernetes clusters |
-| **Flexible Output** | CSV, JSON, PostgreSQL, S3, LeadsDB, or custom plugins |
+| **Google Maps Scraper** | Extract 35+ data points: phone, email, website, reviews, coordinates |
+| **WhatsApp Sender** | Bulk WhatsApp outreach with 15 templates (FR/Darija/EN), per-contact customization, delay settings, duplicate detection, message history |
+| **Email Sender** | Email campaigns with SMTP integration |
+| **Leads CRM** | View, filter, search, and manage scraped leads |
+| **Dashboard** | Analytics and overview stats |
+| **Import/Export** | Import from scraper results or CSV, export with pre-filled message column |
+| **Anti-Spam** | Configurable delay (30-90s default), duplicate detection, follow-up templates for already-contacted clients |
 | **Proxy Support** | Built-in SOCKS5/HTTP/HTTPS proxy rotation |
-
----
-
-## What's Next After Scraping?
-
-Once you've collected your data, you'll need to manage, deduplicate, and work with your leads. **[LeadsDB](https://getleadsdb.com/)** is a companion tool designed exactly for this:
-
-- **Automatic Deduplication** - Import from multiple scrapes without worrying about duplicates
-- **AI Agent Ready** - Query and manage leads with natural language via MCP
-- **Advanced Filtering** - Combine filters with AND/OR logic on any field
-- **Export Anywhere** - CSV, JSON, or use the REST API
-
-The scraper has [built-in LeadsDB integration](#export-to-leadsdb) - just add your API key and leads flow directly into your database.
-
-**[Start free with 500 leads](https://getleadsdb.com/)**
 
 ---
 
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-  - [Web UI](#web-ui)
-  - [Command Line](#command-line)
-  - [REST API](#rest-api)
-- [AI Agent Skill](#ai-agent-skill)
+- [Pages & URLs](#pages--urls)
+- [WhatsApp Sender](#whatsapp-sender)
 - [Installation](#installation)
 - [Features](#features)
 - [Extracted Data Points](#extracted-data-points)
 - [Configuration](#configuration)
-  - [Command Line Options](#command-line-options)
-  - [Using Proxies](#using-proxies)
-  - [Email Extraction](#email-extraction)
-  - [Fast Mode](#fast-mode)
-- [Export to LeadsDB](#export-to-leadsdb)
-- [Advanced Usage](#advanced-usage)
-  - [PostgreSQL Database Provider](#postgresql-database-provider)
-  - [Kubernetes Deployment](#kubernetes-deployment)
-  - [Custom Writer Plugins](#custom-writer-plugins)
+- [REST API](#rest-api)
+- [Developer Guide](#developer-guide)
 - [Performance](#performance)
-- [Support the Project](#support-the-project)
-- [Sponsors](#sponsors)
-- [Community](#community)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
 
 ## Quick Start
 
-### Web UI
+### docker-compose (Recommended)
 
-Start the web interface with a single command:
+Starts all 3 services (scraper + WhatsApp + Email):
+
+```bash
+cd C:\Users\ASUS\Desktop\Projects\google-maps-scraper
+docker compose up -d
+```
+
+Then open http://localhost:8080
+
+### Rebuild after code changes
+
+```bash
+docker compose up -d --build
+```
+
+### Single container (scraper only)
 
 ```bash
 mkdir -p gmapsdata && docker run -v $PWD/gmapsdata:/gmapsdata -p 8080:8080 gosom/google-maps-scraper -data-folder /gmapsdata
 ```
 
-Then open http://localhost:8080 in your browser.
-
-Or download the [binary release](https://github.com/gosom/google-maps-scraper/releases) for your platform.
-
-> **Note:** Results take at least 3 minutes to appear (minimum configured runtime).
-> 
-> **macOS Users:** Docker command may not work. See [MacOS Instructions](MacOS%20instructions.md).
-
-### Command Line
+### Command Line (no UI)
 
 ```bash
 touch results.csv && docker run \
   -v $PWD/example-queries.txt:/example-queries \
   -v $PWD/results.csv:/results.csv \
   gosom/google-maps-scraper \
-  -depth 1 \
+  -depth 1 -email \
   -input /example-queries \
   -results /results.csv \
   -exit-on-inactivity 3m
 ```
 
-> **Tip:** Use `gosom/google-maps-scraper:latest-rod` for the Rod version with faster container startup.
+---
 
-**Want emails?** Add the `-email` flag.
+## Pages & URLs
 
-**Want all reviews (up to ~300)?** Add `--extra-reviews` and use `-json` output.
+| URL | Page | Description |
+|-----|------|-------------|
+| http://localhost:8080 | Scraper | Create scrape jobs, view results |
+| http://localhost:8080/dashboard | Dashboard | Analytics overview |
+| http://localhost:8080/leads | Leads CRM | Filter, search, manage leads |
+| http://localhost:8080/whatsapp | WhatsApp Sender | Bulk messaging with templates |
+| http://localhost:8080/email | Email Sender | Email campaigns |
+| http://localhost:8080/schedules | Schedules | Recurring scrape jobs |
+| http://localhost:8080/proxies | Proxy Monitor | Manage proxy rotation |
+| http://localhost:8080/webhooks | Webhooks | External integrations |
+| http://localhost:8080/api/docs | API Docs | OpenAPI documentation |
 
-**Want to skip CSV files?** Send leads directly to [LeadsDB](https://getleadsdb.com/):
+---
 
-```bash
-docker run \
-  -v $PWD/example-queries.txt:/example-queries \
-  gosom/google-maps-scraper \
-  -depth 1 \
-  -input /example-queries \
-  -leadsdb-api-key "your-api-key" \
-  -exit-on-inactivity 3m
-```
+## WhatsApp Sender
 
-### REST API
+### Templates (15 templates, 3 languages each)
+- **No Website** (FR/Darija/EN) - "We build websites that get you clients"
+- **Has Website - Redesign+SEO** (FR/Darija/EN) - "Your site is not optimized"
+- **E-commerce** (FR/Darija/EN) - "+40% sales in 3 months"
+- **Social Media** (FR/Darija/EN) - "Instagram/Facebook presence"
+- **Follow-up** (FR/Darija/EN) - Polite relance for already-contacted clients
 
-When running the web server, a full REST API is available:
+### Smart Features
+- **Auto-detect template** based on whether business has a website
+- **Per-row template override** in the import table
+- **Duplicate detection** - flags already-contacted numbers, auto-switches to follow-up template
+- **Configurable delay** between messages (default 30-90 seconds)
+- **Message history** with filters (status, search) - persists in browser
+
+### Import Recipients
+- From completed scrape jobs (dropdown)
+- From CSV file (must have `phone` column)
+- Manual phone list
+
+---
+
+## REST API
+
+### Scraper API (port 8080)
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -217,28 +127,31 @@ When running the web server, a full REST API is available:
 | `/api/v1/jobs/{id}` | GET | Get job details |
 | `/api/v1/jobs/{id}` | DELETE | Delete a job |
 | `/api/v1/jobs/{id}/download` | GET | Download results as CSV |
+| `/results-preview?id={id}` | GET | CSV data as JSON array |
+
+### WhatsApp Bridge API (port 3001)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/qr` | GET | QR code for authentication |
+| `/status` | GET | Connection status |
+| `/send` | POST | Send single message |
+| `/bulk-send` | POST | Bulk send with configurable delay |
+| `/bulk-status` | GET | Bulk send progress |
+| `/bulk-stop` | POST | Abort bulk send |
 
 Full OpenAPI 3.0.3 documentation available at http://localhost:8080/api/docs
 
 ---
 
-## AI Agent Skill
+## Developer Guide
 
-Use Google Maps Scraper directly from AI coding agents like [Claude Code](https://claude.com/claude-code), Cursor, GitHub Copilot, and [20+ other agents](https://agentskills.io). Just tell your agent to find businesses and it handles everything — query creation, scraping, and result analysis.
-
-**Install the skill:**
-
-```bash
-npx skills add gosom/google-maps-scraper
-```
-
-**Then just ask your agent:**
-
-> Find me all dentists in Berlin with their emails
-
-The agent will ask you a few setup questions, run the scraper in the background via Docker, and present the results with options to save, filter, analyze, or export.
-
-Requires Docker installed and running. See the [skill definition](skills/google-maps-scraper/SKILL.md) for details.
+See [DEV-GUIDE.md](DEV-GUIDE.md) for:
+- Full project file structure with descriptions
+- How to make UI changes (which file to edit for what)
+- How to add new form fields
+- All CLI flags
+- Troubleshooting guide
 
 ---
 
@@ -289,7 +202,7 @@ go build -tags rod
 |---------|-------------|
 | **33+ Data Points** | Business name, address, phone, website, reviews, coordinates, and more |
 | **Email Extraction** | Optional crawling of business websites for email addresses |
-| **Multiple Output Formats** | CSV, JSON, PostgreSQL, S3, LeadsDB, or custom plugins |
+| **Multiple Output Formats** | CSV, JSON, PostgreSQL, S3, or custom plugins |
 | **Proxy Support** | SOCKS5, HTTP, HTTPS with authentication |
 | **Scalable Architecture** | Single machine to Kubernetes cluster |
 | **REST API** | Programmatic control for automation |
@@ -307,7 +220,7 @@ go build -tags rod
 | # | Field | Description |
 |---|-------|-------------|
 | 1 | `input_id` | Internal identifier for the input query |
-| 2 | `link` | Direct URL to the Google Maps listing |
+| 2 | `link` | Direct URL to the listing |
 | 3 | `title` | Business name |
 | 4 | `category` | Business type (e.g., Restaurant, Hotel) |
 | 5 | `address` | Street address |
@@ -321,14 +234,14 @@ go build -tags rod
 | 13 | `reviews_per_rating` | Breakdown by star rating |
 | 14 | `latitude` | GPS latitude |
 | 15 | `longitude` | GPS longitude |
-| 16 | `cid` | Google's unique Customer ID |
+| 16 | `cid` | Unique Customer ID |
 | 17 | `status` | Business status (open/closed/temporary) |
 | 18 | `descriptions` | Business description |
 | 19 | `reviews_link` | Direct link to reviews |
 | 20 | `thumbnail` | Thumbnail image URL |
 | 21 | `timezone` | Business timezone |
 | 22 | `price_range` | Price level ($, $$, $$$) |
-| 23 | `data_id` | Internal Google Maps identifier |
+| 23 | `data_id` | Internal identifier |
 | 24 | `images` | Associated image URLs |
 | 25 | `reservations` | Reservation booking link |
 | 26 | `order_online` | Online ordering link |
@@ -339,7 +252,7 @@ go build -tags rod
 | 31 | `user_reviews` | Customer reviews (text, rating, timestamp) |
 | 32 | `emails` | Extracted email addresses (requires `-email` flag) |
 | 33 | `user_reviews_extended` | Extended reviews up to ~300 (requires `-extra-reviews`) |
-| 34 | `place_id` | Google's unique place id |
+| 34 | `place_id` | Unique place id |
 
 </details>
 
@@ -355,7 +268,7 @@ Matsuhisa Athens #!#MyCustomID
 ### Command Line Options
 
 ```
-Usage: google-maps-scraper [options]
+Usage: codesommet-scrapper [options]
 
 Core Options:
   -input string       Path to input file with queries (one per line)
@@ -389,9 +302,6 @@ Proxy:
   -proxies string    Comma-separated proxy list
                      Format: protocol://user:pass@host:port
 
-Export:
-  -leadsdb-api-key   Export directly to LeadsDB (get key at getleadsdb.com)
-
 Advanced:
   -exit-on-inactivity duration    Exit after inactivity (e.g., '5m')
   -fast-mode                      Quick mode with reduced data
@@ -403,14 +313,14 @@ Notes:
   -fast-mode cannot be used together with -grid-bbox
 ```
 
-Run `./google-maps-scraper -h` for the complete list.
+Run `./codesommet-scrapper -h` for the complete list.
 
 ### Using Proxies
 
 For larger scraping jobs, proxies help avoid rate limiting. Here's how to configure them:
 
 ```bash
-./google-maps-scraper \
+./codesommet-scrapper \
   -input queries.txt \
   -results results.csv \
   -proxies 'socks5://user:pass@host:port,http://host2:port2' \
@@ -419,23 +329,12 @@ For larger scraping jobs, proxies help avoid rate limiting. Here's how to config
 
 **Supported protocols:** `socks5`, `socks5h`, `http`, `https`
 
-#### Proxy Providers
-
-If you need reliable proxies, these providers support this project as sponsors:
-
-| Provider | Highlight | Offer |
-|----------|-----------|-------|
-| [Decodo](https://visit.decodo.com/APVbbx) | #1 response time, 125M+ IPs | [3-day free trial](https://visit.decodo.com/APVbbx) |
-| [Evomi](https://evomi.com?utm_source=github&utm_medium=banner&utm_campaign=gosom-maps) | Swiss quality, 150+ countries | From $0.49/GB |
-
-Using their services helps fund continued development of this scraper.
-
 ### Email Extraction
 
-Email extraction is **disabled by default**. When enabled, the scraper visits each business website to find email addresses.
+Email extraction is **disabled by default**. When enabled, the scrapper visits each business website to find email addresses.
 
 ```bash
-./google-maps-scraper -input queries.txt -results results.csv -email
+./codesommet-scrapper -input queries.txt -results results.csv -email
 ```
 
 > **Note:** Email extraction increases processing time significantly.
@@ -445,7 +344,7 @@ Email extraction is **disabled by default**. When enabled, the scraper visits ea
 Fast mode returns up to 21 results per query, ordered by distance. Useful for quick data collection with basic fields.
 
 ```bash
-./google-maps-scraper \
+./codesommet-scrapper \
   -input queries.txt \
   -results results.csv \
   -fast-mode \
@@ -469,7 +368,7 @@ cafes in Peristeri, Greece
 Command example:
 
 ```bash
-./google-maps-scraper \
+./codesommet-scrapper \
   -input queries.txt \
   -results peristeri-cafes.csv \
   -grid-bbox "38.0077,23.6719,38.0257,23.6947" \
@@ -482,61 +381,6 @@ Command example:
 Notes:
 - `-grid-bbox` guides where searches are launched from, but results are not strictly clipped to the box.
 - For strict distance filtering, use `-fast-mode` with `-geo` + `-radius` (or post-filter by latitude/longitude).
-
----
-
-## Export to LeadsDB
-
-Skip the CSV files and send leads directly to a managed database. [LeadsDB](https://getleadsdb.com/) handles deduplication, filtering, and provides an API for your applications.
-
-**Using Docker:**
-```bash
-docker run \
-  -v $PWD/example-queries.txt:/example-queries \
-  gosom/google-maps-scraper \
-  -depth 1 \
-  -input /example-queries \
-  -leadsdb-api-key "your-api-key" \
-  -exit-on-inactivity 3m
-```
-
-**Using binary:**
-```bash
-./google-maps-scraper \
-  -input queries.txt \
-  -leadsdb-api-key "your-api-key" \
-  -exit-on-inactivity 3m
-```
-
-Or via environment variable:
-```bash
-export LEADSDB_API_KEY="your-api-key"
-./google-maps-scraper -input queries.txt -exit-on-inactivity 3m
-```
-
-<details>
-<summary><strong>Field Mapping</strong></summary>
-
-| Google Maps | LeadsDB |
-|-------------|---------|
-| Title | Name |
-| Category | Category |
-| Categories | Tags |
-| Phone | Phone |
-| Website | Website |
-| Address | Address, City, State, Country, PostalCode |
-| Latitude/Longitude | Coordinates |
-| Review Rating | Rating |
-| Review Count | ReviewCount |
-| Emails | Email |
-| Thumbnail | LogoURL |
-| CID | SourceID |
-
-Additional fields (Google Maps link, plus code, price range, etc.) are stored as custom attributes.
-
-</details>
-
-Get your API key at [getleadsdb.com/settings](https://getleadsdb.com/settings) after signing up.
 
 ---
 
@@ -553,7 +397,7 @@ docker-compose -f docker-compose.dev.yaml up -d
 
 **2. Seed the jobs:**
 ```bash
-./google-maps-scraper \
+./codesommet-scrapper \
   -dsn "postgres://postgres:postgres@localhost:5432/postgres" \
   -produce \
   -input example-queries.txt \
@@ -562,7 +406,7 @@ docker-compose -f docker-compose.dev.yaml up -d
 
 **3. Run scrapers (on multiple machines):**
 ```bash
-./google-maps-scraper \
+./codesommet-scrapper \
   -c 2 \
   -depth 1 \
   -dsn "postgres://postgres:postgres@localhost:5432/postgres"
@@ -574,19 +418,19 @@ docker-compose -f docker-compose.dev.yaml up -d
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: google-maps-scraper
+  name: codesommet-scrapper
 spec:
   replicas: 3  # Adjust based on needs
   selector:
     matchLabels:
-      app: google-maps-scraper
+      app: codesommet-scrapper
   template:
     metadata:
       labels:
-        app: google-maps-scraper
+        app: codesommet-scrapper
     spec:
       containers:
-      - name: google-maps-scraper
+      - name: codesommet-scrapper
         image: gosom/google-maps-scraper:latest
         args: ["-c", "1", "-depth", "10", "-dsn", "postgres://user:pass@host:5432/db"]
         resources:
@@ -610,7 +454,7 @@ go build -buildmode=plugin -tags=plugin -o myplugin.so myplugin.go
 
 **3. Run:**
 ```bash
-./google-maps-scraper -writer ~/plugins:MyWriter -input queries.txt
+./codesommet-scrapper -writer ~/plugins:MyWriter -input queries.txt
 ```
 
 ---
@@ -636,159 +480,6 @@ export DISABLE_TELEMETRY=1
 
 ---
 
-## Support the Project
-
-This project is **free and open source**, maintained in my spare time. If it's useful to you, here's how you can help it grow:
-
-### Quick Ways to Help
-
-| Action | Impact |
-|--------|--------|
-| **[Star this repo](https://github.com/gosom/google-maps-scraper)** | Helps others discover the project |
-| **[Sponsor on GitHub](https://github.com/sponsors/gosom)** | Directly funds development time |
-| **Share your success** | Tweet or blog about how you use it |
-| **Report bugs & contribute** | Help improve the codebase |
-
-### Use Sponsor Services
-
-When you need proxies, APIs, or cloud services, consider using our sponsors. You get quality tools, and the referral helps fund this project:
-
-- **Need proxies?** [Decodo](https://visit.decodo.com/APVbbx) or [Evomi](https://evomi.com?utm_source=github&utm_medium=banner&utm_campaign=gosom-maps)
-- **Prefer an API?** [SerpApi](https://serpapi.com/?utm_source=google-maps-scraper) or [SearchAPI](https://www.searchapi.io/google-maps?via=gosom)
-- **No-code solution?** [Scrap.io](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper) or [G Maps Extractor](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom)
-- **Manage your leads?** [LeadsDB](https://getleadsdb.com/) - deduplicate, filter, and export with AI
-- **Cloud hosting?** [DigitalOcean](https://www.digitalocean.com/?refcode=c11136c4693c&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge) ($200 credit) or [Hetzner](https://hetzner.cloud/?ref=ihtQPa0cT18n) (EUR 20 credit)
-
----
-
-## Sponsors
-
-A huge thank you to the sponsors who make this project possible!
-
----
-
-### Premium Sponsors
-
----
-
-#### [Scrap.io](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper)
-
-[![Scrap.io - Extract ALL Google Maps Listings](./img/premium_scrap_io.png)](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper)
-
-**Extract ALL Google Maps listings at country-scale in 2 clicks.** No keywords needed. No limits. Export millions of businesses instantly.
-
-[**Try it free →**](https://scrap.io?utm_medium=ads&utm_source=github_gosom_gmap_scraper) · [See demo](scrap_io.md)
-
----
-
-#### [G Maps Extractor](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom)
-
-[![G Maps Extractor](./img/gmaps-extractor-banner.png)](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom)
-
-**No-code Google Maps scraper Chrome extension.** Extract emails, social profiles, phone numbers, reviews, images & more with one click.
-
-[**Get 1,000 free leads →**](https://gmapsextractor.com?utm_source=github&utm_medium=banner&utm_campaign=gosom) · [API docs](https://gmapsextractor.com/google-maps-api?utm_source=github&utm_medium=banner&utm_campaign=gosom)
-
----
-
-#### [SerpApi](https://serpapi.com/?utm_source=google-maps-scraper)
-
-[![SerpApi](./img/SerpApi-banner.png)](https://serpapi.com/?utm_source=google-maps-scraper)
-
-**Google Maps API and 30+ search engine APIs.** Fast, reliable, and scalable. Used by Fortune 500 companies.
-
-[**View all APIs →**](https://serpapi.com/search-api) · [Learn more](serpapi.md)
-
----
-
-#### [HasData](https://hasdata.com/scrapers/google-maps?utm_source=github&utm_medium=sponsorship&utm_campaign=gosom)
-
-[![HasData Google Maps Scraper](./img/hd-gm-banner.png)](https://hasdata.com/scrapers/google-maps?utm_source=github&utm_medium=sponsorship&utm_campaign=gosom)
-
-**No-code Google Maps Scraper & Email Extraction.** Extract business leads, emails, addresses, phones, reviews and more.
-
-[**Get 1,000 free credits →**](https://hasdata.com/scrapers/google-maps?utm_source=github&utm_medium=sponsorship&utm_campaign=gosom) · [Learn more](sponsors/hasdata.md)
-
----
-
-#### [Webshare](https://www.webshare.io/?referral_code=0q3l81eet8mp)
-
-[![Webshare](./img/webshare-banner.png)](https://www.webshare.io/?referral_code=0q3l81eet8mp)
-
-**The most affordable premium proxies across 195 countries & 80+ million IPs, plus a FREE plan for new users.** [Learn more](webshare.md)
-
-[**Start free →**](https://www.webshare.io/?referral_code=0q3l81eet8mp)
-
----
-
-#### [RapidProxy](https://www.rapidproxy.io/?ref=gosom)
-
-[![RapidProxy](./img/rapidproxy-banner.png)](https://www.rapidproxy.io/?ref=gosom)
-
-**High-performance proxy solution with consistent, high-speed connections, 90M+ real residential IPs worldwide, and traffic that never expires.**
-
-[**Try it free →**](https://www.rapidproxy.io/?ref=gosom)
-
----
-
-### More Sponsors
-
-<table>
-<tr>
-<td align="center" width="50%">
-
-[![Evomi](https://my.evomi.com/images/brand/cta.png)](https://evomi.com?utm_source=github&utm_medium=banner&utm_campaign=gosom-maps)
-
-**[Evomi](https://evomi.com?utm_source=github&utm_medium=banner&utm_campaign=gosom-maps)**
-
-Swiss quality proxies from $0.49/GB<br>150+ countries · 24/7 support · 99.9% uptime
-
-</td>
-<td align="center" width="50%">
-
-[![SearchAPI](https://www.searchapi.io/press/v1/svg/searchapi_logo_black_h.svg)](https://www.searchapi.io/google-maps?via=gosom)
-
-**[SearchAPI](https://www.searchapi.io/google-maps?via=gosom)**
-
-Google Maps API for easy SERP scraping<br>Real-time data · Simple integration
-
-</td>
-</tr>
-<tr>
-<td align="center" width="50%">
-
-[![LeadsDB](https://getleadsdb.com/static/logo/logo-dark.svg)](https://getleadsdb.com/)
-
-**[LeadsDB](https://getleadsdb.com/)**
-
-Manage leads after scraping<br>Deduplication · AI-ready · Advanced filtering
-
-</td>
-<td align="center" width="50%">
-</td>
-</tr>
-</table>
-
----
-
-<p align="center">
-  <a href="https://github.com/sponsors/gosom"><strong>Become a sponsor</strong></a> to get your logo here and support open source development.
-</p>
-
----
-
-## Community
-
-[![Discord](https://img.shields.io/badge/Discord-Join%20Our%20Server-7289DA?logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/fpaAVhNCCu)
-
-Join our Discord to:
-- Get help with setup and configuration
-- Share your use cases and success stories
-- Request features and report bugs
-- Connect with other users
-
----
-
 ## Contributing
 
 Contributions are welcome! Please:
@@ -796,19 +487,6 @@ Contributions are welcome! Please:
 1. Open an issue to discuss your idea
 2. Fork the repository
 3. Create a pull request
-
-See [AGENTS.md](AGENTS.md) for development guidelines.
-
----
-
-## References
-
-- [How to Extract Data from Google Maps Using Golang](https://blog.gkomninos.com/how-to-extract-data-from-google-maps-using-golang)
-- [Distributed Google Maps Scraping](https://blog.gkomninos.com/distributed-google-maps-scraping)
-- [Deploy your own Maps scraping API in 5 minutes (includes video walkthrough)](https://gosom.dev/deploy-your-own-maps-scraping-api-in-5-minutes/)
-- [Video walkthrough (YouTube)](https://www.youtube.com/watch?v=STG9mZw_nac)
-- [scrapemate](https://github.com/gosom/scrapemate) - The underlying web crawling framework
-- [omkarcloud/google-maps-scraper](https://github.com/omkarcloud/google-maps-scraper) - Inspiration for JS data extraction
 
 ---
 
@@ -818,40 +496,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## Star History
-
-<a href="https://star-history.com/#gosom/google-maps-scraper&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=gosom/google-maps-scraper&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=gosom/google-maps-scraper&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=gosom/google-maps-scraper&type=Date" />
- </picture>
-</a>
-
----
-
 ## Legal Notice
 
-Please use this scraper responsibly and in accordance with applicable laws and regulations. Unauthorized scraping may violate terms of service.
-
----
-
-## Custom Scraping Solutions
-
-Need a custom scraper tailored to your specific requirements? **[Book a consulting call](https://www.cal.eu/g-k-lsoknt/gosom)** to discuss your project.
-
----
-
-<p align="center">
-  <sub>Banner generated using OpenAI's DALL-E</sub>
-</p>
-
-<p align="center">
-  <a href="https://github.com/gosom/google-maps-scraper/stargazers">
-    <img src="https://img.shields.io/github/stars/gosom/google-maps-scraper?style=social" alt="Star on GitHub">
-  </a>
-</p>
-
-<p align="center">
-  <b>If this project saved you time, consider <a href="https://github.com/gosom/google-maps-scraper">starring it</a> or <a href="https://github.com/sponsors/gosom">sponsoring</a> its development!</b>
-</p>
+Please use CodeSommet Scrapper responsibly and in accordance with applicable laws and regulations. Unauthorized scraping may violate terms of service.
+#   c o d e - s o m m e t - s c r a p p e r  
+ 
