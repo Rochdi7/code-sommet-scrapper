@@ -24,17 +24,11 @@ type JSFetcherOptions struct {
 }
 
 func New(params JSFetcherOptions) (scrapemate.HTTPFetcher, error) {
-	opts := []*playwright.RunOptions{
-		{
-			Browsers: []string{"chromium"},
-			Verbose:  true,
-		},
-	}
-
-	if err := playwright.Install(opts...); err != nil {
-		return nil, err
-	}
-
+	// The Playwright driver and browsers are bundled into the image at Docker
+	// build time (see Dockerfile). We must NOT call playwright.Install() at
+	// runtime: the pinned client's download CDN is unreliable in production and
+	// a failed download leaves the browser pool empty (jobs then return zero
+	// results forever). Run() uses the already-installed driver.
 	pw, err := playwright.Run()
 	if err != nil {
 		return nil, err
