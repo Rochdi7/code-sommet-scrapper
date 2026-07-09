@@ -1,4 +1,7 @@
-cache/
+# Scope to the top-level runtime cache dir only. A bare `cache/` also matched
+# scrapemate-local/adapters/cache/ (SOURCE: filecache/leveldbcache packages),
+# which left those files uncommitted and broke the Docker build.
+/cache/
 vendor
 bin
 webdata/
