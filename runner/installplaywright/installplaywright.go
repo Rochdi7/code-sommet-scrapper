@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/gosom/google-maps-scraper/runner"
-	"github.com/playwright-community/playwright-go"
 )
 
 type installer struct {
@@ -20,13 +19,10 @@ func New(cfg *runner.Config) (runner.Runner, error) {
 }
 
 func (i *installer) Run(context.Context) error {
-	opts := []*playwright.RunOptions{
-		{
-			Browsers: []string{"chromium"},
-		},
-	}
-
-	return playwright.Install(opts...)
+	// The Playwright driver and browsers are installed at Docker build time and
+	// baked into the image (see Dockerfile). Installing at runtime is disabled
+	// because the pinned client's download CDN is unreliable in production.
+	return nil
 }
 
 func (i *installer) Close(context.Context) error {

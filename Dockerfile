@@ -1,6 +1,13 @@
-# Build stage for Playwright dependencies
+# Build stage for Playwright dependencies (driver + chromium baked into the image)
 FROM ubuntu:20.04 AS playwright-deps
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
+# Optional override for the Playwright driver download host. The playwright-go
+# client's default mirrors (playwright.azureedge.net) can be unreachable; pass
+#   --build-arg PLAYWRIGHT_DOWNLOAD_HOST=<mirror>
+# to point the build at a working mirror without editing this file. Empty by
+# default so the pinned client uses its own resolution.
+ARG PLAYWRIGHT_DOWNLOAD_HOST=""
+ENV PLAYWRIGHT_DOWNLOAD_HOST=${PLAYWRIGHT_DOWNLOAD_HOST}
 RUN export PATH=$PATH:/usr/local/go/bin:/root/go/bin \
     && apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl wget \
@@ -11,7 +18,10 @@ RUN export PATH=$PATH:/usr/local/go/bin:/root/go/bin \
     && apt-get install -y --no-install-recommends nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && go install github.com/playwright-community/playwright-go/cmd/playwright@latest \
+    # Pin the CLI to the SAME version the Go client requires (go.mod: v0.5700.1
+    # => Playwright driver 1.57.0). Never use @latest: it drifts from go.mod and
+    # produces a driver the compiled binary cannot use.
+    && go install github.com/playwright-community/playwright-go/cmd/playwright@v0.5700.1 \
     && mkdir -p /opt/browsers \
     && playwright install chromium --with-deps
 
@@ -27,7 +37,10 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o /usr/bin/google-maps-scraper
 # Final stage
 FROM debian:trixie-slim
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
-ENV PLAYWRIGHT_DRIVER_PATH=/opt
+# Must point at the folder that directly contains `node` + `package/cli.js`.
+# The pinned CLI (v0.5700.1 => 1.57.0) writes the driver to
+# ~/.cache/ms-playwright-go/1.57.0, which is copied to /opt/ms-playwright-go/1.57.0 below.
+ENV PLAYWRIGHT_DRIVER_PATH=/opt/ms-playwright-go/1.57.0
 
 # Install runtime dependencies for Chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
