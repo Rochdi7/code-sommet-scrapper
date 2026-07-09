@@ -2123,6 +2123,24 @@ codesommet.com | +212 632 582 096`,
             const attachLabel = c.attachmentPath
                 ? '<span style="padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; background: #fef3c7; color: #92400e; margin-left: 6px;" title="' + escapeHtml(c.attachmentPath) + '">+ PDF</span>'
                 : '';
+            // Inline delay-edit form: pre-filled with the campaign's saved
+            // delays so the user can confirm / change them before resuming.
+            // The backend (whatsappAutoResumeCampaign) accepts delayMin/Max
+            // overrides on the resume request.
+            const dMin = (typeof c.delayMin === 'number' && c.delayMin > 0) ? c.delayMin : 45;
+            const dMax = (typeof c.delayMax === 'number' && c.delayMax > 0) ? c.delayMax : 90;
+            const resumeForm = canResume
+                ? '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;">' +
+                      '<span style="font-size:12px;font-weight:600;color:#166534;margin-right:6px;">Resume with delays:</span>' +
+                      '<label style="font-size:11px;color:var(--color-text-light);">Min&nbsp;</label>' +
+                      '<input type="number" id="resume-min-' + c.id + '" value="' + dMin + '" min="30" style="width:60px;padding:4px 6px;border:1px solid var(--color-border);border-radius:4px;font-size:12px;">' +
+                      '<label style="font-size:11px;color:var(--color-text-light);">Max&nbsp;</label>' +
+                      '<input type="number" id="resume-max-' + c.id + '" value="' + dMax + '" min="40" style="width:60px;padding:4px 6px;border:1px solid var(--color-border);border-radius:4px;font-size:12px;">' +
+                      '<span style="font-size:11px;color:var(--color-text-light);">sec between messages</span>' +
+                      '<button onclick="resumeCampaign(\'' + c.id + '\')" style="padding:6px 16px;background:var(--color-whatsapp);color:white;border:none;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;margin-left:auto;">Resume (' + c.pending + ' left)</button>' +
+                  '</div>'
+                : '';
+
             return '<div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 16px; margin-bottom: 12px; background: white;">' +
                 '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">' +
                     '<div>' +
@@ -2143,8 +2161,8 @@ codesommet.com | +212 632 582 096`,
                 '<div style="background: var(--color-background); border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 12px;">' +
                     '<div style="height: 100%; width: ' + pct + '%; background: var(--color-whatsapp); border-radius: 4px; transition: width 0.3s;"></div>' +
                 '</div>' +
-                '<div style="display: flex; gap: 8px;">' +
-                    (canResume ? '<button onclick="resumeCampaign(\'' + c.id + '\')" style="padding: 6px 16px; background: var(--color-whatsapp); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Resume (' + c.pending + ' left)</button>' : '') +
+                resumeForm +
+                '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
                     (isRunning ? '<button onclick="pauseActiveCampaign()" style="padding: 6px 16px; background: #f59e0b; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Pause</button>' : '') +
                     (isRunning ? '<button onclick="stopActiveCampaign()" style="padding: 6px 16px; background: var(--color-error); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Stop</button>' : '') +
                     '<button onclick="viewCampaignDetail(\'' + c.id + '\')" style="padding: 6px 16px; background: none; border: 1px solid var(--color-border); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text-light);">View Details</button>' +
@@ -2170,8 +2188,21 @@ codesommet.com | +212 632 582 096`,
             return;
         }
 
-        const delayMin = parseInt(document.getElementById('delay-min').value) || 60;
-        const delayMax = parseInt(document.getElementById('delay-max').value) || 120;
+        // Read delays from this campaign card's inline inputs (one pair per
+        // campaign so the user can edit them right next to the Resume button).
+        // Falls back to the Send Campaign tab's defaults if those inputs
+        // somehow aren't in the DOM (e.g. running campaign card).
+        const minEl = document.getElementById('resume-min-' + campaignId);
+        const maxEl = document.getElementById('resume-max-' + campaignId);
+        const delayMin = parseInt(minEl ? minEl.value : '') ||
+                         parseInt(document.getElementById('delay-min').value) || 60;
+        const delayMax = parseInt(maxEl ? maxEl.value : '') ||
+                         parseInt(document.getElementById('delay-max').value) || 120;
+
+        if (delayMax <= delayMin) {
+            alert('Max delay must be greater than min delay (current: ' + delayMin + ' / ' + delayMax + ')');
+            return;
+        }
 
         const endpoint = (source === 'desktop')
             ? '/whatsapp-auto/resume-campaign'

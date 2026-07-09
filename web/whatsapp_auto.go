@@ -724,7 +724,8 @@ func (s *Server) whatsappAutoStop(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) whatsappAutoCampaigns(w http.ResponseWriter, r *http.Request) {
 	list := autoState.load()
-	// Strip the heavy messages slice from the summary.
+	// Strip the heavy messages slice from the summary. delayMin/delayMax/
+	// launchWait are exposed so the UI can pre-fill the resume editor.
 	type summary struct {
 		ID             string `json:"id"`
 		Name           string `json:"name"`
@@ -734,6 +735,9 @@ func (s *Server) whatsappAutoCampaigns(w http.ResponseWriter, r *http.Request) {
 		Sent           int    `json:"sent"`
 		Failed         int    `json:"failed"`
 		Pending        int    `json:"pending"`
+		DelayMin       int    `json:"delayMin"`
+		DelayMax       int    `json:"delayMax"`
+		LaunchWait     int    `json:"launchWait"`
 		AttachmentPath string `json:"attachmentPath,omitempty"`
 		CreatedAt      string `json:"createdAt"`
 		UpdatedAt      string `json:"updatedAt"`
@@ -755,6 +759,9 @@ func (s *Server) whatsappAutoCampaigns(w http.ResponseWriter, r *http.Request) {
 			Sent:           c.Sent,
 			Failed:         c.Failed,
 			Pending:        pending,
+			DelayMin:       c.DelayMin,
+			DelayMax:       c.DelayMax,
+			LaunchWait:     c.LaunchWait,
 			AttachmentPath: c.AttachmentPath,
 			CreatedAt:      c.CreatedAt,
 			UpdatedAt:      c.UpdatedAt,
@@ -829,12 +836,19 @@ func (s *Server) whatsappAutoResumeCampaign(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// Optional delay overrides.
+	// Optional delay overrides — applied if the request supplied valid values.
+	// Both fields are optional: if absent (zero), the campaign keeps its
+	// previously stored delays.
 	if req.DelayMin >= 30 {
 		target.DelayMin = req.DelayMin
 	}
-	if req.DelayMax > target.DelayMin {
+	if req.DelayMax > 0 && req.DelayMax > req.DelayMin {
 		target.DelayMax = req.DelayMax
+	}
+	// Sanity floor — guarantee max is always at least min + 10s so the
+	// runLoop's randomized delta is meaningful.
+	if target.DelayMax < target.DelayMin+10 {
+		target.DelayMax = target.DelayMin + 10
 	}
 
 	target.Status = "running"
