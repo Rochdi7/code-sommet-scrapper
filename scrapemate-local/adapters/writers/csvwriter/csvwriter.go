@@ -54,6 +54,13 @@ func (c *csvWriter) Run(_ context.Context, in <-chan scrapemate.Result) error {
 func (c *csvWriter) getCsvCapable(data any) ([]scrapemate.CsvCapable, error) {
 	var elements []scrapemate.CsvCapable
 
+	// A job that produces no rows (e.g. a contact-page extraction that found
+	// nothing) hands us a nil interface — treat that as zero elements rather
+	// than panicking inside reflect.
+	if data == nil {
+		return elements, nil
+	}
+
 	if interfaceIsSlice(data) {
 		s := reflect.ValueOf(data)
 
@@ -75,11 +82,13 @@ func (c *csvWriter) getCsvCapable(data any) ([]scrapemate.CsvCapable, error) {
 }
 
 func interfaceIsSlice(t any) bool {
-	//nolint:exhaustive // we only need to check for slices
-	switch reflect.TypeOf(t).Kind() {
-	case reflect.Slice:
-		return true
-	default:
+	if t == nil {
 		return false
 	}
+	rt := reflect.TypeOf(t)
+	if rt == nil {
+		return false
+	}
+	//nolint:exhaustive // we only need to check for slices
+	return rt.Kind() == reflect.Slice
 }
