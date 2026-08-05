@@ -259,6 +259,15 @@ func (s *ScrapeMate) Start() error {
 				numOfJobsCompleted, numOfJobsFailed, lastActivityAt := s.stats.getStats()
 				perMinute := float64(numOfJobsCompleted) / time.Now().UTC().Sub(startTime).Seconds() * secondsPerMinute
 
+				// Before the first job completes, lastActivityAt is the zero value
+				// (0001-01-01). Measuring inactivity from that would make the very
+				// first ticker fire an inactivity timeout even though scraping is
+				// still legitimately in progress (a slow first page load). Count
+				// inactivity from startTime until real activity has been recorded.
+				if lastActivityAt.IsZero() {
+					lastActivityAt = startTime
+				}
+
 				s.log.Info("scrapemate stats",
 					"numOfJobsCompleted", numOfJobsCompleted,
 					"numOfJobsFailed", numOfJobsFailed,
