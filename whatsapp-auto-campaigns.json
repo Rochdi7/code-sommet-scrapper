@@ -1,5 +1,246 @@
 [
   {
+    "id": "auto_1783982546448289000",
+    "name": "real esate sender",
+    "status": "paused",
+    "total": 37,
+    "sent": 4,
+    "failed": 0,
+    "delayMin": 60,
+    "delayMax": 120,
+    "launchWait": 7,
+    "messages": [
+      {
+        "phone": "06 65 62 47 43",
+        "business": "PALM AGENCY",
+        "message": "Bonjour PALM AGENCY,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "sent",
+        "sentAt": "2026-07-13T22:42:35Z"
+      },
+      {
+        "phone": "07 64 12 10 95",
+        "business": "Dar \u0026 keys",
+        "message": "Bonjour Dar \u0026 keys,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "sent",
+        "sentAt": "2026-07-13T22:44:28Z"
+      },
+      {
+        "phone": "06 56 41 69 55",
+        "business": "Prime BNB Concierge",
+        "message": "Bonjour Prime BNB Concierge,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "sent",
+        "sentAt": "2026-07-13T22:46:08Z"
+      },
+      {
+        "phone": "06 90 91 41 41",
+        "business": "Agence Immobilière Mardie Propriétés",
+        "message": "Bonjour Agence Immobilière Mardie Propriétés,\n\nJe suis tombé sur votre entreprise sur Google et j'ai remarqué que vous n'avez pas encore de site web.\n\nAujourd'hui, 80% des clients recherchent en ligne avant d'acheter. Sans site web, vous passez à côté de dizaines de clients chaque jour.\n\nChez CodeSommet, on ne crée pas juste des sites web - on construit des machines à clients. Un site optimisé qui vous rend visible sur Google, renforce votre marque et convertit les visiteurs en clients.\n\nSeriez-vous intéressé par une consultation gratuite de 15 min ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "sent",
+        "sentAt": "2026-07-13T22:47:46Z"
+      },
+      {
+        "phone": "06 66 62 39 18",
+        "business": "Agence Immobilière Marrakech | FJ MOROCCO AGENCY",
+        "message": "Bonjour Agence Immobilière Marrakech | FJ MOROCCO AGENCY,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 60 79 99 92",
+        "business": "Stay212 – Gestion Airbnb \u0026 Conciergerie | Villas \u0026 Riads Marrakech",
+        "message": "Bonjour Stay212 – Gestion Airbnb \u0026 Conciergerie | Villas \u0026 Riads Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 52 38 38 00",
+        "business": "Luxurious Properties - Agence Immobilière Marrakech",
+        "message": "Bonjour Luxurious Properties - Agence Immobilière Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 04 00 45 52",
+        "business": "Marrakech realty investments",
+        "message": "Bonjour Marrakech realty investments,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 64 70 75 64",
+        "business": "Toit \u0026 Vous immobilier Marrakech",
+        "message": "Bonjour Toit \u0026 Vous immobilier Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 66 46 69 56",
+        "business": "immobilierKech عقارات المغرب مراكش",
+        "message": "Bonjour immobilierKech عقارات المغرب مراكش,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "07 09 08 29 83",
+        "business": "BAYS IMMOBILIER MARRAKECH",
+        "message": "Bonjour BAYS IMMOBILIER MARRAKECH,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "+33 6 15 24 10 37",
+        "business": "AL PROPERTY MANAGEMENT",
+        "message": "Bonjour AL PROPERTY MANAGEMENT,\n\nJe suis tombé sur votre entreprise sur Google et j'ai remarqué que vous n'avez pas encore de site web.\n\nAujourd'hui, 80% des clients recherchent en ligne avant d'acheter. Sans site web, vous passez à côté de dizaines de clients chaque jour.\n\nChez CodeSommet, on ne crée pas juste des sites web - on construit des machines à clients. Un site optimisé qui vous rend visible sur Google, renforce votre marque et convertit les visiteurs en clients.\n\nSeriez-vous intéressé par une consultation gratuite de 15 min ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "07 82 34 08 93",
+        "business": "OWNERSS INTERNATIONAL REAL ESTATE | Marrakech",
+        "message": "Bonjour OWNERSS INTERNATIONAL REAL ESTATE | Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "07 72 28 82 82",
+        "business": "Signature immobilier",
+        "message": "Bonjour Signature immobilier,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 61 32 21 10",
+        "business": "Atlas Touareg Immobilier",
+        "message": "Bonjour Atlas Touareg Immobilier,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "07 08 40 45 45",
+        "business": "Marrenza",
+        "message": "Bonjour Marrenza,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 63 26 44 34",
+        "business": "Conciergerie Marrakech By Valérie",
+        "message": "Bonjour Conciergerie Marrakech By Valérie,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 88 10 72 70",
+        "business": "Celestia Invest │ Agence Immobilière Marrakech",
+        "message": "Bonjour Celestia Invest │ Agence Immobilière Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 94 20 06 00",
+        "business": "KNA",
+        "message": "Bonjour KNA,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "+33 7 86 68 02 74",
+        "business": "Shams Home - Immobilier de Luxe à Marrakech",
+        "message": "Bonjour Shams Home - Immobilier de Luxe à Marrakech,\n\nJe suis tombé sur votre entreprise sur Google et j'ai remarqué que vous n'avez pas encore de site web.\n\nAujourd'hui, 80% des clients recherchent en ligne avant d'acheter. Sans site web, vous passez à côté de dizaines de clients chaque jour.\n\nChez CodeSommet, on ne crée pas juste des sites web - on construit des machines à clients. Un site optimisé qui vous rend visible sur Google, renforce votre marque et convertit les visiteurs en clients.\n\nSeriez-vous intéressé par une consultation gratuite de 15 min ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 03 87 08 58",
+        "business": "Marrakech Global Invest | Agence immobilière à marrakech",
+        "message": "Bonjour Marrakech Global Invest | Agence immobilière à marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 58 02 50 28",
+        "business": "Bosworth Property",
+        "message": "Bonjour Bosworth Property,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 61 24 61 30",
+        "business": "Bastet Property Marrakech",
+        "message": "Bonjour Bastet Property Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "07 02 96 30 93",
+        "business": "ILM Agency",
+        "message": "Bonjour ILM Agency,\n\nJe suis tombé sur votre entreprise sur Google et j'ai remarqué que vous n'avez pas encore de site web.\n\nAujourd'hui, 80% des clients recherchent en ligne avant d'acheter. Sans site web, vous passez à côté de dizaines de clients chaque jour.\n\nChez CodeSommet, on ne crée pas juste des sites web - on construit des machines à clients. Un site optimisé qui vous rend visible sur Google, renforce votre marque et convertit les visiteurs en clients.\n\nSeriez-vous intéressé par une consultation gratuite de 15 min ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "07 20 60 91 28",
+        "business": "ALL-IN CONCIERGERIE MARRAKECH",
+        "message": "Bonjour ALL-IN CONCIERGERIE MARRAKECH,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 17 45 27 25",
+        "business": "MARRAKECH OASIS INVEST",
+        "message": "Bonjour MARRAKECH OASIS INVEST,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "+33 6 50 80 79 02",
+        "business": "MGP Marrakech",
+        "message": "Bonjour MGP Marrakech,\n\nJe suis tombé sur votre entreprise sur Google et j'ai remarqué que vous n'avez pas encore de site web.\n\nAujourd'hui, 80% des clients recherchent en ligne avant d'acheter. Sans site web, vous passez à côté de dizaines de clients chaque jour.\n\nChez CodeSommet, on ne crée pas juste des sites web - on construit des machines à clients. Un site optimisé qui vous rend visible sur Google, renforce votre marque et convertit les visiteurs en clients.\n\nSeriez-vous intéressé par une consultation gratuite de 15 min ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 63 44 74 24",
+        "business": "Agence immobilière Côté Médina Marrakech",
+        "message": "Bonjour Agence immobilière Côté Médina Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 61 50 25 15",
+        "business": "Top Syndic Plus - Syndic professionnel Marrakech",
+        "message": "Bonjour Top Syndic Plus - Syndic professionnel Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "+33 6 19 07 84 48",
+        "business": "Villa Premium | location et vente villa Marrakech",
+        "message": "Bonjour Villa Premium | location et vente villa Marrakech,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 55 08 08 87",
+        "business": "Marrakey Agency",
+        "message": "Bonjour Marrakey Agency,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "08 08 65 34 33",
+        "business": "Agence immobilière médina sahajarimmobilier",
+        "message": "Bonjour Agence immobilière médina sahajarimmobilier,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 69 35 95 90",
+        "business": "Conseiller Immobilier Marrakech | EL GHOUATE",
+        "message": "Bonjour Conseiller Immobilier Marrakech | EL GHOUATE,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 18 35 49 93",
+        "business": "Nexis Properties",
+        "message": "Bonjour Nexis Properties,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 64 72 24 88",
+        "business": "C21 Marrakech - 7132 Real Estate",
+        "message": "Bonjour C21 Marrakech - 7132 Real Estate,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 64 90 53 73",
+        "business": "Vaneau Maroc",
+        "message": "Bonjour Vaneau Maroc,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      },
+      {
+        "phone": "06 66 43 62 69",
+        "business": "Eurialy Agency",
+        "message": "Bonjour Eurialy Agency,\n\nJ'ai visité votre site web et j'ai identifié plusieurs opportunités pour attirer plus de clients en ligne.\n\nSaviez-vous que 75% des utilisateurs jugent la crédibilité d'une entreprise par son site web ? Un site moderne et optimisé SEO peut multiplier vos appels et demandes par 3.\n\nChez CodeSommet, nous proposons :\n- Redesign moderne de votre site\n- Optimisation SEO pour apparaître en 1ère page Google\n- Site rapide qui convertit les visiteurs en clients\n\nSouhaitez-vous un audit gratuit de votre site avec des recommandations concrètes ?\n\nCordialement,\nL'équipe CodeSommet\ncodesommet.com | +212 632 582 096",
+        "status": "pending"
+      }
+    ],
+    "createdAt": "2026-07-13T22:42:26Z",
+    "updatedAt": "2026-07-13T22:49:02Z"
+  },
+  {
     "id": "auto_1782716203283974300",
     "name": "excursions marrakech",
     "status": "completed",
